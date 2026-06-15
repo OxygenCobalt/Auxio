@@ -13,14 +13,13 @@
     <string name="set_key_reindex" translatable="false">auxio_reindex</string>
     <string name="set_key_rescan" translatable="false">auxio_rescan</string>
     <string name="set_key_observing" translatable="false">auxio_observing</string>
-    <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
+    <string name="set_key_music_dirs">auxio_music_dirs</string>
     <string name="set_key_excluded_dirs" translatable="false">auxio_excluded_dirs</string>
     <string name="set_key_fs_cache" translatable="false">auxio_fs_cache</string>
     <string name="set_key_cover_mode" translatable="false">auxio_cover_mode2</string>
     <string name="set_key_square_covers" translatable="false">auxio_square_covers</string>
     <string name="set_key_exclude_non_music" translatable="false">auxio_exclude_non_music</string>
     <string name="set_key_with_hidden" translatable="false">auxio_with_hidden</string>
-    <string name="set_key_saf_multithread" translatable="false">auxio_saf_multithread</string>
     <string name="set_key_music_locations" translatable="false">auxio_music_locations2</string>
     <string name="set_key_excluded_locations" translatable="false">auxio_excluded_locations</string>
     <string name="set_key_filter_mode" translatable="false">auxio_filter_mode</string>
@@ -46,10 +45,9 @@
     <string name="set_key_hide_collaborators" translatable="false">auxio_hide_collaborators</string>
     <string name="set_key_round_mode" translatable="false">auxio_round_covers</string>
     <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
+    <string name="set_key_notif_action" translatable="false">auxio_notif_action</string>
 
-    <string name="set_key_search_filters" translatable="false">auxio_search_filters</string>
-
-    <string name="set_key_task_exit" translatable="false">auxio_task_exit</string>
+    <string name="set_key_search_filter_to" translatable="false">KEY_SEARCH_FILTER</string>
 
     <string name="set_key_songs_sort" translatable="false">auxio_songs_sort</string>
     <string name="set_key_albums_sort" translatable="false">auxio_albums_sort</string>
@@ -107,6 +105,16 @@
 
     <integer-array name="values_bar_action">
         <item>@integer/action_mode_next</item>
+        <item>@integer/action_mode_repeat</item>
+        <item>@integer/action_mode_shuffle</item>
+    </integer-array>
+
+    <integer-array name="entries_notif_action">
+        <item>@string/set_action_mode_repeat</item>
+        <item>@string/lbl_shuffle</item>
+    </integer-array>
+
+    <integer-array name="values_notif_action">
         <item>@integer/action_mode_repeat</item>
         <item>@integer/action_mode_shuffle</item>
     </integer-array>

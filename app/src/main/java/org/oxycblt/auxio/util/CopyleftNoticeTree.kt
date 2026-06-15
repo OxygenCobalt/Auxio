@@ -37,7 +37,6 @@ class CopyleftNoticeTree : Timber.DebugTree() {
             tag,
             "Hey! Auxio is an open-source project licensed under the GPLv3 license!" +
                 "You can fork this project and even add ads, but it still needs to be kept open-source with the same license!",
-            t,
-        )
+            t)
     }
 }

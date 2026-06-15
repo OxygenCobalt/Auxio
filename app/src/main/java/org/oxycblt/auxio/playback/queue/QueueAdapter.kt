@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +63,7 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
     override fun onBindViewHolder(
         viewHolder: QueueSongViewHolder,
         position: Int,
-        payload: List<Any>,
+        payload: List<Any>
     ) {
         if (payload.isEmpty()) {
             viewHolder.bind(getItem(position), listener)
@@ -118,15 +117,10 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
     override val root = binding.root
     override val body = binding.body
     override val delete = binding.background
-    override val liftableBackground =
+    override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHighest)
             alpha = 0
-        }
-
-    override val roundableBackground: Drawable =
-        MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
         }
 
     /**
@@ -142,7 +136,14 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
         }
 
     init {
-        binding.body.background = LayerDrawable(arrayOf(roundableBackground, liftableBackground))
+        binding.body.background =
+            LayerDrawable(
+                arrayOf(
+                    MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
+                        fillColor =
+                            binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
+                    },
+                    background))
     }
 
     /**

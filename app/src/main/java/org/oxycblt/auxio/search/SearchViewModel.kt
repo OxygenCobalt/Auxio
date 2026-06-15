@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.search
 
+import androidx.annotation.IdRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -109,25 +110,26 @@ constructor(
     }
 
     private suspend fun searchImpl(library: Library, query: String): List<Item> {
-        val filters = searchSettings.filters
+        val filter = searchSettings.filterTo
 
         val items =
-            if (!filters.isEmpty()) {
+            if (filter == null) {
+                // A nulled filter type means to not filter anything.
+                L.d("No filter specified, using entire library")
                 SearchEngine.Items(
-                    songs = if (MusicType.SONGS in filters) library.songs else null,
-                    albums = if (MusicType.ALBUMS in filters) library.albums else null,
-                    artists = if (MusicType.ARTISTS in filters) library.artists else null,
-                    genres = if (MusicType.GENRES in filters) library.genres else null,
-                    playlists = if (MusicType.PLAYLISTS in filters) library.playlists else null,
-                )
+                    library.songs,
+                    library.albums,
+                    library.artists,
+                    library.genres,
+                    library.playlists)
             } else {
+                L.d("Filter specified, reducing library")
                 SearchEngine.Items(
-                    songs = library.songs,
-                    albums = library.albums,
-                    artists = library.artists,
-                    genres = library.genres,
-                    playlists = library.playlists,
-                )
+                    songs = if (filter == MusicType.SONGS) library.songs else null,
+                    albums = if (filter == MusicType.ALBUMS) library.albums else null,
+                    artists = if (filter == MusicType.ARTISTS) library.artists else null,
+                    genres = if (filter == MusicType.GENRES) library.genres else null,
+                    playlists = if (filter == MusicType.PLAYLISTS) library.playlists else null)
             }
 
         val results = searchEngine.search(items, query)
@@ -182,17 +184,42 @@ constructor(
         }
     }
 
-    /** The current filters used for search. */
-    val filters: Set<MusicType>
-        get() = searchSettings.filters
+    /**
+     * Returns the ID of the filter option to currently highlight.
+     *
+     * @return A menu item ID of the filtering option selected.
+     */
+    @IdRes
+    fun getFilterOptionId() =
+        when (searchSettings.filterTo) {
+            MusicType.SONGS -> R.id.option_filter_songs
+            MusicType.ALBUMS -> R.id.option_filter_albums
+            MusicType.ARTISTS -> R.id.option_filter_artists
+            MusicType.GENRES -> R.id.option_filter_genres
+            MusicType.PLAYLISTS -> R.id.option_filter_playlists
+            // Null maps to filtering nothing.
+            null -> R.id.option_filter_all
+        }
 
     /**
-     * Update the filters used by search. Will trigger a research.
+     * Update the filter type with the newly-selected filter option.
      *
-     * @param filters The new filters to use.
+     * @return A menu item ID of the new filtering option selected.
      */
-    fun updateFilters(filters: Set<MusicType>) {
-        searchSettings.filters = filters
+    fun setFilterOptionId(@IdRes id: Int) {
+        val newFilter =
+            when (id) {
+                R.id.option_filter_songs -> MusicType.SONGS
+                R.id.option_filter_albums -> MusicType.ALBUMS
+                R.id.option_filter_artists -> MusicType.ARTISTS
+                R.id.option_filter_genres -> MusicType.GENRES
+                R.id.option_filter_playlists -> MusicType.PLAYLISTS
+                // Null maps to filtering nothing.
+                R.id.option_filter_all -> null
+                else -> error("Invalid option ID provided")
+            }
+        L.d("Updating filter type to $newFilter")
+        searchSettings.filterTo = newFilter
         search(lastQuery)
     }
 

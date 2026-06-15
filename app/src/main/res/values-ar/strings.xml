@@ -94,7 +94,7 @@
     <string name="clr_orange">البرتقالي</string>
     <string name="fmt_lib_total_duration">المدة الإجمالية: %s</string>
     <string name="clr_grey">رمادي</string>
-    <string name="fmt_selected">%d محدد</string>
+    <string name="fmt_selected">تم تحديد %d</string>
     <string name="fmt_db_neg">-%.1f ديسيبل</string>
     <plurals name="fmt_song_count">
         <item quantity="zero">%d أغنية</item>
@@ -121,6 +121,7 @@
     <string name="clr_purple">أرجواني</string>
     <string name="clr_deep_purple">الأرجواني العميق</string>
     <string name="lng_playlist_imported">تم استيراد قائمة التشغيل</string>
+    <string name="set_notif_action">إجراء الإشعارات المخصص</string>
     <string name="set_action_mode_next">الانتقال إلى التالي</string>
     <string name="desc_no_cover">غلاف الألبوم</string>
     <string name="err_export_failed">غير قادر على تصدير قائمة التشغيل إلى هذا الملف</string>
@@ -298,7 +299,7 @@
     <string name="lng_empty_artists">سوف يظهر الفنانون الخاص بك هنا.</string>
     <string name="lng_empty_playlists">سوف تظهر قوائم تشغيلك هنا.</string>
     <string name="lng_empty_genres">سوف تظهر أنواعك هنا.</string>
-    <string name="lbl_replaygain_album">تعديل الألبوم ReplayGain</string>
+    <string name="lbl_replaygain_album">تعديل الألبوم Replaygain</string>
     <string name="lbl_replaygain_track">تعديل مسار ReplayGain</string>
     <string name="lbl_author_name">ألكساندر كيبهارت</string>
     <string name="lbl_donate">تبرّع</string>
@@ -329,33 +330,4 @@
     <string name="set_excluded_locations">المجلدات المستثناة</string>
     <string name="set_fs_cache">استخدم ذاكرة التخزين المؤقت لنظام الملفات</string>
     <string name="set_fs_cache_desc">يحسن أوقات التحميل، ولكنه قد يمنع إضافة صوت جديد</string>
-    <string name="lng_grant_storage_anyway">قد يؤدي منح أذونات التخزين الخارجي إلى إصلاح المشكلات في بعض الأجهزة.</string>
-    <string name="lng_grant_storage_required">امنح أذونات التخزين الخارجي لتفعيل هذا الخيار.</string>
-    <string name="set_load_from">حمّل من</string>
-    <string name="set_file_picker">منتقي الملفات</string>
-    <string name="set_system_database">النظام</string>
-    <string name="set_grant_storage_anyway">يوصى بالوصول إلى التخزين</string>
-    <string name="set_grant_storage">مطلوب الوصول إلى التخزين</string>
-    <string name="set_folders_to_load">المجلدات المراد تحميلها</string>
-    <string name="set_folders_to_ignore">مجلدات مراد تجاهلها</string>
-    <string name="set_filtered_folders">المجلدات المصفاة</string>
-    <string name="set_filter_mode">وضع التصفية</string>
-    <string name="set_include">ضمّن</string>
-    <string name="set_exclude">استثنِ</string>
-    <string name="set_extra_settings">إعدادات أكثر</string>
-    <string name="lbl_no_folders">لا مجلدات</string>
-    <string name="desc_add_folder">أضف مجلد</string>
-    <plurals name="fmt_seconds">
-        <item quantity="zero">%d ثانية</item>
-        <item quantity="one">ثانية</item>
-        <item quantity="two">ثانيتان</item>
-        <item quantity="few">%d ثوانِ</item>
-        <item quantity="many">%d ثانية</item>
-        <item quantity="other">%d ثانية</item>
-    </plurals>
-    <string name="fmt_lib_total_size">الحجم الكلي: %s</string>
-    <string name="set_task_exit">أنهي دائمًا عند الإغلاق</string>
-    <string name="set_task_exit_desc">أوقف التشغيل عند الإزالة من الحديثة، حتى في حالة التشغيل</string>
-    <string name="err_share_too_large">هذا كبير جدًا للمشاركة</string>
-    <string name="err_share_failed">غير قادر على مشاركة هذا</string>
 </resources>

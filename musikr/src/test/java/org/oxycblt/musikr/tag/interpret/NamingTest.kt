@@ -212,8 +212,7 @@ class NamingTest {
         assertEquals("alt-J", name.raw)
         assertEquals(null, name.sort)
         val only = name.tokens.single()
-        // Punctuation is replaced with spaces to create token boundaries
-        assertEquals("alt J", only.collationKey.sourceString)
+        assertEquals("altJ", only.collationKey.sourceString)
         assertEquals(Token.Type.LEXICOGRAPHIC, only.type)
     }
 
@@ -243,8 +242,7 @@ class NamingTest {
         assertEquals("& Yet & Yet", name.raw)
         assertEquals(null, name.sort)
         val first = name.tokens[0]
-        // Punctuation is replaced with spaces, so each & becomes a space
-        assertEquals("Yet   Yet", first.collationKey.sourceString)
+        assertEquals("Yet  Yet", first.collationKey.sourceString)
         assertEquals(Token.Type.LEXICOGRAPHIC, first.type)
     }
 
@@ -260,8 +258,7 @@ class NamingTest {
         assertEquals("2", second.collationKey.sourceString)
         assertEquals(Token.Type.NUMERIC, second.type)
         val third = name.tokens[2]
-        // Punctuation is replaced with spaces, so : becomes a space
-        assertEquals("   ", third.collationKey.sourceString)
+        assertEquals("  ", third.collationKey.sourceString)
         assertEquals(Token.Type.LEXICOGRAPHIC, third.type)
         val fourth = name.tokens[3]
         assertEquals("3", fourth.collationKey.sourceString)
@@ -277,15 +274,13 @@ class NamingTest {
         assertEquals("2", first.collationKey.sourceString)
         assertEquals(Token.Type.NUMERIC, first.type)
         val second = name.tokens[1]
-        // Punctuation is replaced with spaces, so + becomes a space
-        assertEquals("   ", second.collationKey.sourceString)
+        assertEquals("  ", second.collationKey.sourceString)
         assertEquals(Token.Type.LEXICOGRAPHIC, second.type)
         val third = name.tokens[2]
         assertEquals("2", third.collationKey.sourceString)
         assertEquals(Token.Type.NUMERIC, third.type)
         val fourth = name.tokens[3]
-        // Punctuation is replaced with spaces, so = becomes a space
-        assertEquals("   ", fourth.collationKey.sourceString)
+        assertEquals("  ", fourth.collationKey.sourceString)
         assertEquals(Token.Type.LEXICOGRAPHIC, fourth.type)
         val fifth = name.tokens[4]
         assertEquals("5", fifth.collationKey.sourceString)
@@ -392,21 +387,6 @@ class NamingTest {
         assertEquals(-1, a.compareTo(b))
         assertEquals(-1, b.compareTo(c))
         assertEquals(-2, a.compareTo(c))
-    }
-
-    @Test
-    fun name_compareTo_intelligent_withHyphenatedNumbers() {
-        // This test ensures hyphenated numbers like "15-9" and "15-10" are sorted correctly.
-        // The hyphen should act as a token boundary, so "15-9" = [15, 9] and "15-10" = [15, 10].
-        val a = Naming.intelligent().name("15-9", null)
-        val b = Naming.intelligent().name("15-10", null)
-        val c = Naming.intelligent().name("16-1", null)
-        // 15-9 should come before 15-10 (9 < 10 in the second token)
-        assertEquals(-1, a.compareTo(b))
-        // 15-10 should come before 16-1 (15 < 16 in the first token)
-        assertEquals(-1, b.compareTo(c))
-        // 15-9 should come before 16-1 (15 < 16 in the first token)
-        assertEquals(-1, a.compareTo(c))
     }
 
     @Test

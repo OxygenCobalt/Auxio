@@ -21,9 +21,6 @@
 JByteArrayRef::JByteArrayRef(JNIEnv *env, TagLib::ByteVector &data) : env(env) {
     auto size = static_cast<jsize>(data.size());
     array = env->NewByteArray(size);
-    if (array == nullptr) {
-        throw std::runtime_error("array failed to allocate");
-    }
     env->SetByteArrayRegion(array, 0, static_cast<jsize>(size),
             reinterpret_cast<const jbyte*>(data.data()));
 }

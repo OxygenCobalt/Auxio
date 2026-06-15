@@ -21,7 +21,6 @@ package org.oxycblt.auxio.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.core.net.toUri
 import androidx.core.view.updatePadding
@@ -78,11 +77,6 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutFeedbackEmail.setOnClickListener {
             requireContext().sendEmail("feedback@auxio.app")
         }
-
-        binding.aboutSupportersBkkellyh.setOnClickListener {
-            requireContext().openInBrowser(LINK_BKKELLYH)
-        }
-
         binding.aboutSupportersPromo.setOnClickListener {
             requireContext().openInBrowser(LINK_DONATE)
         }
@@ -103,14 +97,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutTotalDuration.text =
             getString(
                 R.string.fmt_lib_total_duration,
-                (statistics?.durationMs ?: 0).formatDurationMs(false),
-            )
-
-        binding.aboutTotalSize.text =
-            getString(
-                R.string.fmt_lib_total_size,
-                Formatter.formatFileSize(context, statistics?.totalSizeBytes ?: 0L),
-            )
+                (statistics?.durationMs ?: 0).formatDurationMs(false))
     }
 
     private fun Context.sendEmail(recipient: String) {
@@ -124,7 +111,6 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         const val LINK_LICENSES = "$LINK_WIKI/Licenses"
         const val LINK_NEW_ISSUE = "$LINK_SOURCE/issues/new"
         const val LINK_PROFILE = "https://github.com/OxygenCobalt"
-        const val LINK_BKKELLYH = "https://github.com/bkkellyh"
         const val LINK_DONATE = "https://github.com/sponsors/OxygenCobalt"
     }
 }

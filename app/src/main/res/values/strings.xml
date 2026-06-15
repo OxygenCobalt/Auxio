@@ -142,8 +142,8 @@
     <string name="lbl_size">Size</string>
     <string name="lbl_bitrate">Bit rate</string>
     <string name="lbl_sample_rate">Sample rate</string>
-    <string name="lbl_replaygain_track">ReplayGain track adjustment</string>
-    <string name="lbl_replaygain_album">ReplayGain album adjustment</string>
+    <string name="lbl_replaygain_track">ReplayGain Track Adjustment</string>
+    <string name="lbl_replaygain_album">ReplayGain Album Adjustment</string>
 
     <!-- Limit to 10 characters -->
     <string name="lbl_shuffle_shortcut_short">Shuffle</string>
@@ -227,7 +227,7 @@
 
     <string name="set_root_title">Settings</string>
 
-    <string name="set_ui">Look and feel</string>
+    <string name="set_ui">Look and Feel</string>
     <string name="set_ui_desc">Change the theme and colors of the app</string>
     <string name="set_theme">Theme</string>
     <string name="set_theme_auto">Automatic</string>
@@ -235,7 +235,7 @@
     <string name="set_theme_night">Dark</string>
     <string name="set_accent">Color scheme</string>
     <string name="set_black_mode">Black theme</string>
-    <string name="set_black_mode_desc">Use a pure black dark theme</string>
+    <string name="set_black_mode_desc">Use a pure-black dark theme</string>
     <string name="set_round_mode">Round mode</string>
     <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (requires album covers to be rounded)</string>
 
@@ -246,6 +246,7 @@
     <string name="set_lib_tabs_desc">Change visibility and order of library tabs</string>
     <!-- Skip to next (song) -->
     <string name="set_bar_action">Custom playback bar action</string>
+    <string name="set_notif_action">Custom notification action</string>
     <string name="set_action_mode_next">Skip to next</string>
     <string name="set_action_mode_repeat">Repeat mode</string>
     <string name="set_behavior">Behavior</string>
@@ -259,16 +260,12 @@
     <string name="set_play_song_by_itself">Play song by itself</string>
     <string name="set_keep_shuffle">Remember shuffle</string>
     <string name="set_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
-    <string name="set_task_exit">Always exit on close</string>
-    <string name="set_task_exit_desc">Stop playback when removed from recents, even if playing</string>
 
     <string name="set_content">Content</string>
     <string name="set_content_desc">Control how music and images are loaded</string>
     <string name="set_music">Music</string>
     <string name="set_observing">Automatic reloading</string>
     <string name="set_observing_desc">Reload the music library whenever it changes (requires persistent notification)</string>
-    <string name="set_saf_multithread">Multithread File Exploration</string>
-    <string name="set_saf_multithread_desc">Faster, but fails on some devices</string>
     <string name="set_exclude_non_music">Exclude non-music</string>
     <string name="set_exclude_non_music_desc">Ignore audio files that are not music, such as podcasts</string>
     <string name="set_with_hidden">Include hidden files</string>
@@ -321,15 +318,15 @@
     <string name="set_library">Library</string>
     <string name="set_locations">Music sources</string>
     <string name="set_locations_desc">Manage where music should be loaded from</string>
-    <string name="set_load_from">Load from</string>
+    <string name="set_load_from">Load From</string>
     <string name="set_file_picker">File picker</string>
     <string name="set_system_database">System</string>
     <string name="set_grant_storage_anyway">Storage access recommended</string>
     <string name="set_grant_storage">Storage access required</string>
-    <string name="set_folders_to_load">Folders to load</string>
-    <string name="set_folders_to_ignore">Folders to ignore</string>
-    <string name="set_filtered_folders">Filtered folders</string>
-    <string name="set_filter_mode">Filter mode</string>
+    <string name="set_folders_to_load">Folders to Load</string>
+    <string name="set_folders_to_ignore">Folders to Ignore</string>
+    <string name="set_filtered_folders">Filtered Folders</string>
+    <string name="set_filter_mode">Filter Mode</string>
     <string name="set_include">Include</string>
     <string name="set_exclude">Exclude</string>
     <string name="set_extra_settings">More settings</string>
@@ -347,12 +344,10 @@
     <string name="err_index_failed">Music loading failed</string>
     <string name="err_import_failed">Unable to import a playlist from this file</string>
     <string name="err_export_failed">Unable to export the playlist to this file</string>
-    <string name="err_share_too_large">This is too large to share</string>
-    <string name="err_share_failed">Unable to share this</string>
     <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_bad_location">This folder is not supported</string>
-    <string name="lbl_no_folders">No folders</string>
+    <string name="lbl_no_folders">No Folders</string>
 
     <!-- Description Namespace | Accessibility Strings -->
 
@@ -370,7 +365,7 @@
     <string name="desc_queue_bar">Open the queue</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
-    <string name="desc_add_folder">Add folder</string>
+    <string name="desc_add_folder">Add Folder</string>
     <string name="desc_music_location_delete">Remove folder</string>
 
     <string name="desc_auxio_icon">Auxio icon</string>
@@ -448,7 +443,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
 
     <!-- As in an amount of items that are selected -->
-    <string name="fmt_selected">%d selected</string>
+    <string name="fmt_selected">%d Selected</string>
     <!-- Currently editing a playlist -->
     <string name="fmt_editing">Editing %s</string>
 
@@ -475,7 +470,6 @@
     <string name="fmt_lib_genre_count">Genres loaded: %d</string>
     <!-- As in the total duration of all songs in the music library -->
     <string name="fmt_lib_total_duration">Total duration: %s</string>
-    <string name="fmt_lib_total_size">Total size: %s</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d song</item>
@@ -490,10 +484,5 @@
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artist</item>
         <item quantity="other">%d artists</item>
-    </plurals>
-
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d second</item>
-        <item quantity="other">%d seconds</item>
     </plurals>
 </resources>

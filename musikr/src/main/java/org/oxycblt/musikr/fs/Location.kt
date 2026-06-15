@@ -39,8 +39,7 @@ sealed class Location(val uri: Uri, val path: Path) {
                     context.contentResolverSafe.takePersistableUriPermission(
                         uri,
                         Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
-                    )
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 } catch (e: Exception) {
                     // Not fully sure what happens if I'm disallowed to take the permission,
                     // check for both circumstances (error or no-op)
@@ -60,16 +59,11 @@ sealed class Location(val uri: Uri, val path: Path) {
             }
 
         companion object {
-            fun from(context: Context, uri: Uri) =
-                Unopened(
-                    uri,
-                    getTreePath(context, uri) ?: Path(Volume.ThirdParty(uri), Components.root()),
-                )
-
-            private fun getTreePath(context: Context, uri: Uri): Path? {
+            fun from(context: Context, uri: Uri): Unopened? {
                 if (!DocumentsContract.isTreeUri(uri)) return null
                 val documentPathFactory = DocumentPathFactory.from(context)
-                return documentPathFactory.unpackDocumentTreeUri(uri)
+                val path = documentPathFactory.unpackDocumentTreeUri(uri) ?: return null
+                return Unopened(uri, path)
             }
         }
     }

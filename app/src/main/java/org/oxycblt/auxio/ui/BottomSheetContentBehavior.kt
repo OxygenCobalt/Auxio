@@ -28,6 +28,7 @@ import kotlin.math.abs
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import timber.log.Timber as L
 
 /**
  * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
@@ -52,58 +53,22 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         return false
     }
 
-    override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        super.onLayoutChild(parent, child, layoutDirection)
-        layoutContent(child)
-
-        if (!setup) {
-            child.setOnApplyWindowInsetsListener { _, insets ->
-                lastInsets = insets
-
-                val dep = dep ?: return@setOnApplyWindowInsetsListener insets
-                val behavior = dep.coordinatorLayoutBehavior as BackportBottomSheetBehavior
-                val consumed = behavior.calculateConsumedByBar()
-                if (consumed == Int.MIN_VALUE) {
-                    return@setOnApplyWindowInsetsListener insets
-                }
-
-                val bars = insets.systemBarInsetsCompat
-                insets.replaceSystemBarInsetsCompat(
-                    bars.left,
-                    bars.top,
-                    bars.right,
-                    consumed.coerceAtLeast(bars.bottom),
-                )
-            }
-
-            setup = true
-        }
-
-        // Critical: seed / refresh inset dispatch after listener installation.
-        child.requestApplyInsets()
-        return true
-    }
-
     override fun onDependentViewChanged(
         parent: CoordinatorLayout,
         child: V,
-        dependency: View,
+        dependency: View
     ): Boolean {
         val behavior = dependency.coordinatorLayoutBehavior as BackportBottomSheetBehavior
         val consumed = behavior.calculateConsumedByBar()
         if (consumed == Int.MIN_VALUE) {
+            L.d("Not laid out yet, cannot update dependent view")
             return false
         }
 
         if (consumed != lastConsumed) {
+            L.d("Consumed amount changed, re-applying insets")
             lastConsumed = consumed
-
-            if (lastInsets != null) {
-                child.dispatchApplyWindowInsets(lastInsets)
-            } else {
-                child.requestApplyInsets()
-            }
-
+            lastInsets?.let(child::dispatchApplyWindowInsets)
             measureContent(parent, child)
             layoutContent(child)
             return true
@@ -118,9 +83,35 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         parentWidthMeasureSpec: Int,
         widthUsed: Int,
         parentHeightMeasureSpec: Int,
-        heightUsed: Int,
+        heightUsed: Int
     ): Boolean {
         measureContent(parent, child)
+        return true
+    }
+
+    override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
+        super.onLayoutChild(parent, child, layoutDirection)
+        layoutContent(child)
+
+        if (!setup) {
+            child.setOnApplyWindowInsetsListener { _, insets ->
+                lastInsets = insets
+                val dep = dep ?: return@setOnApplyWindowInsetsListener insets
+                val behavior = dep.coordinatorLayoutBehavior as BackportBottomSheetBehavior
+                val consumed = behavior.calculateConsumedByBar()
+                if (consumed == Int.MIN_VALUE) {
+                    return@setOnApplyWindowInsetsListener insets
+                }
+
+                val bars = insets.systemBarInsetsCompat
+
+                insets.replaceSystemBarInsetsCompat(
+                    bars.left, bars.top, bars.right, consumed.coerceAtLeast(bars.bottom))
+            }
+
+            setup = true
+        }
+
         return true
     }
 

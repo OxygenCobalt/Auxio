@@ -25,8 +25,8 @@ import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.AuxioToolbar
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -40,7 +40,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
     protected abstract val musicModel: MusicViewModel
     protected abstract val playbackModel: PlaybackViewModel
 
-    open fun getSelectionToolbar(binding: VB): AuxioToolbar? = null
+    open fun getSelectionToolbar(binding: VB): Toolbar? = null
 
     override fun onBindingCreated(binding: VB, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -48,7 +48,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
             // Add cancel and menu item listeners to manage what occurs with the selection.
             setNavigationOnClickListener { listModel.dropSelection() }
             setOnMenuItemClickListener(this@SelectionFragment)
-            setOnOverflowMenuClick {
+            overrideOnOverflowMenuClick {
                 listModel.openMenu(R.menu.selection, listModel.peekSelection())
             }
         }

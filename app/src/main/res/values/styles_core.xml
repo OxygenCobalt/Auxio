@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Master parent theme -->
-    <style name="Theme.Auxio" parent="Theme.Material3Expressive.DynamicColors.DayNight" />
+    <style name="Theme.Auxio" parent="Theme.Material3.DynamicColors.DayNight" />
     <!-- Adds nicer selector attributes not supported on lollipop -->
     <style name="Theme.Auxio.V23" parent="Theme.Auxio" />
     <!-- Handles edge-to-edge on other styles variants -->
@@ -19,39 +19,7 @@
 
         <!-- Material configuration -->
 <!--        <item name="colorOutline">@color/overlay_stroke</item>-->
-        <item name="appBarLayoutStyle">@style/Widget.Auxio.AppBarLayout</item>
         <item name="toolbarStyle">@style/Widget.Auxio.Toolbar</item>
-        <item name="tabStyle">@style/Widget.Auxio.TabLayout</item>
-        <item name="tabSecondaryStyle">@style/Widget.Auxio.TabLayout.Secondary</item>
-        <item name="materialButtonStyle">@style/Widget.Auxio.Button</item>
-        <item name="materialButtonTonalStyle">@style/Widget.Auxio.Button.TonalButton</item>
-        <item name="materialButtonOutlinedStyle">@style/Widget.Auxio.Button.OutlinedButton</item>
-        <item name="materialButtonElevatedStyle">@style/Widget.Auxio.Button.ElevatedButton</item>
-        <item name="borderlessButtonStyle">@style/Widget.Auxio.Button.TextButton</item>
-        <item name="snackbarButtonStyle">@style/Widget.Auxio.Button.TextButton.Snackbar</item>
-        <item name="materialIconButtonStyle">@style/Widget.Auxio.Button.Icon.Base</item>
-        <item name="materialIconButtonOutlinedStyle">
-            @style/Widget.Material3Expressive.Button.IconButton.Outlined
-        </item>
-        <item name="materialIconButtonFilledStyle">
-            @style/Widget.Material3Expressive.Button.IconButton.Filled
-        </item>
-        <item name="materialIconButtonFilledTonalStyle">
-            @style/Widget.Material3Expressive.Button.IconButton.Tonal
-        </item>
-        <item name="materialSplitButtonStyle">@style/Widget.Auxio.SplitButton</item>
-        <item name="materialSplitButtonLeadingFilledStyle">
-            @style/Widget.Auxio.SplitButton.LeadingButton.Filled
-        </item>
-        <item name="materialSplitButtonLeadingFilledTonalStyle">
-            @style/Widget.Auxio.SplitButton.LeadingButton.Filled.Tonal
-        </item>
-        <item name="materialSplitButtonIconFilledStyle">
-            @style/Widget.Auxio.SplitButton.IconButton.Filled
-        </item>
-        <item name="materialSplitButtonIconFilledTonalStyle">
-            @style/Widget.Auxio.SplitButton.IconButton.Filled.Tonal
-        </item>
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>
         <item name="linearProgressIndicatorStyle">@style/Widget.Auxio.LinearProgressIndicator</item>
@@ -59,43 +27,26 @@
         <item name="bottomSheetDialogTheme">@style/Widget.Auxio.BottomSheet.Dialog</item>
         <item name="bottomSheetDragHandleStyle">@style/Widget.Auxio.BottomSheet.Handle</item>
 
-        <!-- typography -->
-        <!-- some of it is non-standard because the default material typography isnt actually
-        using emphasized styles when they are supposed to, and it just looks bad. -->
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Auxio.DisplayLarge</item>
         <item name="textAppearanceDisplayMedium">@style/TextAppearance.Auxio.DisplayMedium</item>
         <item name="textAppearanceDisplaySmall">@style/TextAppearance.Auxio.DisplaySmall</item>
-        <item name="textAppearanceDisplayLargeEmphasized">@style/TextAppearance.Auxio.DisplayLarge.Emphasized</item>
-        <item name="textAppearanceDisplayMediumEmphasized">@style/TextAppearance.Auxio.DisplayMedium.Emphasized</item>
-        <item name="textAppearanceDisplaySmallEmphasized">@style/TextAppearance.Auxio.DisplaySmall.Emphasized</item>
 
         <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Auxio.HeadlineLarge</item>
         <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Auxio.HeadlineMedium</item>
         <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Auxio.HeadlineSmall</item>
-        <item name="textAppearanceHeadlineLargeEmphasized">@style/TextAppearance.Auxio.HeadlineLarge.Emphasized</item>
-        <item name="textAppearanceHeadlineMediumEmphasized">@style/TextAppearance.Auxio.HeadlineMedium.Emphasized</item>
-        <item name="textAppearanceHeadlineSmallEmphasized">@style/TextAppearance.Auxio.HeadlineSmall.Emphasized</item>
 
         <item name="textAppearanceTitleLarge">@style/TextAppearance.Auxio.TitleLarge</item>
-        <item name="textAppearanceTitleMedium">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Auxio.TitleMedium
+        </item>
         <item name="textAppearanceTitleSmall">@style/TextAppearance.Auxio.TitleSmall</item>
-        <item name="textAppearanceTitleLargeEmphasized">@style/TextAppearance.Auxio.TitleLarge.Emphasized</item>
-        <item name="textAppearanceTitleMediumEmphasized">@style/TextAppearance.Auxio.TitleMedium.Emphasized</item>
-        <item name="textAppearanceTitleSmallEmphasized">@style/TextAppearance.Auxio.TitleSmall.Emphasized</item>
 
         <item name="textAppearanceLabelLarge">@style/TextAppearance.Auxio.LabelLarge</item>
         <item name="textAppearanceLabelMedium">@style/TextAppearance.Auxio.LabelMedium</item>
         <item name="textAppearanceLabelSmall">@style/TextAppearance.Auxio.LabelSmall</item>
-        <item name="textAppearanceLabelLargeEmphasized">@style/TextAppearance.Auxio.LabelLarge.Emphasized</item>
-        <item name="textAppearanceLabelMediumEmphasized">@style/TextAppearance.Auxio.LabelMedium.Emphasized</item>
-        <item name="textAppearanceLabelSmallEmphasized">@style/TextAppearance.Auxio.LabelSmall.Emphasized</item>
 
         <item name="textAppearanceBodyLarge">@style/TextAppearance.Auxio.BodyLarge</item>
         <item name="textAppearanceBodyMedium">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
-        <item name="textAppearanceBodyLargeEmphasized">@style/TextAppearance.Auxio.BodyLarge.Emphasized</item>
-        <item name="textAppearanceBodyMediumEmphasized">@style/TextAppearance.Auxio.BodyMedium.Emphasized</item>
-        <item name="textAppearanceBodySmallEmphasized">@style/TextAppearance.Auxio.BodySmall.Emphasized</item>
 
         <!-- Fix dumb default android behavior -->
         <item name="android:scrollbars">none</item>
@@ -115,7 +66,8 @@
         <item name="dialogPreferenceStyle">@style/Preference.Auxio.DialogPreference</item>
         <item name="switchPreferenceCompatStyle">@style/Preference.Auxio.SwitchPreferenceCompat
         </item>
-        <item name="materialButtonGroupStyle">@style/Widget.Auxio.MaterialButtonGroup</item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Auxio.Toolbar.Navigation</item>
+        <item name="actionOverflowButtonStyle">@style/Widget.Auxio.Button.Overflow</item>
     </style>
 
     <!-- Make sure blue is the default style instead of material purple -->

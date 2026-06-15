@@ -38,7 +38,7 @@ import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.formatDurationMsPopup
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
@@ -85,15 +85,10 @@ class PlaylistListFragment :
             homeModel.empty,
             homeModel.playlistList,
             musicModel.indexingState,
-            ::updateNoMusicIndicator,
-        )
+            ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::updatePlayback,
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -105,23 +100,18 @@ class PlaylistListFragment :
         }
     }
 
-    override fun getPopupData(pos: Int): FastScrollRecyclerView.PopupProvider.PopupData? {
+    override fun getPopup(pos: Int): String? {
         val playlist = homeModel.playlistList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.playlistSort.mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName ->
-                FastScrollRecyclerView.PopupProvider.PopupData(playlist.name.thumb() ?: "?")
+            is Sort.Mode.ByName -> playlist.name.thumb()
 
-            // Duration -> Use compact bucket duration
-            is Sort.Mode.ByDuration ->
-                FastScrollRecyclerView.PopupProvider.PopupData(
-                    playlist.durationMs.formatDurationMsPopup()
-                )
+            // Duration -> Use formatted duration
+            is Sort.Mode.ByDuration -> playlist.durationMs.formatDurationMs(false)
 
             // Count -> Use song count
-            is Sort.Mode.ByCount ->
-                FastScrollRecyclerView.PopupProvider.PopupData(playlist.songs.size.toString())
+            is Sort.Mode.ByCount -> playlist.songs.size.toString()
 
             // Unsupported sort, error gracefully
             else -> null
@@ -147,7 +137,7 @@ class PlaylistListFragment :
     private fun updateNoMusicIndicator(
         empty: Boolean,
         playlists: List<Playlist>,
-        indexingState: IndexingState?,
+        indexingState: IndexingState?
     ) {
         val binding = requireBinding()
         binding.homeRecycler.isInvisible = empty

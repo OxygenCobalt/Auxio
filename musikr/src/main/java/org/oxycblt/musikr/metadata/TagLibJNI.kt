@@ -31,12 +31,12 @@ internal object TagLibJNI {
      *
      * Note: This method is blocking and should be handled as such if calling from a coroutine.
      */
-    fun open(deviceFile: File, fis: FileInputStream): MetadataResult {
+    fun open(deviceFile: File, fis: FileInputStream): Metadata? {
         val inputStream = NativeInputStream(deviceFile, fis)
         val tag = openNative(inputStream)
         inputStream.close()
         return tag
     }
 
-    private external fun openNative(inputStream: NativeInputStream): MetadataResult
+    private external fun openNative(inputStream: NativeInputStream): Metadata?
 }

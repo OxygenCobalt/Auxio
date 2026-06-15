@@ -244,7 +244,7 @@ constructor(
     private val cache: MutableCache,
     private val storedPlaylists: StoredPlaylists,
     private val settingCovers: SettingCovers,
-    private val musicSettings: MusicSettings,
+    private val musicSettings: MusicSettings
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
@@ -380,51 +380,38 @@ constructor(
     }
 
     private suspend fun indexImpl(withCache: Boolean) {
-        L.d("Index requested, initializing")
         // Obtain configuration information
         val separators = Separators.from(musicSettings.separators)
-        L.d("Separators: $separators")
         val nameFactory =
             if (musicSettings.intelligentSorting) {
                 Naming.intelligent()
             } else {
                 Naming.simple()
             }
-        L.d("Names: $nameFactory")
+
         val currentRevision = musicSettings.revision
         val newRevision = currentRevision?.takeIf { withCache } ?: UUID.randomUUID()
-        L.d("Revisions: cur=$currentRevision, new=$newRevision")
         val cache = if (withCache) cache else WriteOnlyMutableCache(cache)
-        L.d("Cache: $cache")
         val covers = settingCovers.mutate(context, newRevision)
-        L.d("Covers: $covers")
         val fs =
             when (musicSettings.locationMode) {
                 LocationMode.SAF -> SAF.from(context, musicSettings.safQuery)
                 LocationMode.MEDIA_STORE -> MediaStore.from(context, musicSettings.mediaStoreQuery)
             }
-        L.d("FS: $fs")
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
         val config = Config(fs, storage, interpretation)
-        L.d("Running index...")
-        val start = System.currentTimeMillis()
         val result = Musikr.new(context, config).run(::emitIndexingProgress)
-        L.d("Index finished in ${System.currentTimeMillis() - start}ms")
         // Music loading completed, update the revision right now so we re-use this work
         // later.
-        L.d("Revisioning from $currentRevision -> $newRevision")
         musicSettings.revision = newRevision
         // Deliver the library to the rest of the app
         // This will more or less block until all required item translation and
         // cleanup finishes.
-        L.d("Emitting new library")
         emitLibrary(result.library)
         // Clean up old data that is now impossible for the app to be using.
-        L.d("Cleanup")
         result.cleanup()
         // Finish up loading.
-        L.d("Indexing complete")
         emitIndexingCompletion(null)
     }
 

@@ -18,29 +18,31 @@
  
 package org.oxycblt.auxio.util
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.os.Build
-import android.os.TransactionTooLargeException
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
+import androidx.core.view.children
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.MaterialToolbar
 import java.lang.IllegalArgumentException
-import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
@@ -74,7 +76,7 @@ private fun isUnderImpl(
     viewStart: Int,
     viewEnd: Int,
     parentEnd: Int,
-    minTouchTargetSize: Int,
+    minTouchTargetSize: Int
 ): Boolean {
     val viewSize = viewEnd - viewStart
     if (viewSize >= minTouchTargetSize) {
@@ -102,17 +104,31 @@ private fun isUnderImpl(
 val View.isRtl: Boolean
     get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
 
-/** A single scale value **assuming that the View is always center-scaled** */
-var View.scale: Float
-    get() = scaleX
-    set(it) {
-        scaleX = it
-        scaleY = it
-    }
-
 /** Get a [Context] from a [ViewBinding]'s root [View]. */
 val ViewBinding.context: Context
     get() = root.context
+
+/**
+ * Override the behavior of a [MaterialToolbar]'s overflow menu to do something else. This is
+ * extremely dumb, but required to hook overflow menus to bottom sheet menus.
+ */
+@SuppressLint("RestrictedApi")
+fun Toolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
+    for (toolbarChild in children) {
+        if (toolbarChild is ActionMenuView) {
+            for (menuChild in toolbarChild.children) {
+                // The overflow menu's view implementation is package-private, so test for the
+                // first child that isn't a plain action button.
+                if (menuChild !is ActionMenuItemView) {
+                    // Override all listeners related to opening the overflow menu.
+                    menuChild.setOnTouchListener(null)
+                    menuChild.setOnClickListener(block)
+                    return
+                }
+            }
+        }
+    }
+}
 
 /**
  * Shortcut to easily set up a [GridLayoutManager.SpanSizeLookup].
@@ -138,25 +154,6 @@ fun AppCompatButton.fixDoubleRipple() {
         set(this@fixDoubleRipple, null)
     }
 }
-
-private val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
-private val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
-
-/**
- * Dampen a [ViewPager2] so that vertical scrolls can still easily occur.
- *
- * By default, ViewPager2's sensitivity is high enough to result in vertical scroll events being
- * registered as horizontal scroll events. Reflect into the internal RecyclerView and change the
- * touch slope so that touch actions will act more as a scroll than as a swipe. Derived from:
- * https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
- */
-fun ViewPager2.dampen() {
-    val recycler = recycler()
-    val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
-    RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
-}
-
-fun ViewPager2.recycler() = (VP_RECYCLER_FIELD.get(this) as RecyclerView)
 
 /**
  * Crash-safe wrapped around [NavController.navigate] that will not crash if multiple destinations
@@ -215,8 +212,7 @@ val WindowInsets.systemGestureInsetsCompat: Insets
                 // API 30+, use window inset map.
                 Insets.max(
                     getCompatInsets(WindowInsets.Type.systemGestures()),
-                    getCompatInsets(WindowInsets.Type.systemBars()),
-                )
+                    getCompatInsets(WindowInsets.Type.systemBars()))
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
                 // API 29, use window inset fields.
@@ -249,8 +245,7 @@ private fun WindowInsets.getSystemWindowCompatInsets() =
         systemWindowInsetLeft,
         systemWindowInsetTop,
         systemWindowInsetRight,
-        systemWindowInsetBottom,
-    )
+        systemWindowInsetBottom)
 
 /**
  * Returns "System Bar" [Insets] based on the API 29 [WindowInsets] convention.
@@ -275,7 +270,7 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
     left: Int,
     top: Int,
     right: Int,
-    bottom: Int,
+    bottom: Int
 ): WindowInsets {
     return when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
@@ -283,8 +278,7 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
             WindowInsets.Builder(this)
                 .setInsets(
                     WindowInsets.Type.systemBars(),
-                    Insets.of(left, top, right, bottom).toPlatformInsets(),
-                )
+                    Insets.of(left, top, right, bottom).toPlatformInsets())
                 .build()
         }
         else -> {
@@ -323,15 +317,7 @@ fun Context.share(songs: Collection<Song>) {
         mimeTypes.add(song.format.mimeType)
     }
 
-    try {
-        builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
-    } catch (e: TransactionTooLargeException) {
-        L.e("Failed to share ${songs.size} songs: Too large")
-        showToast(R.string.err_share_too_large)
-    } catch (e: Exception) {
-        L.e("Failed to share ${songs.size} songs: $e")
-        showToast(R.string.err_share_failed)
-    }
+    builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
 }
 
 /**

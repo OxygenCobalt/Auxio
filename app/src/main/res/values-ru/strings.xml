@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:ns0="http://schemas.android.com/tools" ns0:ignore="MissingTranslation">
+
     <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель.</string>
     <string name="lng_widget">Настройки воспроизведения</string>
+
     <string name="lbl_retry">Повторить попытку</string>
     <string name="lbl_genres">Жанры</string>
     <string name="lbl_artists">Исполнители</string>
@@ -35,6 +37,7 @@
     <string name="lbl_code">Исходный код</string>
     <string name="lbl_licenses">Лицензии</string>
     <string name="lbl_author_name">Разработано Александром Кейпхартом</string>
+
     <string name="set_root_title">Настройки</string>
     <string name="set_ui">Внешний вид</string>
     <string name="set_theme">Тема</string>
@@ -49,6 +52,7 @@
     <string name="set_lib_tabs_desc">Изменить видимость и порядок вкладок</string>
     <string name="set_round_mode">Скруглённые обложки</string>
     <string name="set_round_mode_desc">Скруглить края на некоторых элементах интерфейса</string>
+    <string name="set_notif_action">Кнопка в уведомлении</string>
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>
@@ -67,10 +71,13 @@
     <string name="set_content">Библиотека</string>
     <string name="set_reindex">Обновить музыку</string>
     <string name="set_reindex_desc">Обновлять библиотеку, при возможности используя кэш тегов</string>
+
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
     <string name="err_bad_location">Эта папка не поддерживается</string>
+
     <string name="lng_search_library">Найти в библиотеке…</string>
+
     <string name="desc_track_number">Трек %d</string>
     <string name="desc_play_pause">Играть или остановить</string>
     <string name="desc_skip_next">Перейти к следующему треку</string>
@@ -87,10 +94,12 @@
     <string name="desc_album_cover">Обложка альбома %s</string>
     <string name="desc_artist_image">Фото исполнителя %s</string>
     <string name="desc_genre_image">Картинка жанра %s</string>
+
     <string name="def_artist">Неизвестный исполнитель</string>
     <string name="def_genre">Неизвестный жанр</string>
     <string name="def_date">Дата не указана</string>
     <string name="def_playback">Музыка не играет</string>
+
     <string name="clr_red">Красный</string>
     <string name="clr_pink">Розовый</string>
     <string name="clr_purple">Пурпурный</string>
@@ -107,18 +116,19 @@
     <string name="clr_orange">Оранжевый</string>
     <string name="clr_brown">Коричневый</string>
     <string name="clr_grey">Серый</string>
+
     <string name="fmt_lib_song_count">Композиций загружено: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>
         <item quantity="many">%d треков</item>
-        <item quantity="other">%d треков</item>
+        <item quantity="other">%d трека</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d альбом</item>
         <item quantity="few">%d альбома</item>
         <item quantity="many">%d альбомов</item>
-        <item quantity="other">%d альбомов</item>
+        <item quantity="other">%d альбомы</item>
     </plurals>
     <string name="lbl_indexer">Музыка загружается</string>
     <string name="lbl_indexing">Загрузка музыки</string>
@@ -252,11 +262,11 @@
     <string name="lbl_delete">Удалить</string>
     <string name="lbl_rename">Переименовать</string>
     <string name="lbl_rename_playlist">Переименовать плейлист</string>
-    <string name="lbl_confirm_delete_playlist">Удалить плейлист?</string>
+    <string name="lbl_confirm_delete_playlist">Удалить плейлист\?</string>
     <string name="lng_playlist_renamed">Плейлист переименован</string>
     <string name="lng_playlist_deleted">Плейлист удалён</string>
     <string name="lbl_edit">Редактировать</string>
-    <string name="fmt_deletion_info">Удалить %s? Это действие не может быть отменено.</string>
+    <string name="fmt_deletion_info">Удалить %s\? Это действие не может быть отменено.</string>
     <string name="lbl_appears_on">Появляется на</string>
     <string name="fmt_editing">Редактирование %s</string>
     <string name="def_disc">Нет диска</string>
@@ -300,7 +310,9 @@
     <string name="set_remember_pause_desc">Оставлять воспроизведение/паузу во время пропуска или редактирования очереди</string>
     <string name="set_remember_pause">Запоминать паузу</string>
     <string name="set_replay_gain_mode_off">Откл.</string>
-    <string name="lng_tasker_start">Запускать Auxio, используя ранее сохранённое состояние. если сохранённое состояние недоступно, все песни будут перетасованы. Воспроизведение начнётся немедленно. \n \nПредупреждение: будьте осторожны при управлении этой службой, если вы закроете её, а затем попытаетесь использовать снова, вы, вероятно, приведёте к сбою приложения.</string>
+    <string name="lng_tasker_start">Запускать Auxio, используя ранее сохранённое состояние. если сохранённое состояние недоступно, все песни будут перетасованы. Воспроизведение начнётся немедленно.
+\n
+\nПредупреждение: будьте осторожны при управлении этой службой, если вы закроете её, а затем попытаетесь использовать снова, вы, вероятно, приведёте к сбою приложения.</string>
     <string name="lbl_start_playback">Начать воспроизведение</string>
     <string name="lbl_more">Больше</string>
     <string name="lbl_feedback">Отзывы</string>
@@ -320,14 +332,14 @@
     <string name="set_with_hidden_desc">Показывать скрытые аудио (например, те, что в .cache)</string>
     <string name="set_cover_mode_as_is">Как есть</string>
     <string name="lng_play_next">Следующая песня</string>
-    <string name="lng_file_picker">Загружать музыку из выбранных папок. Медленнее, но более надёжно. Для этого требуется установленный стандартный файловый менеджер.</string>
-    <string name="lng_system_database">Загружать музыку, которую ОС Android обнаруживает автоматически. Быстрее, но менее надёжно. Не поддерживаются функции, зависящие от файловой системы, такие как cover.jpg.</string>
+    <string name="lng_file_picker">Загрузить музыку из выбранных вами папок. Медленнее, но более надёжно. Для этого требуется установленный стандартный файловый менеджер.</string>
+    <string name="lng_system_database">Загрузить музыку, которую автоматически обнаруживает ОС Android. Быстрее, но менее надёжно. Не поддерживаются функции, зависящие от файловой системы, такие как cover.jpg.</string>
     <string name="lng_grant_storage_anyway">Предоставление разрешения на доступ к внешнему хранилищу может решить проблемы на некоторых устройствах.</string>
     <string name="lng_grant_storage_required">Предоставьте разрешение на доступ к внешнему хранилищу, чтобы включить эту опцию.</string>
     <string name="lng_include_folders">Музыка, находящаяся вне выбранных папок, будет проигнорирована.</string>
     <string name="lng_exclude_folders">Музыка из выбранных папок будет проигнорирована.</string>
-    <string name="set_load_from">Загружать из</string>
-    <string name="set_file_picker">Выбор</string>
+    <string name="set_load_from">Загрузить из</string>
+    <string name="set_file_picker">Выбор файла</string>
     <string name="set_grant_storage_anyway">Рекомендуется предоставить доступ к хранилищу</string>
     <string name="set_grant_storage">Требуется доступ к хранилищу</string>
     <string name="set_folders_to_load">Папки для загрузки</string>
@@ -344,17 +356,4 @@
     <string name="desc_add_folder">Добавить папку</string>
     <string name="set_system_database">Система</string>
     <string name="set_excluded_locations_desc">Управление папками, исключенными из загрузки музыки</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d секунда</item>
-        <item quantity="few">%d секунды</item>
-        <item quantity="many">%d секунд</item>
-        <item quantity="other">%d секунд</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Общий размер: %s</string>
-    <string name="set_task_exit">Всегда выходить при закрытии</string>
-    <string name="set_task_exit_desc">Останавливать воспроизведение при удалении из списка недавних, даже если оно активно</string>
-    <string name="set_saf_multithread">Многопоточное сканирование файлов</string>
-    <string name="set_saf_multithread_desc">Быстрее, но может работать некорректно на некоторых устройствах</string>
-    <string name="err_share_too_large">Размер превышает допустимый для отправки</string>
-    <string name="err_share_failed">Не удалось отправить</string>
 </resources>

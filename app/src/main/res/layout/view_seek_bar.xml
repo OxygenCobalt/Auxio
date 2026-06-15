@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.slider.WavySlider
+    <com.google.android.material.slider.Slider
         android:id="@+id/seek_bar_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_medium"
-        app:waveAmplitudeRampProgressMin="0.0"
-        app:waveAmplitudeRampProgressMax="0.03"
-        app:wavelength="@dimen/progress_wavelength"
-        app:waveSpeed="@dimen/progress_wave_speed"
-        app:waveAmplitude="@dimen/progress_amplitude"
         android:valueFrom="0"
         android:valueTo="1" />
 
@@ -25,7 +19,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_tiny"
-        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
         android:textColor="@color/sel_activatable_text_secondary"
         tools:text="11:38" />
 
@@ -36,7 +30,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_tiny"
-        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
         android:textColor="?android:attr/textColorSecondary"
         tools:text="16:16" />
 

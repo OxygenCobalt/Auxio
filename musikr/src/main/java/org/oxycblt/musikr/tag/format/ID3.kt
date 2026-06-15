@@ -321,5 +321,4 @@ private val genreTable =
         "Psybient",
 
         // Auxio's extensions, added because Future Garage is also a good genre.
-        "Future Garage",
-    )
+        "Future Garage")

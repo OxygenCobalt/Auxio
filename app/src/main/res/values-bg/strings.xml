@@ -65,7 +65,7 @@
     <string name="lbl_size">Размер</string>
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_sample_rate">Честота на дискретизация</string>
-    <string name="lbl_replaygain_album">ReplayGain регулиране на албум</string>
+    <string name="lbl_replaygain_album">ReplayGain Регулиране на албум</string>
     <string name="lbl_shuffle_shortcut_short">Разбъркай</string>
     <string name="lbl_ok">Добре</string>
     <string name="lbl_cancel">Отказ</string>
@@ -94,7 +94,7 @@
     <string name="lbl_sort_asc">Възходящо</string>
     <string name="lbl_sort_dsc">Низходящо</string>
     <string name="lbl_playback">Сега се изпълнява</string>
-    <string name="lbl_replaygain_track">ReplayGain регулиране на песен</string>
+    <string name="lbl_replaygain_track">ReplayGain Регулиране на песен</string>
     <string name="lbl_shuffle_shortcut_long">Разбъркай всички</string>
     <string name="lbl_about">Относно</string>
     <string name="lbl_path_style_absolute">Абсолютно</string>
@@ -124,7 +124,7 @@
     <string name="lng_playlist_deleted">Изтрит плейлист</string>
     <string name="lng_playlist_added">Добави към плейлист</string>
     <string name="set_root_title">Настройки</string>
-    <string name="set_ui">Виж и усети</string>
+    <string name="set_ui">Виж и Усети</string>
     <string name="set_ui_desc">Промени темата и цветовете на приложението</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_auto">Автоматична</string>
@@ -140,6 +140,7 @@
     <string name="set_display">Дисплей</string>
     <string name="set_lib_tabs">Раздели на библиотеката</string>
     <string name="set_lib_tabs_desc">Промени видимостта и реда на разделите на библиотеката</string>
+    <string name="set_notif_action">Персонализирано действие за известие</string>
     <string name="set_action_mode_next">Премини към следваща</string>
     <string name="set_action_mode_repeat">Режим на повторение</string>
     <string name="set_behavior">Поведение</string>
@@ -274,7 +275,7 @@
     <string name="clr_blue">Синьо</string>
     <string name="clr_deep_blue">Наситено синьо</string>
     <string name="clr_brown">Кафяво</string>
-    <string name="fmt_selected">%d избрано</string>
+    <string name="fmt_selected">%d Избрано</string>
     <string name="fmt_indexing">Вашата музикална библиотека се зарежда… (%1$d/%2$d)</string>
     <string name="fmt_deletion_info">Изтриване %s? Това не може да бъде отменено.</string>
     <plurals name="fmt_song_count">
@@ -338,15 +339,4 @@
     <string name="lbl_no_folders">Няма папки</string>
     <string name="desc_add_folder">Добавяне на папка</string>
     <string name="lng_play_next">Песента ще се изпълни след малко</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d секунда</item>
-        <item quantity="other">%d секунди</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Общ размер: %s</string>
-    <string name="set_task_exit">Винаги излизайте при затваряне</string>
-    <string name="set_task_exit_desc">Спиране на възпроизвеждането при премахване от скорошни, дори ако се възпроизвежда</string>
-    <string name="set_saf_multithread">Многонишково изследване на файлове</string>
-    <string name="set_saf_multithread_desc">По-бърз, но не работи на някои устройства</string>
-    <string name="err_share_too_large">Това е твърде голямо за споделяне</string>
-    <string name="err_share_failed">Не може да се сподели това</string>
 </resources>

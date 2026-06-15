@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:ns0="http://schemas.android.com/tools" ns0:ignore="MissingTranslation">
+
     <string name="info_app_desc">Jednoduchý, rozumný hudební přehrávač pro Android.</string>
     <string name="lbl_indexer">Načítání hudby</string>
     <string name="lng_widget">Zobrazení a ovládání přehrávání hudby</string>
+
     <string name="lng_indexing">Načítání vaší hudební knihovny…</string>
     <string name="lbl_retry">Zkusit znovu</string>
     <string name="lbl_genres">Žánry</string>
@@ -35,7 +37,9 @@
     <string name="lng_queue_added">Přidáno do fronty</string>
     <string name="lbl_artist_details">Přejít na umělce</string>
     <string name="lbl_album_details">Přejít na album</string>
+
     <string name="lbl_ok">OK</string>
+
     <string name="lbl_cancel">Zrušit</string>
     <string name="lbl_save">Uložit</string>
     <string name="lbl_about">O aplikaci</string>
@@ -44,6 +48,7 @@
     <string name="lbl_licenses">Licence</string>
     <string name="lbl_author_name">Vytvořil Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiky knihovny</string>
+
     <string name="set_root_title">Nastavení</string>
     <string name="set_ui">Vzhled a chování</string>
     <string name="set_theme">Motiv</string>
@@ -58,6 +63,7 @@
     <string name="set_lib_tabs_desc">Změnit viditelnost a pořadí karet knihovny</string>
     <string name="set_round_mode">Zaoblený režim</string>
     <string name="set_round_mode_desc">Povolit zaoblené rohy u dodatečných prvků rozhraní (vyžaduje zaoblené rohy obalů alb)</string>
+    <string name="set_notif_action">Použít alternativní akci oznámení</string>
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Automatické přehrávání se sluchátky</string>
     <string name="set_headset_autoplay_desc">Při připojení sluchátek vždy spustit přehrávání (nemusí fungovat na všech zařízeních)</string>
@@ -81,10 +87,13 @@
     <string name="set_content">Obsah</string>
     <string name="set_reindex">Obnovit hudbu</string>
     <string name="set_reindex_desc">Znovu načíst hudební knihovnu, pokud možno s použitím značek uložených v mezipaměti</string>
+
     <string name="err_index_failed">Načítání hudby selhalo</string>
     <string name="err_no_app">Nebyla nalezena žádná aplikace, která by dokázala vykonat tuto akci</string>
     <string name="err_bad_location">Tato složka není podporována</string>
+
     <string name="lng_search_library">Prohledat vaší knihovnu…</string>
+
     <string name="desc_track_number">Skladba %d</string>
     <string name="desc_play_pause">Přehrát nebo pozastavit</string>
     <string name="desc_skip_next">Přeskočit na další skladbu</string>
@@ -101,11 +110,13 @@
     <string name="desc_album_cover">Obal alba %s</string>
     <string name="desc_artist_image">Obrázek umělce %s</string>
     <string name="desc_genre_image">Obrázek žánru %s</string>
+
     <string name="def_artist">Neznámý umělec</string>
     <string name="def_genre">Neznámý žánr</string>
     <string name="def_date">Žádné datum</string>
     <string name="def_track">Žádná stopa</string>
     <string name="def_playback">Nehraje žádná hudba</string>
+
     <string name="clr_red">Červená</string>
     <string name="clr_pink">Růžová</string>
     <string name="clr_purple">Fialová</string>
@@ -123,6 +134,7 @@
     <string name="clr_brown">Hnědá</string>
     <string name="clr_grey">Šedá</string>
     <string name="clr_dynamic">Dynamické</string>
+
     <string name="fmt_disc_no">Disk %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
@@ -133,16 +145,16 @@
     <string name="fmt_lib_genre_count">Načtených žánrů: %d</string>
     <string name="fmt_lib_total_duration">Celková doba trvání: %s</string>
     <plurals name="fmt_song_count">
-        <item quantity="one">%d skladba</item>
-        <item quantity="few">%d skladby</item>
-        <item quantity="many">%d skladeb</item>
-        <item quantity="other">%d skladeb</item>
+        <item quantity="one">"%d skladba"</item>
+        <item quantity="few">"%d skladby"</item>
+        <item quantity="many">"%d skladeb"</item>
+        <item quantity="other">"%d skladeb"</item>
     </plurals>
     <plurals name="fmt_album_count">
-        <item quantity="one">%d album</item>
-        <item quantity="few">%d alba</item>
-        <item quantity="many">%d alb</item>
-        <item quantity="other">%d alb</item>
+        <item quantity="one">"%d album"</item>
+        <item quantity="few">"%d alba"</item>
+        <item quantity="many">"%d alb"</item>
+        <item quantity="other">"%d alb"</item>
     </plurals>
     <string name="lbl_shuffle_shortcut_short">Náhodně</string>
     <string name="lbl_shuffle_shortcut_long">Vše náhodně</string>
@@ -250,8 +262,8 @@
     <string name="lbl_new_playlist">Nový seznam skladeb</string>
     <string name="fmt_def_playlist">Seznam skladeb %d</string>
     <string name="lbl_delete">Odstranit</string>
-    <string name="lbl_confirm_delete_playlist">Odstranit seznam skladeb?</string>
-    <string name="fmt_deletion_info">Odstranit seznam %s? Tato akce je nevratná.</string>
+    <string name="lbl_confirm_delete_playlist">Odstranit seznam skladeb\?</string>
+    <string name="fmt_deletion_info">Odstranit seznam %s\? Tato akce je nevratná.</string>
     <string name="lbl_rename">Přejmenovat</string>
     <string name="lng_playlist_renamed">Seznam skladeb přejmenován</string>
     <string name="lng_playlist_deleted">Seznam skladeb odstraněn</string>
@@ -301,7 +313,9 @@
     <string name="set_remember_pause">Zapamatovat pozastavení</string>
     <string name="set_replay_gain_mode_off">Vypnuto</string>
     <string name="lbl_start_playback">Spustit přehrávání</string>
-    <string name="lng_tasker_start">Spustí Auxio pomocí naposledy uloženého stavu. Pokud není dostupný žádný uložený stav, budou náhodně přehrány všechny skladby. Přehrávání se spustí ihned. \n \nVAROVÁNÍ: při ovládání této služby buďte opatrní, pokud ji zavřete a pak se ji znovu pokusíte použít, aplikace nejspíše spadne.</string>
+    <string name="lng_tasker_start">Spustí Auxio pomocí naposledy uloženého stavu. Pokud není dostupný žádný uložený stav, budou náhodně přehrány všechny skladby. Přehrávání se spustí ihned.
+\n
+\nVAROVÁNÍ: při ovládání této služby buďte opatrní, pokud ji zavřete a pak se ji znovu pokusíte použít, aplikace nejspíše spadne.</string>
     <string name="lbl_more">Více</string>
     <string name="lbl_feedback">Zpětná vazba</string>
     <string name="lbl_github">Vytvořit problém na GitHubu</string>
@@ -325,8 +339,8 @@
     <string name="set_fs_cache_desc">Zlepší dobu načítání, ale může zabránit přidání nové hudby</string>
     <string name="set_exclude">Vyloučit</string>
     <string name="set_include">Zahrnout</string>
-    <string name="desc_add_folder">Přidat složku</string>
-    <string name="lbl_no_folders">Žádné složky</string>
+    <string name="desc_add_folder">Přidat Složku</string>
+    <string name="lbl_no_folders">Žádné Složky</string>
     <string name="set_folders_to_load">Složky k načtení</string>
     <string name="set_folders_to_ignore">Složky k ignorování</string>
     <string name="set_filtered_folders">Filtrované složky</string>
@@ -344,17 +358,4 @@
     <string name="set_grant_storage_anyway">Doporučen přístup k úložišti</string>
     <string name="set_grant_storage">Vyžadován přístup k úložišti</string>
     <string name="lng_play_next">Skladba bude přehrána jako další</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d sekunda</item>
-        <item quantity="few">%d sekundy</item>
-        <item quantity="many">%d sekund</item>
-        <item quantity="other">%d sekund</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Celková velikost: %s</string>
-    <string name="set_task_exit">Vždy ukončit při zavření</string>
-    <string name="set_task_exit_desc">Zastavit přehrávání při odstranění z nedávných, i když hraje hudba</string>
-    <string name="set_saf_multithread">Vícevláknové vyhledávání souborů</string>
-    <string name="set_saf_multithread_desc">Rychlejší, ale na některých zařízeních může selhat</string>
-    <string name="err_share_too_large">Toto je příliš velké na sdílení</string>
-    <string name="err_share_failed">Toto nelze sdílet</string>
 </resources>

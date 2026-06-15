@@ -67,7 +67,7 @@ constructor(
     private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
     private val playbackSettings: PlaybackSettings,
-    detailGeneratorFactory: DetailGenerator.Factory,
+    detailGeneratorFactory: DetailGenerator.Factory
 ) : ViewModel(), DetailGenerator.Invalidator {
     private val _toShow = MutableEvent<Show>()
 
@@ -226,12 +226,7 @@ constructor(
             MusicType.ARTISTS -> {
                 val artist = detailGenerator.artist(currentArtist.value?.uid ?: return)
                 refreshDetail(
-                    artist,
-                    _currentArtist,
-                    _artistSongList,
-                    _artistSongInstructions,
-                    replace,
-                )
+                    artist, _currentArtist, _artistSongList, _artistSongInstructions, replace)
             }
             MusicType.GENRES -> {
                 val genre = detailGenerator.genre(currentGenre.value?.uid ?: return)
@@ -277,8 +272,7 @@ constructor(
                 Show.SongArtistDecision(song)
             } else {
                 Show.ArtistDetails(song.artists.first())
-            }
-        )
+            })
 
     /**
      * Navigate to the details of one of the [Artist]s of an [Album] using the corresponding choice
@@ -292,8 +286,7 @@ constructor(
                 Show.AlbumArtistDecision(album)
             } else {
                 Show.ArtistDetails(album.artists.first())
-            }
-        )
+            })
 
     /**
      * Navigate to the details of an [Artist].
@@ -525,8 +518,7 @@ constructor(
             } else {
                 L.d("Playlist will be empty after removal, removing header")
                 UpdateInstructions.Remove(at - 1, 3)
-            },
-        )
+            })
     }
 
     private fun refreshAudioInfo(song: Song) {
@@ -549,10 +541,7 @@ constructor(
             add(SongProperty(R.string.lbl_bitrate, SongProperty.Value.Bitrate(song.bitrateKbps)))
             add(
                 SongProperty(
-                    R.string.lbl_sample_rate,
-                    SongProperty.Value.SampleRate(song.sampleRateHz),
-                )
-            )
+                    R.string.lbl_sample_rate, SongProperty.Value.SampleRate(song.sampleRateHz)))
             song.replayGainAdjustment.track?.let {
                 add(SongProperty(R.string.lbl_replaygain_track, SongProperty.Value.Decibels(it)))
             }
@@ -568,7 +557,7 @@ constructor(
         list: MutableStateFlow<List<Item>>,
         instructions: MutableEvent<UpdateInstructions>,
         replace: Int?,
-        songHeader: (Int) -> PlainHeader = { SortHeader(it) },
+        songHeader: (Int) -> PlainHeader = { SortHeader(it) }
     ) {
         if (detail == null) {
             parent.value = null
@@ -622,21 +611,16 @@ constructor(
 
     private fun refreshPlaylist(
         uid: Music.UID,
-        instructions: UpdateInstructions = UpdateInstructions.Diff,
+        instructions: UpdateInstructions = UpdateInstructions.Diff
     ) {
         L.d("Refreshing playlist list")
         val edited = editedPlaylist.value
         if (edited == null) {
             val playlist = detailGenerator.playlist(uid)
             refreshDetail(
-                playlist,
-                _currentPlaylist,
-                _playlistSongList,
-                _playlistSongInstructions,
-                null,
-            ) {
-                EditHeader(it)
-            }
+                playlist, _currentPlaylist, _playlistSongList, _playlistSongInstructions, null) {
+                    EditHeader(it)
+                }
             return
         }
         val list = mutableListOf<Item>()

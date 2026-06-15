@@ -1,1 +1,1 @@
-Um reprodutor de música simples e funcional
+Um reprodutor de música simples e racional

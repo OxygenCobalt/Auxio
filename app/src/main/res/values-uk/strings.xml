@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
+
     <string name="lbl_retry">Повторити спробу</string>
     <string name="lbl_genres">Жанри</string>
     <string name="lbl_artists">Виконавці</string>
@@ -23,16 +24,21 @@
     <string name="lbl_version">Версія</string>
     <string name="lbl_code">Вихідний код</string>
     <string name="lbl_licenses">Ліцензії</string>
+
     <string name="set_root_title">Налаштування</string>
-    <string name="set_ui">Зовнішній вигляд і відчуття</string>
+    <string name="set_ui">Вигляд</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_day">Світла</string>
     <string name="set_theme_night">Темна</string>
     <string name="set_audio">Аудіо</string>
     <string name="set_personalize">Персоналізація</string>
+
+
     <string name="lng_search_library">Пошук в бібліотеці…</string>
+
     <string name="desc_track_number">Пісня %d</string>
     <string name="desc_play_pause">Відтворити/Зупинити</string>
+
     <string name="fmt_lib_song_count">Завантажено пісень: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d пісня</item>
@@ -130,7 +136,7 @@
     <string name="set_play_song_from_album">Відтворити альбом</string>
     <string name="set_play_in_list_with">При відтворенні з бібліотеки</string>
     <string name="set_replay_gain_mode_dynamic">Віддавати перевагу альбому, якщо він відтворюється</string>
-    <string name="set_black_mode_desc">Використовуйте чисто чорну темну тему</string>
+    <string name="set_black_mode_desc">Використовувати повністю чорну тему</string>
     <string name="set_hide_collaborators_desc">Показувати лише тих виконавців, які безпосередньо зазначені в альбомі (найкраще працює в добре позначених бібліотеках)</string>
     <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до спотворення звуку в деяких піснях.</string>
     <string name="set_play_in_parent_with">При відтворенні з деталей предмета</string>
@@ -151,6 +157,7 @@
     <string name="set_rewind_prev">Перемотати назад перед відтворенням попередньої пісні</string>
     <string name="set_rescan">Пересканувати музику</string>
     <string name="set_separators_warning">Попередження: Використання цього параметра може призвести до того, що деякі теги будуть неправильно інтерпретовані як такі, що мають кілька значень. Ви можете вирішити це, додавши перед небажаними символами-роздільниками зворотну скісну риску (\\).</string>
+    <string name="set_notif_action">Кнопка в сповіщенні</string>
     <string name="set_separators">Багатозначні роздільники</string>
     <string name="set_pre_amp_with">Регулювання на основі тегів</string>
     <string name="set_replay_gain_mode">Налаштування ReplayGain</string>
@@ -174,7 +181,7 @@
     <string name="desc_exit">Зупинити відтворення</string>
     <string name="cdc_flac">Вільний аудіокодек без втрат (FLAC)</string>
     <string name="clr_deep_purple">Темно-фіолетовий</string>
-    <string name="fmt_selected">Вибрано %d</string>
+    <string name="fmt_selected">Вибрано: %d</string>
     <string name="fmt_indexing">Завантаження музичної бібліотеки… (%1$d/%2$d)</string>
     <string name="fmt_bitrate">%d кбіт/с</string>
     <string name="fmt_sample_rate">%d Гц</string>
@@ -250,8 +257,8 @@
     <string name="lng_playlist_created">Список відтворення створено</string>
     <string name="def_song_count">Немає пісень</string>
     <string name="lbl_delete">Видалити</string>
-    <string name="lbl_confirm_delete_playlist">Видалити список відтворення?</string>
-    <string name="fmt_deletion_info">Видалити %s? Цю дію не можна скасувати.</string>
+    <string name="lbl_confirm_delete_playlist">Видалити список відтворення\?</string>
+    <string name="fmt_deletion_info">Видалити %s\? Цю дію не можна скасувати.</string>
     <string name="lng_playlist_deleted">Список відтворення видалено</string>
     <string name="lbl_rename">Перейменувати</string>
     <string name="lbl_rename_playlist">Перейменувати список відтворення</string>
@@ -293,15 +300,17 @@
     <string name="lbl_import_playlist">Імпортувати список відтворення</string>
     <string name="lbl_donate">Пожертвувати</string>
     <string name="lbl_supporters">Прибічники</string>
-    <string name="lbl_replaygain_track">Налаштування треку ReplayGain</string>
-    <string name="lbl_replaygain_album">Налаштування альбому ReplayGain</string>
+    <string name="lbl_replaygain_track">Підлаштування ReplayGain пісні</string>
+    <string name="lbl_replaygain_album">Підлаштування ReplayGain альбому</string>
     <string name="lng_supporters_promo">Пожертвуйте на проєкт, щоб ваше ім\'я було додано сюди!</string>
     <string name="lbl_author">Автор</string>
     <string name="set_remember_pause_desc">Залишати відтворення/паузу під час пропуску або редагування черги</string>
     <string name="set_remember_pause">Запам\'ятовувати паузу</string>
     <string name="set_replay_gain_mode_off">Вимкнено</string>
     <string name="lbl_start_playback">Почати відтворення</string>
-    <string name="lng_tasker_start">Запускати auxio, використовуючи раніше збережений стан. Якщо збережений стан недоступний, усі пісні будуть перетасовані. відтворення розпочнеться негайно. \n \nПопередження: будьте обережні при керуванні цією службою, якщо ви закриєте її, а потім спробуєте використовувати знову, ви, ймовірно, призведе до збою застосунка.</string>
+    <string name="lng_tasker_start">Запускати auxio, використовуючи раніше збережений стан. Якщо збережений стан недоступний, усі пісні будуть перетасовані. відтворення розпочнеться негайно.
+\n
+\nПопередження: будьте обережні при керуванні цією службою, якщо ви закриєте її, а потім спробуєте використовувати знову, ви, ймовірно, призведе до збою застосунка.</string>
     <string name="lbl_more">Більше</string>
     <string name="lbl_feedback">Зворотній зв\'язок</string>
     <string name="lbl_github">Зробіть випуск на GitHub</string>
@@ -344,13 +353,4 @@
     <string name="set_include">Включити</string>
     <string name="set_exclude">Виключити</string>
     <string name="set_extra_settings">Більше налаштувань</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d секунда</item>
-        <item quantity="few">%d секунди</item>
-        <item quantity="many">%d секунд</item>
-        <item quantity="other">%d секунд</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Загальний розмір: %s</string>
-    <string name="set_task_exit">Завжди виходьте після закриття</string>
-    <string name="set_task_exit_desc">Зупинити відтворення, якщо видалити з нещодавніх, навіть під час відтворення</string>
 </resources>

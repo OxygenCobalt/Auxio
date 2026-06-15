@@ -125,9 +125,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
         override val projection: Array<String>
             get() =
                 arrayOf(
-                    MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                    MediaStore.Audio.AudioColumns.DATA,
-                )
+                    MediaStore.Audio.AudioColumns.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA)
 
         override fun createSelector(
             paths: List<Path>
@@ -202,8 +200,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
                     // compared to DATA.
                     MediaStore.Audio.AudioColumns.DISPLAY_NAME,
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
-                    MediaStore.Audio.AudioColumns.RELATIVE_PATH,
-                )
+                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
 
         // The selector should be configured to compare both the volume name and relative path
         // of the given directories, albeit with some conversion to the analogous MediaStore

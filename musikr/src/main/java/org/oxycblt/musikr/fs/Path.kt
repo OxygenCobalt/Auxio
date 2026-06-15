@@ -19,7 +19,6 @@
 package org.oxycblt.musikr.fs
 
 import android.content.Context
-import android.net.Uri
 import java.io.File
 
 /**
@@ -28,7 +27,10 @@ import java.io.File
  * @param volume The volume that the path is on.
  * @param components The components of the path of the file, relative to the root of the volume.
  */
-data class Path(val volume: Volume, val components: Components) {
+data class Path(
+    val volume: Volume,
+    val components: Components,
+) {
     /** The name of the file/directory. */
     val name: String?
         get() = components.name
@@ -75,13 +77,6 @@ sealed interface Volume {
     interface External : Volume {
         /** The UUID of the volume. */
         val id: String?
-    }
-
-    data class ThirdParty(val uri: Uri) : Volume {
-        override val mediaStoreName: String? = null
-        override val components: Components? = null
-
-        override fun resolveName(context: Context) = uri.toString()
     }
 }
 
@@ -177,8 +172,6 @@ value class Components private constructor(val components: List<String>) {
          */
         fun parseWindows(path: String) =
             Components(path.trimSlashes().split('\\').filter { it.isNotEmpty() })
-
-        fun root() = Components(emptyList())
 
         private fun String.trimSlashes() = trimStart(File.separatorChar).trimEnd(File.separatorChar)
     }

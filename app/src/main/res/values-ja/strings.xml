@@ -150,6 +150,7 @@
     <string name="def_track">トラックなし</string>
     <string name="fmt_lib_total_duration">全再生時間: %s</string>
     <string name="desc_skip_prev">最後の曲にスキップ</string>
+    <string name="set_notif_action">カスタム通知</string>
     <string name="set_cover_mode">アルバムカバー</string>
     <string name="lbl_soundtrack">サウンドトラック</string>
     <string name="lbl_compilation_live">ライブオムニバス</string>
@@ -243,11 +244,11 @@
     <string name="lbl_delete">消去</string>
     <string name="lbl_rename">名前の変更</string>
     <string name="lbl_rename_playlist">プレイリストの名前を変更する</string>
-    <string name="lbl_confirm_delete_playlist">プレイリストを削除しますか?</string>
+    <string name="lbl_confirm_delete_playlist">プレイリストを削除しますか\?</string>
     <string name="lng_playlist_deleted">プレイリストが削除されました</string>
     <string name="lbl_edit">編集</string>
     <string name="lng_playlist_renamed">プレイリストの名前が変更されました</string>
-    <string name="fmt_deletion_info">%sを削除しますか? この操作は元に戻すことができません。</string>
+    <string name="fmt_deletion_info">%sを削除しますか\? この操作は元に戻すことができません。</string>
     <string name="lbl_share">共有</string>
     <string name="def_disc">ディスクがありません</string>
     <string name="fmt_editing">%sを編集中</string>

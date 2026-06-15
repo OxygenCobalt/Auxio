@@ -22,10 +22,9 @@ import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.oxycblt.musikr.cache.Audio
 import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
-import org.oxycblt.musikr.cache.CachedFile
+import org.oxycblt.musikr.cache.CachedSong
 import org.oxycblt.musikr.cache.MutableCache
 import org.oxycblt.musikr.fs.File
 import org.oxycblt.musikr.metadata.Properties
@@ -37,7 +36,7 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
  * Create an instance with [from].
  */
 class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
-    private var mapping: Map<Uri, CachedFileData>? = null
+    private var mapping: Map<Uri, CachedSongData>? = null
     private val mappingLock = Mutex()
 
     override suspend fun read(file: File): CacheResult {
@@ -50,44 +49,34 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
             return CacheResult.Stale(file, dbSong.addedMs)
         }
         val song =
-            CachedFile(
+            CachedSong(
                 file,
-                dbSong.mimeType?.let {
-                    Audio(
-                        Properties(
-                            dbSong.mimeType,
-                            dbSong.durationMs!!,
-                            dbSong.bitrateKbps!!,
-                            dbSong.sampleRateHz!!,
-                        ),
-                        ParsedTags(
-                            musicBrainzId = dbSong.musicBrainzId,
-                            name = dbSong.name,
-                            sortName = dbSong.sortName,
-                            durationMs = dbSong.durationMs,
-                            track = dbSong.track,
-                            disc = dbSong.disc,
-                            subtitle = dbSong.subtitle,
-                            date = dbSong.date,
-                            albumMusicBrainzId = dbSong.albumMusicBrainzId,
-                            albumName = dbSong.albumName,
-                            albumSortName = dbSong.albumSortName,
-                            releaseTypes = dbSong.releaseTypes!!,
-                            artistMusicBrainzIds = dbSong.artistMusicBrainzIds!!,
-                            artistNames = dbSong.artistNames!!,
-                            artistSortNames = dbSong.artistSortNames!!,
-                            albumArtistMusicBrainzIds = dbSong.albumArtistMusicBrainzIds!!,
-                            albumArtistNames = dbSong.albumArtistNames!!,
-                            albumArtistSortNames = dbSong.albumArtistSortNames!!,
-                            genreNames = dbSong.genreNames!!,
-                            replayGainTrackAdjustment = dbSong.replayGainTrackAdjustment,
-                            replayGainAlbumAdjustment = dbSong.replayGainAlbumAdjustment,
-                        ),
-                        coverId = dbSong.coverId,
-                    )
-                },
-                addedMs = dbSong.addedMs,
-            )
+                Properties(
+                    dbSong.mimeType, dbSong.durationMs, dbSong.bitrateKbps, dbSong.sampleRateHz),
+                ParsedTags(
+                    musicBrainzId = dbSong.musicBrainzId,
+                    name = dbSong.name,
+                    sortName = dbSong.sortName,
+                    durationMs = dbSong.durationMs,
+                    track = dbSong.track,
+                    disc = dbSong.disc,
+                    subtitle = dbSong.subtitle,
+                    date = dbSong.date,
+                    albumMusicBrainzId = dbSong.albumMusicBrainzId,
+                    albumName = dbSong.albumName,
+                    albumSortName = dbSong.albumSortName,
+                    releaseTypes = dbSong.releaseTypes,
+                    artistMusicBrainzIds = dbSong.artistMusicBrainzIds,
+                    artistNames = dbSong.artistNames,
+                    artistSortNames = dbSong.artistSortNames,
+                    albumArtistMusicBrainzIds = dbSong.albumArtistMusicBrainzIds,
+                    albumArtistNames = dbSong.albumArtistNames,
+                    albumArtistSortNames = dbSong.albumArtistSortNames,
+                    genreNames = dbSong.genreNames,
+                    replayGainTrackAdjustment = dbSong.replayGainTrackAdjustment,
+                    replayGainAlbumAdjustment = dbSong.replayGainAlbumAdjustment),
+                coverId = dbSong.coverId,
+                addedMs = dbSong.addedMs)
         return CacheResult.Hit(song)
     }
 
@@ -117,42 +106,41 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
     MutableCache {
     override suspend fun read(file: File) = inner.read(file)
 
-    override suspend fun write(cachedFile: CachedFile) {
+    override suspend fun write(cachedSong: CachedSong) {
         val dbSong =
-            CachedFileData(
-                uri = cachedFile.file.uri,
-                modifiedMs = cachedFile.file.modifiedMs,
-                addedMs = cachedFile.addedMs,
-                mimeType = cachedFile.audio?.properties?.mimeType,
-                durationMs = cachedFile.audio?.properties?.durationMs,
-                bitrateKbps = cachedFile.audio?.properties?.bitrateKbps,
-                sampleRateHz = cachedFile.audio?.properties?.sampleRateHz,
-                musicBrainzId = cachedFile.audio?.tags?.musicBrainzId,
-                name = cachedFile.audio?.tags?.name,
-                sortName = cachedFile.audio?.tags?.sortName,
-                track = cachedFile.audio?.tags?.track,
-                disc = cachedFile.audio?.tags?.disc,
-                subtitle = cachedFile.audio?.tags?.subtitle,
-                date = cachedFile.audio?.tags?.date,
-                albumMusicBrainzId = cachedFile.audio?.tags?.albumMusicBrainzId,
-                albumName = cachedFile.audio?.tags?.albumName,
-                albumSortName = cachedFile.audio?.tags?.albumSortName,
-                releaseTypes = cachedFile.audio?.tags?.releaseTypes,
-                artistMusicBrainzIds = cachedFile.audio?.tags?.artistMusicBrainzIds,
-                artistNames = cachedFile.audio?.tags?.artistNames,
-                artistSortNames = cachedFile.audio?.tags?.artistSortNames,
-                albumArtistMusicBrainzIds = cachedFile.audio?.tags?.albumArtistMusicBrainzIds,
-                albumArtistNames = cachedFile.audio?.tags?.albumArtistNames,
-                albumArtistSortNames = cachedFile.audio?.tags?.albumArtistSortNames,
-                genreNames = cachedFile.audio?.tags?.genreNames,
-                replayGainTrackAdjustment = cachedFile.audio?.tags?.replayGainTrackAdjustment,
-                replayGainAlbumAdjustment = cachedFile.audio?.tags?.replayGainAlbumAdjustment,
-                coverId = cachedFile.audio?.coverId,
-            )
+            CachedSongData(
+                uri = cachedSong.file.uri,
+                modifiedMs = cachedSong.file.modifiedMs,
+                addedMs = cachedSong.addedMs,
+                mimeType = cachedSong.properties.mimeType,
+                durationMs = cachedSong.properties.durationMs,
+                bitrateKbps = cachedSong.properties.bitrateKbps,
+                sampleRateHz = cachedSong.properties.sampleRateHz,
+                musicBrainzId = cachedSong.tags.musicBrainzId,
+                name = cachedSong.tags.name,
+                sortName = cachedSong.tags.sortName,
+                track = cachedSong.tags.track,
+                disc = cachedSong.tags.disc,
+                subtitle = cachedSong.tags.subtitle,
+                date = cachedSong.tags.date,
+                albumMusicBrainzId = cachedSong.tags.albumMusicBrainzId,
+                albumName = cachedSong.tags.albumName,
+                albumSortName = cachedSong.tags.albumSortName,
+                releaseTypes = cachedSong.tags.releaseTypes,
+                artistMusicBrainzIds = cachedSong.tags.artistMusicBrainzIds,
+                artistNames = cachedSong.tags.artistNames,
+                artistSortNames = cachedSong.tags.artistSortNames,
+                albumArtistMusicBrainzIds = cachedSong.tags.albumArtistMusicBrainzIds,
+                albumArtistNames = cachedSong.tags.albumArtistNames,
+                albumArtistSortNames = cachedSong.tags.albumArtistSortNames,
+                genreNames = cachedSong.tags.genreNames,
+                replayGainTrackAdjustment = cachedSong.tags.replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = cachedSong.tags.replayGainAlbumAdjustment,
+                coverId = cachedSong.coverId)
         writeDao.updateSong(dbSong)
     }
 
-    override suspend fun cleanup(excluding: List<CachedFile>) {
+    override suspend fun cleanup(excluding: List<CachedSong>) {
         writeDao.deleteExcludingUris(excluding.mapTo(mutableSetOf()) { it.file.uri.toString() })
     }
 

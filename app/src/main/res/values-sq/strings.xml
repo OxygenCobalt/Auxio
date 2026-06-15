@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="lbl_indexer">Ngarkimi i muzikës</string>
     <string name="lbl_indexing">Duke ngarkuar muzikën</string>
@@ -139,6 +139,7 @@
     <string name="set_black_mode">Tema e zezë</string>
     <string name="set_black_mode_desc">Përdorni një temë të errët në të zezë</string>
     <string name="set_bar_action">Veprim i personalizuar i shiritit të riprodhimit</string>
+    <string name="set_notif_action">Veprim i personalizuar i njoftimit</string>
     <string name="set_action_mode_next">Kalo te tjetra</string>
     <string name="set_action_mode_repeat">Mënyra e përsëritjes</string>
     <string name="set_behavior">Sjellja</string>

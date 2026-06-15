@@ -71,17 +71,12 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         updateDivider()
                     }
-                }
-            )
+                })
         }
 
         // --- VIEWMODEL SETUP ----
         collectImmediately(
-            queueModel.queue,
-            queueModel.index,
-            playbackModel.isPlaying,
-            ::updateQueue,
-        )
+            queueModel.queue, queueModel.index, playbackModel.isPlaying, ::updateQueue)
     }
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {

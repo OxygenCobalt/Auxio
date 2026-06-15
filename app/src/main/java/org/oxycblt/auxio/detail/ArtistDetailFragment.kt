@@ -39,12 +39,12 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
-import org.oxycblt.musikr.tag.Name
 import timber.log.Timber as L
 
 /**
@@ -61,8 +61,6 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
 
     override fun getDetailListAdapter() = artistListAdapter
 
-    override fun getToolbarParent() = detailModel.currentArtist.value
-
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
@@ -77,11 +75,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::updatePlayback,
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
@@ -90,14 +84,6 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.artistSongInstructions.consume()
-    }
-
-    override fun onPlayParent(parent: Artist) {
-        playbackModel.play(parent)
-    }
-
-    override fun onShuffleParent(parent: Artist) {
-        playbackModel.shuffle(parent)
     }
 
     override fun onRealClick(item: Music) {
@@ -109,8 +95,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
     }
 
     override fun onOpenParentMenu() {
-        val currentArtist = detailModel.currentArtist.value ?: return
-        listModel.openMenu(R.menu.detail_parent, currentArtist)
+        listModel.openMenu(R.menu.detail_parent, unlikelyToBeNull(detailModel.currentArtist.value))
     }
 
     override fun onOpenMenu(item: Music) {
@@ -134,7 +119,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
         val binding = requireBinding()
         val context = requireContext()
         val name = artist.name.resolve(context)
-        binding.detailNormalToolbar.title = name
+        binding.detailToolbarTitle.text = name
 
         binding.detailCover.bind(artist)
         binding.detailType.text = context.getString(R.string.lbl_artist)
@@ -153,23 +138,21 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
                     context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
                 } else {
                     context.getString(R.string.def_song_count)
-                },
-            )
+                })
 
         if (artist.songs.isNotEmpty()) {
             // Information about the artist's genre(s) map to the sub-head text
-            // Hide the subhead if all genres are unknown (no genre tags in music files)
-            val hasKnownGenres = artist.genres.any { it.name is Name.Known }
-            binding.detailSubhead.isVisible = hasKnownGenres
-            if (hasKnownGenres) {
-                binding.detailSubhead.text = artist.genres.resolveNames(context)
+            binding.detailSubhead.apply {
+                isVisible = true
+                text = artist.genres.resolveNames(context)
             }
 
             // In the case that this header used to he configured to have no songs,
             // we want to reset the visibility of all information that was hidden.
             binding.detailPlayButton?.isEnabled = true
             binding.detailShuffleButton?.isEnabled = true
-            setToolbarPlaybackButtonsEnabled(true)
+            binding.detailToolbarPlay.isEnabled = true
+            binding.detailToolbarShuffle.isEnabled = true
         } else {
             // The artist does not have any songs, so hide functionality that makes no sense.
             // ex. Play and Shuffle, Song Counts, and Genre Information.
@@ -178,16 +161,24 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
             binding.detailSubhead.isVisible = false
             binding.detailPlayButton?.isEnabled = false
             binding.detailShuffleButton?.isEnabled = false
-            setToolbarPlaybackButtonsEnabled(false)
+            binding.detailToolbarPlay.isEnabled = false
+            binding.detailToolbarShuffle.isEnabled = false
         }
 
-        binding.detailPlayButton?.setOnClickListener { playbackModel.play(artist) }
-        binding.detailShuffleButton?.setOnClickListener { playbackModel.shuffle(artist) }
+        binding.detailPlayButton?.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
+        binding.detailToolbarPlay.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
+        binding.detailShuffleButton?.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
+        binding.detailToolbarShuffle.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
+        }
         updatePlayback(
-            playbackModel.song.value,
-            playbackModel.parent.value,
-            playbackModel.isPlaying.value,
-        )
+            playbackModel.song.value, playbackModel.parent.value, playbackModel.isPlaying.value)
     }
 
     private fun updateList(list: List<Item>) {
@@ -283,8 +274,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     ArtistDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray()
-                    )
+                        decision.songs.map { it.uid }.toTypedArray())
                 }
                 is PlaylistDecision.New,
                 is PlaylistDecision.Import,
@@ -302,7 +292,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        val currentArtist = detailModel.currentArtist.value ?: return
+        val currentArtist = unlikelyToBeNull(detailModel.currentArtist.value)
         val playingItem =
             when (parent) {
                 // Always highlight a playing album if it's from this artist, and if the currently

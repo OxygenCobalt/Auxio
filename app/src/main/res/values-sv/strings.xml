@@ -29,7 +29,7 @@
     <string name="lbl_playlists">Spellistor</string>
     <string name="lbl_new_playlist">Ny spellista</string>
     <string name="lbl_rename_playlist">Byt namn på spellista</string>
-    <string name="lbl_confirm_delete_playlist">Ta bort spellista?</string>
+    <string name="lbl_confirm_delete_playlist">Ta bort spellista\?</string>
     <string name="lbl_search">Sök</string>
     <string name="lbl_filter">Filtrera</string>
     <string name="lbl_name">Namn</string>
@@ -111,6 +111,7 @@
     <string name="set_personalize">Anpassa</string>
     <string name="set_lib_tabs_desc">Ändra synlighet och ordningsföljd på bibliotekflikar</string>
     <string name="set_bar_action">Anpassad åtgärd för uppspelningsfält</string>
+    <string name="set_notif_action">Anpassad aviseringsåtgärd</string>
     <string name="set_action_mode_next">Hoppa till nästa</string>
     <string name="set_action_mode_repeat">Upprepningsmodus</string>
     <string name="set_behavior">Beteende</string>
@@ -309,5 +310,5 @@
     <string name="lbl_start_playback">Påbörja uppspelning</string>
     <string name="set_cover_mode_save_space">Spara utrymme</string>
     <string name="cnt_mp4">MPEG-4 innehållande %s</string>
-    <string name="lng_tasker_start">Påbörjar Auxio med det tidigare sparade tillståndet. Om inget sparad tillstånd är tillgängligt kommer alla låtar blandas. Uppspelning börjar omedelbart. \n\nOBS: Var försiktig vid användning av denna tjänst, om du stänger ner den och sedan försöker använda den igen kommer du troligen få appen att krascha.</string>
+    <string name="lng_tasker_start">Påbörjar Auxio med det tidigare sparade tillståndet. Om inget sparad tillstånd är tillgängligt kommer alla låtar blandas. Uppspelning börjar omedelbart. \n\nOBS: Var försiktig vid användning av denna tjänst, om du stänger ner den och sedan försöker använda den igen kommer du troligen få appen att krascha.</string>
 </resources>

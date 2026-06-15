@@ -1,38 +1,3 @@
-## v4.1.0
-
-## What's New
-- Design refresh to Material Design Expressive
-  - New playback control interface
-  - New fast-scroll thumb
-  - New shape / spring animations
-  - New wavy slider
-- Added fast-forward/rewind by tapping the start/end of the playback screen's cover
-- Added swipe-to-next/previous by swiping the playback screen's cover
-- Redesigned artist, genre, and playlist images with distinct looks
-- Search now allows you to filter between any combination of Songs / Albums / Artists / Genres / Playlists
-- Added option to make SAF multithreading configurable to reduce resource use & fix bugs on certain devices
-- New tablet-friendly detail UI
-
-## What's Improved
-- Auxio can now load 3rd-party SAF folders (ex. RSAF)
-  - Note: Third-party foldes are considered by Auxio to be more like "SD Cards" internally, so playlist importing may not work well
-- Genre subheads are now hidden in the artist view when it is entirely unknown genre
-- Auxio's playback notification now shows both shuffle/repeat
-  - Notification will disappear after inactivity instead of requiring a manual close
-- Made taglib parsing more reliable (thanks @lepre-zhang!)
-- Featured artists now show up on an album's songs
-
-## What's Fixed
-- Fixed taglib crash that happens on some Android 16 devices
-- Slightly reduced memory use from music library
-- Fixed R128 GAIN values from being incorrectly ignored
-- Fixed about screen icons being colored inconsistently
-- Readjusted widget dimens so the shortest variant isnt always shown
-
-## Dev/Meta
-- Android 16 support
-- Upgraded ExoPlayer, Taglib
-
 ## v4.0.10
 
 #### What's Fixed
@@ -228,13 +193,13 @@ persist long-term
 
 #### What's Improved
 - Home and detail UIs in Android Auto now reflect app sort settings
-- Album view now shows discs in Android Auto
+- Album view now shows discs in android auto
 
 #### What's Fixed
 - Fixed playback briefly pausing when adding songs to playlist
 - Fixed media lists in Android Auto being truncated in some cases
 - Possibly fixed duplicated song items depending on album/all children
-- Possibly fixed truncated tab lists in Android Auto
+- Possibly fixed truncated tab lists in android auto
 
 #### Dev/Meta
 - Moved to raw media session apis rather than media3 session
@@ -297,7 +262,7 @@ rewind before skipping was turned off
 - Added support for M3U paths starting with /storage/
 - Fixed artist duplication when inconsistent MusicBrainz ID tag naming was used
 - Made album cover keying more efficient at the cost of resillience
-- Fixed Android Auto queue not respecting shuffle
+- Fixed android auto queue not respecting shuffle
 
 ## 3.4.3
 
@@ -1063,7 +1028,7 @@ to when using gesture navigation
 - Fix crash that would occur when rotating the dialog
 - Fixed issue where cover art could not be loaded at all on some devices [#51]
 - Fixed issue where widgets would have unusable UIs on certain device configurations
-- Fixed issue where older launchers will not show a widget preview on Android 12
+- Fixed issue where older launchers will not show a widget preview on android 12
 - Fixed duplicate songs appearing on some devices
 
 #### What's Changed:

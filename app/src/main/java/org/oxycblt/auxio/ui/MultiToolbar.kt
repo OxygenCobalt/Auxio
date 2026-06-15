@@ -18,37 +18,27 @@
  
 package org.oxycblt.auxio.ui
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.IdRes
 import androidx.core.view.children
-import androidx.core.view.isInvisible
-import androidx.dynamicanimation.animation.SpringAnimation
-import org.oxycblt.auxio.util.scale
 import timber.log.Timber as L
 
 class MultiToolbar
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    private var outAnimators: List<SpringAnimation>? = null
-    private var inAnimators: List<SpringAnimation>? = null
+    private var animator: Animator? = null
     private var currentlyVisible = 0
-    private val outScaleSpring = Spatial.FAST
-    private val outAlphaSpring = Effect.FAST
-    private val inScaleSpring = Spatial.DEFAULT
-    private val inAlphaSpring = Effect.DEFAULT
+    private val flipper = MaterialFlipper(context)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         for (i in 1 until childCount) {
-            getChildAt(i).apply {
-                scale = 0.9f
-                alpha = 0f
-                isInvisible = true
-            }
+            getChildAt(i).apply { flipper.jump(this) }
         }
     }
 
@@ -60,28 +50,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun animateToolbarsVisibility(from: Int, to: Int): Boolean {
+        // TODO: Animate nicer Material Fade transitions using animators (Normal transitions
+        //  don't work due to translation)
         // Set up the target transitions for both the inner and selection toolbars.
         L.d("Changing toolbar visibility $from -> 0f, $to -> 1f")
-        inAnimators?.forEach { it.cancel() }
-        outAnimators?.forEach { it.cancel() }
-        val from = getChildAt(from)
-        val to = getChildAt(to)
-        // since we will lose track of the going-out view if we suddenly cancel it's probably better
-        // to just jump to the end rather than have overlapping views or a stuck toolbar
-        val outScaleAnimation = outScaleSpring.scale(from, 0.9f, jumpOnCancellation = true)
-        val outAlphaAnimation =
-            outAlphaSpring.alpha(from, 0.0f, jumpOnCancellation = true).addEndListener {
-                _,
-                cancelled,
-                _,
-                _ ->
-                if (!cancelled) {
-                    val inScaleAnimation = inScaleSpring.scale(to, 1.0f)
-                    val inAlphaAnimation = inAlphaSpring.alpha(to, 1.0f)
-                    inAnimators = listOf(inScaleAnimation, inAlphaAnimation)
-                }
-            }
-        outAnimators = listOf(outScaleAnimation, outAlphaAnimation)
+        animator?.cancel()
+        animator = flipper.flip(getChildAt(from), getChildAt(to)).also { it.start() }
 
         return true
     }

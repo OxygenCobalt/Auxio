@@ -48,15 +48,15 @@ internal fun Metadata.sortName() = (xiph["TITLESORT"] ?: mp4["sonm"] ?: id3v2["T
 internal fun Metadata.track() =
     (parseXiphPositionField(
         xiph["TRACKNUMBER"]?.first(),
-        (xiph["TOTALTRACKS"] ?: xiph["TRACKTOTAL"] ?: xiph["TRACKC"])?.first(),
-    ) ?: (mp4["trkn"] ?: id3v2["TRCK"])?.run { first().parseSlashPositionField() })
+        (xiph["TOTALTRACKS"] ?: xiph["TRACKTOTAL"] ?: xiph["TRACKC"])?.first())
+        ?: (mp4["trkn"] ?: id3v2["TRCK"])?.run { first().parseSlashPositionField() })
 
 // Disc and it's subtitle name.
 internal fun Metadata.disc() =
     (parseXiphPositionField(
         xiph["DISCNUMBER"]?.first(),
-        (xiph["TOTALDISCS"] ?: xiph["DISCTOTAL"] ?: xiph["DISCC"])?.run { first() },
-    ) ?: (mp4["disk"] ?: id3v2["TPOS"])?.run { first().parseSlashPositionField() })
+        (xiph["TOTALDISCS"] ?: xiph["DISCTOTAL"] ?: xiph["DISCC"])?.run { first() })
+        ?: (mp4["disk"] ?: id3v2["TPOS"])?.run { first().parseSlashPositionField() })
 
 internal fun Metadata.subtitle() = (xiph["DISCSUBTITLE"] ?: id3v2["TSST"])?.first()
 
@@ -152,43 +152,6 @@ internal fun Metadata.artistSortNames() =
         ?: id3v2["TXXX:ARTISTSORT"]
         ?: id3v2["TXXX:ARTIST SORT"])
 
-internal fun Metadata.composerMusicBrainzIds() =
-    (xiph["MUSICBRAINZ_COMPOSERID"]
-        ?: xiph["MUSICBRAINZ COMPOSER ID"]
-        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ COMPOSER ID"]
-        ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_COMPOSERID"]
-        ?: id3v2["TXXX:MUSICBRAINZ COMPOSER ID"]
-        ?: id3v2["TXXX:MUSICBRAINZ_COMPOSERID"])
-
-internal fun Metadata.composerNames() =
-    (xiph["COMPOSERS"]
-        ?: xiph["COMPOSER"]
-        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERS"]
-        ?: mp4["----:COM.APPLE.ITUNES:COMPOSER"]
-        ?: mp4["©wrt"]
-        ?: id3v2["TXXX:COMPOSERS"]
-        ?: id3v2["TCOM"]
-        ?: id3v2["TXXX:COMPOSER"])
-
-internal fun Metadata.composerSortNames() =
-    (xiph["COMPOSERSSORT"]
-        ?: xiph["COMPOSERS_SORT"]
-        ?: xiph["COMPOSERS SORT"]
-        ?: xiph["COMPOSERSORT"]
-        ?: xiph["COMPOSER SORT"]
-        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERSSORT"]
-        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERS_SORT"]
-        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERS SORT"]
-        ?: mp4["----:COM.APPLE.ITUNES:COMPOSERSORT"]
-        ?: mp4["soCo"]
-        ?: mp4["----:COM.APPLE.ITUNES:COMPOSER SORT"]
-        ?: id3v2["TXXX:COMPOSERSSORT"]
-        ?: id3v2["TXXX:COMPOSERS_SORT"]
-        ?: id3v2["TXXX:COMPOSERS SORT"]
-        ?: id3v2["TXXX:COMPOSERSORT"]
-        ?: id3v2["TSOC"]
-        ?: id3v2["TXXX:COMPOSER SORT"])
-
 internal fun Metadata.albumArtistMusicBrainzIds() =
     (xiph["MUSICBRAINZ_ALBUMARTISTID"]
         ?: xiph["MUSICBRAINZ ALBUM ARTIST ID"]
@@ -267,7 +230,7 @@ internal fun Metadata.replayGainAlbumAdjustment() =
         ?: id3v2["TXXX:REPLAYGAIN_ALBUM_GAIN"]?.parseReplayGainAdjustment())
 
 private fun List<String>.parseR128Adjustment() =
-    first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.run {
+    first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()?.run {
         // Convert to fixed-point and adjust to LUFS 18 to match the ReplayGain scale
         this / 256f + 5
     }

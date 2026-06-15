@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:ns0="http://schemas.android.com/tools">
+
     <string name="lbl_retry">Erneut versuchen</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Künstler</string>
@@ -28,6 +29,7 @@
     <string name="lbl_code">Quellcode</string>
     <string name="lbl_licenses">Lizenzen</string>
     <string name="lbl_author_name">Entwickelt von Alexander Capehart</string>
+
     <string name="set_root_title">Einstellungen</string>
     <string name="set_ui">Erscheinungsbild</string>
     <string name="set_theme">Farbschema</string>
@@ -38,6 +40,7 @@
     <string name="set_display">Anzeige</string>
     <string name="set_round_mode">Abgerundete Cover</string>
     <string name="set_round_mode_desc">Abgerundete Ecken für weitere UI-Elemente aktivieren (benötigt abgerundete Album-Cover)</string>
+    <string name="set_notif_action">Alternative Aktionstaste verwenden</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
@@ -57,10 +60,13 @@
     <string name="set_content">Inhalt</string>
     <string name="set_reindex">Musik neu laden</string>
     <string name="set_reindex_desc">Musikbibliothek neu laden, verwendet gecachte Tags wenn möglich</string>
+
     <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
     <string name="err_no_app">Es konnte keine App gefunden werden, die diese Aufgabe übernehmen kann</string>
     <string name="err_bad_location">Das Verzeichnis wird nicht unterstützt</string>
+
     <string name="lng_search_library">Musikbibliothek durchsuchen…</string>
+
     <string name="desc_track_number">Titel %d</string>
     <string name="desc_play_pause">Abspielen oder pausieren</string>
     <string name="desc_skip_prev">Zum letzten Lied springen</string>
@@ -71,8 +77,10 @@
     <string name="desc_album_cover">Albumcover für %s</string>
     <string name="desc_artist_image">Künstlerbild für %s</string>
     <string name="desc_genre_image">Genrebild für %s</string>
+
     <string name="def_genre">Unbekanntes Genre</string>
     <string name="def_date">Kein Datum</string>
+
     <string name="clr_red">Rot</string>
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Lila</string>
@@ -89,6 +97,7 @@
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Braun</string>
     <string name="clr_grey">Grau</string>
+
     <string name="fmt_lib_song_count">Geladene Lieder: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d Lied</item>
@@ -242,10 +251,10 @@
     <string name="lbl_playlist_add">Zur Wiedergabeliste hinzufügen</string>
     <string name="lng_playlist_created">Wiedergabeliste erstellt</string>
     <string name="lbl_delete">Löschen</string>
-    <string name="lbl_confirm_delete_playlist">Wiedergabeliste löschen?</string>
+    <string name="lbl_confirm_delete_playlist">Wiedergabeliste löschen\?</string>
     <string name="def_song_count">Keine Lieder</string>
     <string name="fmt_def_playlist">Wiedergabeliste %d</string>
-    <string name="fmt_deletion_info">%s löschen? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="fmt_deletion_info">%s löschen\? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="lbl_rename">Umbenennen</string>
     <string name="lbl_rename_playlist">Wiedergabeliste umbenennen</string>
     <string name="lng_playlist_renamed">Wiedergabeliste umbenannt</string>
@@ -295,7 +304,9 @@
     <string name="set_remember_pause_desc">Wiedergabe/Pause beim Springen oder Bearbeiten der Warteschlange beibehalten</string>
     <string name="set_replay_gain_mode_off">Aus</string>
     <string name="lbl_start_playback">Wiedergabe starten</string>
-    <string name="lng_tasker_start">Startet Auxio mit dem vorher gespeicherten Zustand. Wenn kein gespeicherter Zustand vorhanden ist, werden alle Lieder zufällig abgespielt. Die Wiedergabe startet sofort. \n \nACHTUNG: Sei vorsichtig bei der Steuerung dieses Dienstes. Wenn du ihn schließt und dann erneut versuchst, ihn zu nutzen, stürzt die App wahrscheinlich ab.</string>
+    <string name="lng_tasker_start">Startet Auxio mit dem vorher gespeicherten Zustand. Wenn kein gespeicherter Zustand vorhanden ist, werden alle Lieder zufällig abgespielt. Die Wiedergabe startet sofort.
+\n
+\nACHTUNG: Sei vorsichtig bei der Steuerung dieses Dienstes. Wenn du ihn schließt und dann erneut versuchst, ihn zu nutzen, stürzt die App wahrscheinlich ab.</string>
     <string name="lbl_more">Mehr</string>
     <string name="lbl_github">Ein Issue auf GitHub erstellen</string>
     <string name="lbl_feedback">Rückmeldung</string>
@@ -338,15 +349,4 @@
     <string name="set_extra_settings">Mehr Einstellungen</string>
     <string name="lbl_no_folders">Keine Ordner</string>
     <string name="desc_add_folder">Ordner hinzufügen</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d Sekunde</item>
-        <item quantity="other">%d Sekunden</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Gesamte Größe: %s</string>
-    <string name="set_task_exit">Beim Schließen immer beenden</string>
-    <string name="set_task_exit_desc">Wiedergabe stoppen, wenn App geschlossen wird, auch beim Abspielen</string>
-    <string name="set_saf_multithread">Datei-Erkundung mit mehreren Threads</string>
-    <string name="set_saf_multithread_desc">Schneller, funktioniert aber nicht auf allen Geräte</string>
-    <string name="err_share_too_large">Zu groß zum Teilen</string>
-    <string name="err_share_failed">Konnte nicht geteilt werden</string>
 </resources>

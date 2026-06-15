@@ -8,7 +8,6 @@
     android:transitionGroup="true">
 
     <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
-        android:id="@+id/search_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
@@ -16,30 +15,41 @@
         <org.oxycblt.auxio.ui.MultiToolbar
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"
             android:layout_height="wrap_content">
 
-            <org.oxycblt.auxio.ui.AuxioToolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/search_normal_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:menu="@menu/toolbar_search"
                 app:navigationIcon="@drawable/ic_back_24">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_edit_text"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/lng_search_library"
-                    android:imeOptions="actionSearch|flagNoExtractUi"
-                    android:inputType="textFilter"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:paddingStart="@dimen/spacing_tiny"
-                    android:paddingEnd="0dp" />
+                    android:layout_height="wrap_content"
+                    app:endIconContentDescription="@string/desc_clear_search"
+                    app:endIconDrawable="@drawable/ic_close_24"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="?attr/colorControlNormal"
+                    app:errorEnabled="false"
+                    app:hintEnabled="false">
 
-            </org.oxycblt.auxio.ui.AuxioToolbar>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/lng_search_library"
+                        android:imeOptions="actionSearch|flagNoExtractUi"
+                        android:inputType="textFilter"
+                        android:paddingStart="@dimen/spacing_tiny"
+                        android:paddingEnd="0dp" />
 
-            <org.oxycblt.auxio.ui.AuxioToolbar
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/search_selection_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,83 +60,7 @@
 
         </org.oxycblt.auxio.ui.MultiToolbar>
 
-        <HorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/search_filters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingHorizontal="@dimen/spacing_medium"
-                app:singleLine="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/search_filter_songs"
-                    style="@style/Widget.Auxio.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:checkable="true"
-                    android:text="@string/lbl_songs" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/search_filter_albums"
-                    style="@style/Widget.Auxio.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:checkable="true"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lbl_albums" />
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Auxio.Chip.Filter"
-                    android:id="@+id/search_filter_artists"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:checkable="true"
-                    android:text="@string/lbl_artists" />
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Auxio.Chip.Filter"
-                    android:id="@+id/search_filter_genres"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:checkable="true"
-                    android:focusable="true"
-                    android:text="@string/lbl_genres" />
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Auxio.Chip.Filter"
-                    android:id="@+id/search_filter_playlists"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:checkable="true"
-                    android:text="@string/lbl_playlists" />
-
-            </com.google.android.material.chip.ChipGroup>
-
-        </HorizontalScrollView>
     </org.oxycblt.auxio.ui.CoordinatorAppBarLayout>
-
-    <FrameLayout
-        android:id="@+id/search_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:clipToPadding="false"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
     <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
         android:id="@+id/search_recycler"
@@ -135,7 +69,5 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:listitem="@layout/item_song" />
-
-    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

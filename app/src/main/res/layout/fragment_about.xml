@@ -14,7 +14,7 @@
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true">
 
-        <org.oxycblt.auxio.ui.AuxioToolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/about_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_medium"
                         android:text="@string/info_app_name"
-                        android:textAppearance="?attr/textAppearanceTitleLargeEmphasized"
+                        android:textAppearance="@style/TextAppearance.Auxio.TitleLarge"
                         app:layout_constraintBottom_toBottomOf="@+id/about_auxio_icon"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/about_auxio_icon"
@@ -77,7 +77,7 @@
                         android:paddingStart="@dimen/spacing_medium"
                         android:paddingEnd="@dimen/spacing_medium"
                         android:text="@string/info_app_desc"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_auxio_icon" />
@@ -101,7 +101,7 @@
                         android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_marginTop="@dimen/spacing_mid_medium"
                         android:text="@string/lbl_version"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                         app:layout_constraintBottom_toTopOf="@+id/about_version"
                         app:layout_constraintStart_toEndOf="@+id/about_version_icon"
                         app:layout_constraintTop_toBottomOf="@+id/about_desc" />
@@ -111,7 +111,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_medium"
-                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
                         app:layout_constraintStart_toStartOf="@+id/about_version_title"
                         app:layout_constraintTop_toBottomOf="@+id/about_version_title"
                         tools:text="16.16.16" />
@@ -227,24 +227,13 @@
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <TextView
-                        android:id="@+id/about_supporters_bkkellyh"
-                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sup_bkkellyh"
-                        android:textAppearance="?attr/textAppearanceTitleMediumEmphasized"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_licenses" />
-
-                    <TextView
                         android:id="@+id/about_supporters_promo"
                         style="@style/Widget.Auxio.TextView.Icon.Clickable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lng_supporters_promo"
                         android:textStyle="italic"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_licenses" />
@@ -374,17 +363,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_licenses"
                         tools:text="Total duration: 16:16:16" />
-
-                    <TextView
-                        android:id="@+id/about_total_size"
-                        style="@style/Widget.Auxio.TextView.Icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:drawableStartCompat="@drawable/ic_file_24"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_licenses"
-                        tools:text="Total size: 1.2 GB" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

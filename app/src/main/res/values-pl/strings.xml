@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
+
     <string name="lbl_retry">Ponów</string>
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
@@ -24,8 +25,9 @@
     <string name="lbl_version">Wersja</string>
     <string name="lbl_code">Kod źródłowy</string>
     <string name="lbl_licenses">Licencje</string>
+
     <string name="set_root_title">Ustawienia</string>
-    <string name="set_ui">Wygląd i poczucie</string>
+    <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
     <string name="set_theme_auto">Systemowy</string>
     <string name="set_theme_day">Jasny</string>
@@ -33,9 +35,13 @@
     <string name="set_accent">Kolor akcentów</string>
     <string name="set_audio">Dźwięk</string>
     <string name="set_personalize">Interfejs</string>
+
+
     <string name="desc_track_number">Utwór %d</string>
     <string name="desc_play_pause">Odtwórz albo zapauzuj</string>
+
     <string name="lng_search_library">Szukaj w bibliotece…</string>
+
     <string name="clr_red">Czerwony</string>
     <string name="clr_pink">Różowy</string>
     <string name="clr_purple">Fioletowy</string>
@@ -49,6 +55,7 @@
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
+
     <plurals name="fmt_song_count">
         <item quantity="one">%d utwór</item>
         <item quantity="few">%d utwory</item>
@@ -164,7 +171,7 @@
     <string name="set_replay_gain_mode_track">Preferuj utwór</string>
     <string name="set_lib_tabs">Karty w bibliotece</string>
     <string name="set_lib_tabs_desc">Zmień widoczność i kolejność kart w bibliotece</string>
-    <string name="set_black_mode_desc">Używaj czarnego motywu</string>
+    <string name="set_black_mode_desc">Użyj czarnego motywu</string>
     <string name="set_display">Elementy</string>
     <string name="clr_dynamic">Material You</string>
     <string name="fmt_bitrate">%d kb/s</string>
@@ -180,6 +187,7 @@
     <string name="err_no_app">Nie znaleziono odpowiedniej aplikacji</string>
     <string name="lbl_library_counts">Statystyki biblioteki</string>
     <string name="fmt_lib_artist_count">Zaimportowani artyści: %d</string>
+    <string name="set_notif_action">Użyj alternatywnej akcji w powiadomieniu</string>
     <string name="set_repeat_pause">Zatrzymaj odtwarzanie przy powtórzeniu</string>
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>
@@ -238,26 +246,26 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="set_music">Muzyka</string>
     <string name="lbl_sort_dsc">Malejąco</string>
-    <string name="lbl_playlists">Listy odtwarzania</string>
+    <string name="lbl_playlists">Playlisty</string>
     <string name="lbl_playlist">Playlista</string>
-    <string name="desc_playlist_image">Obraz listy odtwarzania dla %s</string>
+    <string name="desc_playlist_image">Obraz playlisty %s</string>
     <string name="set_intelligent_sorting">Inteligentne sortowanie</string>
     <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” oraz liczby w tytule podczas sortowania (działa najlepiej z utworami w języku angielskim)</string>
     <string name="lbl_new_playlist">Nowa playlista</string>
-    <string name="lbl_playlist_add">Dodaj do listy odtwarzania</string>
+    <string name="lbl_playlist_add">Dodaj do playlisty</string>
     <string name="lng_playlist_created">Utworzono playlistę</string>
     <string name="def_song_count">Brak utworów</string>
-    <string name="lng_playlist_added">Dodano do listy odtwarzania</string>
+    <string name="lng_playlist_added">Dodano do playlisty</string>
     <string name="fmt_def_playlist">Playlista %d</string>
     <string name="lbl_delete">Usuń</string>
-    <string name="fmt_deletion_info">Usunąć %s? Tego nie da się cofnąć.</string>
+    <string name="fmt_deletion_info">Usunąć %s\? Tego nie da się cofnąć.</string>
     <string name="lbl_rename">Zmień nazwę</string>
-    <string name="lbl_rename_playlist">Zmień nazwę listy odtwarzania</string>
-    <string name="lbl_confirm_delete_playlist">Usunąć playlistę?</string>
+    <string name="lbl_rename_playlist">Zmień nazwę playlisty</string>
+    <string name="lbl_confirm_delete_playlist">Usunąć playlistę\?</string>
     <string name="lbl_edit">Edytuj</string>
     <string name="lbl_appears_on">Pojawia się na</string>
     <string name="lbl_share">Udostępnij</string>
-    <string name="lng_playlist_renamed">Zmieniono nazwę listy odtwarzania</string>
+    <string name="lng_playlist_renamed">Zmieniono nazwę playlisty</string>
     <string name="lng_playlist_deleted">Usunięto playlistę</string>
     <string name="def_disc">Brak nr. płyty</string>
     <string name="fmt_editing">Edytowanie %s</string>
@@ -269,7 +277,7 @@
     <string name="lbl_sort_mode">Sortuj według</string>
     <string name="lbl_sort_direction">Kierunek</string>
     <string name="def_album_count">Brak albumów</string>
-    <string name="lbl_imported_playlist">Zaimportowane listy odtwarzania</string>
+    <string name="lbl_imported_playlist">Zaimportowane playlisty</string>
     <string name="lbl_import">Importuj</string>
     <string name="lbl_report">Zgłoś</string>
     <string name="lbl_path_style_relative">Relatywna</string>
@@ -294,14 +302,14 @@
     <string name="lbl_demos">Dema</string>
     <string name="lbl_more">Więcej</string>
     <string name="lng_tasker_start">Uruchamia Auxio z użyciem poprzednio zapisanego stanu. Jeśli nie zapisano poprzedniego stanu, wszystkie utwory będą odtwarzane w losowej kolejności. Odtwarzanie rozpocznie się natychmiast.\n\nUWAGA: Zachowaj ostrożność przy korzystaniu z tej opcji. Jeśli ją zamkniesz, a następnie spróbujesz ponownie z niej skorzystać, aplikacja może się zawiesić.</string>
-    <string name="err_export_failed">Nie udało się wyeksportować listy odtwarzania do tego pliku</string>
+    <string name="err_export_failed">Nie udało się wyeksportować playlisty do tego pliku</string>
     <string name="lbl_replaygain_track">Dopasowanie głośności utworu (ReplayGain)</string>
     <string name="lbl_replaygain_album">Dopasowanie głośności albumu (ReplayGain)</string>
     <string name="lng_supporters_promo">Wesprzyj projekt darowizną, aby Twoje imię pojawiło się tutaj!</string>
     <string name="set_remember_pause_desc">Pozostań w trakcie odtwarzania/zatrzymania podczas pomijania lub edytowania kolejki</string>
     <string name="set_remember_pause">Zapamiętaj pauzę</string>
     <string name="lbl_start_playback">Zacznij odtwarzanie</string>
-    <string name="err_import_failed">Nie udało się zaimportować listy odtwarzania z tego pliku</string>
+    <string name="err_import_failed">Nie udało się zaimportować playlisty z tego pliku</string>
     <string name="lbl_windows_paths">Używaj ścieżek kompatybilnych z Windows</string>
     <string name="lbl_email">Wyślij e-maila</string>
     <string name="lbl_feedback">Informacja zwrotna</string>
@@ -314,7 +322,7 @@
     <string name="lng_empty_songs">Tutaj pojawią się dodane utwory.</string>
     <string name="lng_empty_albums">Tutaj pojawią się dodane albumy.</string>
     <string name="lng_empty_artists">Tutaj pojawią się dodani artyści.</string>
-    <string name="lng_empty_playlists">Tutaj pojawią się dodane listy odtwarzania.</string>
+    <string name="lng_empty_playlists">Tutaj pojawią się dodane playlisty.</string>
     <string name="lng_empty_genres">Tutaj pojawią się dodane gatunki.</string>
     <string name="lng_play_next">Utwór zostanie odtworzony jako następny</string>
     <string name="lng_file_picker">Załaduj muzykę z wybranych folderów. Wolniejsze, ale bardziej niezawodne. Wymaga zainstalowania standardowej aplikacji do zarządzania plikami.</string>
@@ -325,7 +333,7 @@
     <string name="lng_exclude_folders">Muzyka znajdująca się w wybranych folderach zostanie pominięta.</string>
     <string name="set_with_hidden">Uwzględniaj ukryte pliki</string>
     <string name="set_with_hidden_desc">Uwzględniaj pliki audio, które są ukryte (np. .cache)</string>
-    <string name="set_cover_mode_as_is">Bez zmiany</string>
+    <string name="set_cover_mode_as_is">Jako</string>
     <string name="set_load_from">Ładuj z</string>
     <string name="set_file_picker">Selektor plików</string>
     <string name="set_system_database">System</string>
@@ -344,17 +352,4 @@
     <string name="set_excluded_locations_desc">Zarządzaj folderami, które mają być wykluczone z ładowania muzyki</string>
     <string name="lbl_no_folders">Brak folderów</string>
     <string name="desc_add_folder">Dodaj folder</string>
-    <plurals name="fmt_seconds">
-        <item quantity="one">%d sekunda</item>
-        <item quantity="few">%d sekundy</item>
-        <item quantity="many">%d sekund</item>
-        <item quantity="other">%d sekund</item>
-    </plurals>
-    <string name="fmt_lib_total_size">Całkowita wielkość: %s</string>
-    <string name="set_task_exit">Zawsze wychodź po zamknięciu</string>
-    <string name="set_task_exit_desc">Zatrzymaj odtwarzanie po usunięciu aplikacji z pamięci, nawet jeśli jest w trakcie odtwarzania</string>
-    <string name="set_saf_multithread">Wielowątkowe przeglądanie plików</string>
-    <string name="set_saf_multithread_desc">Działa szybciej, ale na niektórych urządzeniach nie działa</string>
-    <string name="err_share_too_large">Ten plik jest zbyt duży, aby go udostępnić</string>
-    <string name="err_share_failed">Nie można tego udostępnić</string>
 </resources>

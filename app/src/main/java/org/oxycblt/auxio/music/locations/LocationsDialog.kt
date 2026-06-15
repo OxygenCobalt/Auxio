@@ -40,7 +40,6 @@ import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.musikr.fs.Location
-import org.oxycblt.musikr.fs.Volume
 import org.oxycblt.musikr.fs.mediastore.MediaStore
 import org.oxycblt.musikr.fs.saf.SAF
 import timber.log.Timber as L
@@ -79,7 +78,6 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
     private val filterLocationAdapter: LocationAdapter<Location.Unopened> =
         LocationAdapter(filterLocationListener)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
-    private var localOnlyOpenDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     @Inject lateinit var musicSettings: MusicSettings
 
@@ -102,17 +100,11 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
 
     override fun onBindingCreated(
         binding: DialogMusicLocationsBinding,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ) {
         openDocumentTreeLauncher =
             registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-                addDocumentTreeUriToDirs(uri, false)
-            }
-
-        // TODO: Add failure mode for introduction of third-party filters in system loader
-        localOnlyOpenDocumentTreeLauncher =
-            registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-                addDocumentTreeUriToDirs(uri, true)
+                addDocumentTreeUriToDirs(uri)
             }
 
         storagePermissionLauncher =
@@ -163,17 +155,39 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             updateExtrasVisibility(binding)
         }
 
-        binding.locationsModeExclude.setOnClickListener {
-            updateLocationMode(binding, filePicker = true)
+        // Set up mode toggle listener
+        binding.folderModeGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+
+            when (checkedId) {
+                R.id.locations_mode_exclude -> {
+                    isFilePickerMode = true
+                    updateModeUI(binding)
+                    updateSaveButtonState()
+                }
+                R.id.locations_mode_include -> {
+                    isFilePickerMode = false
+                    updateModeUI(binding)
+                    updateSaveButtonState()
+                }
+            }
         }
-        binding.locationsModeInclude.setOnClickListener {
-            updateLocationMode(binding, filePicker = false)
-        }
-        binding.locationsExcludeModeExclude.setOnClickListener {
-            updateFilterMode(binding, include = true)
-        }
-        binding.locationsExcludeModeInclude.setOnClickListener {
-            updateFilterMode(binding, include = false)
+
+        // Set up exclude/include mode toggle listener for System Database mode
+        binding.locationsExcludeModeGroup.addOnButtonCheckedListener { group, checkedId, isChecked
+            ->
+            if (!isChecked) return@addOnButtonCheckedListener
+
+            when (checkedId) {
+                R.id.locations_exclude_mode_exclude -> {
+                    isIncludeMode = true
+                    updateExcludeModeUI(binding)
+                }
+                R.id.locations_exclude_mode_include -> {
+                    isIncludeMode = false
+                    updateExcludeModeUI(binding)
+                }
+            }
         }
 
         // Set up add folder buttons
@@ -184,21 +198,21 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                     updateSaveButtonState()
                 }
             }
-            onNewLocation(openDocumentTreeLauncher)
+            onNewLocation()
         }
         binding.locationsExcludeAdd.setOnClickListener {
             pendingLocationCallback = { location ->
                 excludeLocationAdapter.add(location)
                 updateSaveButtonState()
             }
-            onNewLocation(openDocumentTreeLauncher)
+            onNewLocation()
         }
         binding.locationsFilterAdd.setOnClickListener {
             pendingLocationCallback = { location ->
                 filterLocationAdapter.add(location)
                 updateSaveButtonState()
             }
-            onNewLocation(localOnlyOpenDocumentTreeLauncher)
+            onNewLocation()
         }
 
         // Set up grant permission card click
@@ -217,9 +231,12 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         // Load data for the initial mode
         loadModeData(binding)
 
-        // Set initial selection state (no group logic; we manage checked state ourselves)
-        binding.locationsModeExclude.isChecked = isFilePickerMode
-        binding.locationsModeInclude.isChecked = !isFilePickerMode
+        // Set the initial toggle button selection
+        if (isFilePickerMode) {
+            binding.folderModeGroup.check(R.id.locations_mode_exclude)
+        } else {
+            binding.folderModeGroup.check(R.id.locations_mode_include)
+        }
 
         // Check storage permission status
         hasStoragePermission = checkStoragePermission()
@@ -231,7 +248,6 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             includeLocationAdapter.addAll(query.source)
             excludeLocationAdapter.addAll(query.exclude)
             binding.locationsWithHiddenSwitch.isChecked = query.withHidden
-            binding.locationsMultithreadSwitch.isChecked = query.multithread
         }
         // Load MediaStore data
         musicSettings.mediaStoreQuery.let { query ->
@@ -239,28 +255,10 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             binding.locationsExcludeNonMusicSwitch.isChecked = query.excludeNonMusic
 
             isIncludeMode = query.mode == MediaStore.FilterMode.INCLUDE
-            binding.locationsExcludeModeExclude.isChecked = isIncludeMode
-            binding.locationsExcludeModeInclude.isChecked = !isIncludeMode
+            binding.locationsExcludeModeGroup.check(
+                if (isIncludeMode) R.id.locations_exclude_mode_exclude
+                else R.id.locations_exclude_mode_include)
         }
-    }
-
-    private fun updateLocationMode(binding: DialogMusicLocationsBinding, filePicker: Boolean) {
-        // Enforce "selection required" behavior.
-        binding.locationsModeExclude.isChecked = filePicker
-        binding.locationsModeInclude.isChecked = !filePicker
-
-        isFilePickerMode = filePicker
-        updateModeUI(binding)
-        updateSaveButtonState()
-    }
-
-    private fun updateFilterMode(binding: DialogMusicLocationsBinding, include: Boolean) {
-        // Enforce "selection required" behavior.
-        binding.locationsExcludeModeExclude.isChecked = include
-        binding.locationsExcludeModeInclude.isChecked = !include
-
-        isIncludeMode = include
-        updateExcludeModeUI(binding)
     }
 
     override fun onStart() {
@@ -283,9 +281,10 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         binding.locationsFilterRecycler.adapter = null
     }
 
-    private fun onNewLocation(launcher: ActivityResultLauncher<Uri?>?) {
+    private fun onNewLocation() {
         L.d("Opening launcher")
-        val launcher = requireNotNull(launcher) { "Document tree launcher was not available" }
+        val launcher =
+            requireNotNull(openDocumentTreeLauncher) { "Document tree launcher was not available" }
 
         try {
             launcher.launch(null)
@@ -294,7 +293,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         }
     }
 
-    private fun addDocumentTreeUriToDirs(uri: Uri?, disableThirdParty: Boolean) {
+    private fun addDocumentTreeUriToDirs(uri: Uri?) {
         if (uri == null) {
             L.d("No URI given (user closed the dialog)")
             pendingLocationCallback = null
@@ -303,12 +302,11 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         val context = requireContext()
         val location = Location.Unopened.from(context, uri)
 
-        if (location.path.volume is Volume.ThirdParty && disableThirdParty) {
+        if (location != null) {
+            pendingLocationCallback?.invoke(location)
+        } else {
             requireContext().showToast(R.string.err_bad_location)
-            pendingLocationCallback = null
-            return
         }
-        pendingLocationCallback?.invoke(location)
         pendingLocationCallback = null
     }
 
@@ -399,11 +397,9 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 // File Picker mode - use secondary colors
                 setCardBackgroundColor(context.getAttrColorCompat(MR.attr.colorSecondaryContainer))
                 binding.locationsPermsDesc.setTextColor(
-                    context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                )
+                    context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer))
                 binding.locationsPermsSubtitle.setTextColor(
-                    context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                )
+                    context.getAttrColorCompat(MR.attr.colorSecondary))
                 binding.locationsPermsOpen.imageTintList =
                     context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
             } else {
@@ -412,24 +408,19 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 if (hasStoragePermission) {
                     // Has permission - use secondary colors
                     setCardBackgroundColor(
-                        context.getAttrColorCompat(MR.attr.colorSecondaryContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorSecondaryContainer))
                     binding.locationsPermsDesc.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer))
                     binding.locationsPermsSubtitle.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorSecondary))
                     binding.locationsPermsOpen.imageTintList =
                         context.getAttrColorCompat(MR.attr.colorOnSecondaryContainer)
                 } else {
                     setCardBackgroundColor(context.getAttrColorCompat(MR.attr.colorErrorContainer))
                     binding.locationsPermsDesc.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnErrorContainer)
-                    )
+                        context.getAttrColorCompat(MR.attr.colorOnErrorContainer))
                     binding.locationsPermsSubtitle.setTextColor(
-                        context.getAttrColorCompat(MR.attr.colorOnErrorContainer)
-                    )
+                        context.getAttrColorCompat(androidx.appcompat.R.attr.colorError))
                     binding.locationsPermsOpen.imageTintList =
                         context.getAttrColorCompat(MR.attr.colorOnErrorContainer)
                 }
@@ -481,10 +472,6 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 locationsExcludeNonMusicTitle.isVisible = false
                 locationsExcludeNonMusicDesc.isVisible = false
                 locationsExcludeNonMusic.isVisible = false
-
-                locationsMultithreadTitle.isVisible = isExtrasExpanded
-                locationsMultithreadDesc.isVisible = isExtrasExpanded
-                locationsMultithread.isVisible = isExtrasExpanded
             } else {
                 // System Database mode - show filter mode when expanded
                 // Hide include section
@@ -517,10 +504,6 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 locationsExcludeNonMusicTitle.isVisible = isExtrasExpanded
                 locationsExcludeNonMusicDesc.isVisible = isExtrasExpanded
                 locationsExcludeNonMusic.isVisible = isExtrasExpanded
-
-                locationsMultithreadTitle.isVisible = false
-                locationsMultithreadDesc.isVisible = false
-                locationsMultithread.isVisible = false
             }
         }
     }
@@ -542,9 +525,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 SAF.Query(
                     source = includeLocationAdapter.locations,
                     exclude = excludeLocationAdapter.locations,
-                    withHidden = binding.locationsWithHiddenSwitch.isChecked,
-                    multithread = binding.locationsMultithreadSwitch.isChecked,
-                )
+                    withHidden = binding.locationsWithHiddenSwitch.isChecked)
 
             if (!modeChanged && currentMode == LocationMode.SAF) {
                 configChanged = currentSafQuery != newSafQuery
@@ -565,8 +546,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 MediaStore.Query(
                     mode = filterMode,
                     filtered = filterLocationAdapter.locations,
-                    excludeNonMusic = binding.locationsExcludeNonMusicSwitch.isChecked,
-                )
+                    excludeNonMusic = binding.locationsExcludeNonMusicSwitch.isChecked)
 
             if (!modeChanged && currentMode == LocationMode.MEDIA_STORE) {
                 configChanged = currentMediaStoreQuery != newMediaStoreQuery

@@ -22,22 +22,14 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.AuxioService.Companion.INTENT_KEY_START_ID
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.widgets.WidgetComponent
-import org.oxycblt.musikr.MusicParent
-import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
 class PlaybackServiceFragment
@@ -45,7 +37,6 @@ private constructor(
     context: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
-    private val playbackSettings: PlaybackSettings,
     exoHolderFactory: ExoPlaybackStateHolder.Factory,
     sessionHolderFactory: MediaSessionHolder.Factory,
     widgetComponentFactory: WidgetComponent.Factory,
@@ -55,7 +46,6 @@ private constructor(
     @Inject
     constructor(
         private val playbackManager: PlaybackStateManager,
-        private val playbackSettings: PlaybackSettings,
         private val exoHolderFactory: ExoPlaybackStateHolder.Factory,
         private val sessionHolderFactory: MediaSessionHolder.Factory,
         private val widgetComponentFactory: WidgetComponent.Factory,
@@ -66,51 +56,17 @@ private constructor(
                 context,
                 foregroundListener,
                 playbackManager,
-                playbackSettings,
                 exoHolderFactory,
                 sessionHolderFactory,
                 widgetComponentFactory,
-                systemReceiverFactory,
-            )
+                systemReceiverFactory)
     }
 
     private val waitJob = Job()
-    private val scope = CoroutineScope(Dispatchers.Main + waitJob)
-    private var autoStopJob: Job? = null
     private val exoHolder = exoHolderFactory.create()
     private val sessionHolder = sessionHolderFactory.create(context, foregroundListener)
     private val widgetComponent = widgetComponentFactory.create(context)
-    private val systemReceiver =
-        systemReceiverFactory.create(
-            context,
-            widgetComponent,
-            onExitRequested = { playbackManager.endSession() },
-        )
-
-    private fun scheduleAutoStop() {
-        autoStopJob?.cancel()
-        autoStopJob =
-            scope.launch {
-                delay(AUTO_STOP_DELAY_MS)
-                L.d(
-                    "Auto-stop timer expired after ${AUTO_STOP_DELAY_MS / 60000} minutes of inactivity"
-                )
-                playbackManager.endSession()
-            }
-    }
-
-    private fun cancelAutoStop() {
-        autoStopJob?.cancel()
-        autoStopJob = null
-    }
-
-    private fun updateAutoStopTimer(isPlaying: Boolean) {
-        if (isPlaying) {
-            cancelAutoStop()
-        } else if (exoHolder.sessionOngoing) {
-            scheduleAutoStop()
-        }
-    }
+    private val systemReceiver = systemReceiverFactory.create(context, widgetComponent)
 
     // --- MEDIASESSION CALLBACKS ---
 
@@ -120,12 +76,11 @@ private constructor(
         widgetComponent.attach()
         systemReceiver.attach()
         playbackManager.addListener(this)
-        updateAutoStopTimer(playbackManager.progression.isPlaying)
         return sessionHolder.token
     }
 
     fun handleTaskRemoved() {
-        if (!playbackManager.progression.isPlaying || playbackSettings.exitOnTaskRemoval) {
+        if (!playbackManager.progression.isPlaying) {
             playbackManager.endSession()
         }
     }
@@ -139,16 +94,12 @@ private constructor(
                 IntegerTable.START_ID_ACTIVITY -> null
                 IntegerTable.START_ID_TASKER ->
                     DeferredPlayback.RestoreState(
-                        play = true,
-                        fallback = DeferredPlayback.ShuffleAll,
-                    )
+                        play = true, fallback = DeferredPlayback.ShuffleAll)
                 IntegerTable.START_ID_MEDIA_BUTTON -> {
                     if (!sessionHolder.tryMediaButtonIntent(intent)) {
                         // Malformed intent, need to restore state immediately
                         DeferredPlayback.RestoreState(
-                            play = true,
-                            fallback = DeferredPlayback.ShuffleAll,
-                        )
+                            play = true, fallback = DeferredPlayback.ShuffleAll)
                     } else {
                         null
                     }
@@ -173,7 +124,6 @@ private constructor(
         get() = if (exoHolder.sessionOngoing) sessionHolder.notification else null
 
     fun release() {
-        autoStopJob?.cancel()
         waitJob.cancel()
         playbackManager.removeListener(this)
         systemReceiver.release()
@@ -182,25 +132,7 @@ private constructor(
         exoHolder.release()
     }
 
-    override fun onNewPlayback(
-        parent: MusicParent?,
-        queue: List<Song>,
-        index: Int,
-        isShuffled: Boolean,
-    ) {
-        cancelAutoStop()
-    }
-
-    override fun onProgressionChanged(progression: Progression) {
-        // Update timer whenever play/pause state changes
-        updateAutoStopTimer(progression.isPlaying)
-    }
-
     override fun onSessionEnded() {
         foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
-    }
-
-    private companion object {
-        private const val AUTO_STOP_DELAY_MS = 30L * 60L * 1000L
     }
 }

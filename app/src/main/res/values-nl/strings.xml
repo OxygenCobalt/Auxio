@@ -16,9 +16,9 @@
     <string name="lbl_sort_asc">Oplopend</string>
     <string name="lbl_play">Speel af</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="set_play_song_from_all">Speel van alle nummers</string>
+    <string name="set_play_song_from_all">Speel van alle nummers </string>
     <string name="set_play_song_from_album">Speel vanaf album</string>
-    <string name="set_play_song_from_artist">Speel van artiest</string>
+    <string name="set_play_song_from_artist">Speel van artiest </string>
     <string name="lbl_playback">Nu afspelen</string>
     <string name="lbl_queue">Wachtrij</string>
     <string name="lbl_play_next">Speel volgende</string>
@@ -41,6 +41,7 @@
     <string name="set_theme_night">Donker</string>
     <string name="set_accent">Kleuren schema</string>
     <string name="set_display">Scherm</string>
+    <string name="set_notif_action">Aangepaste meldingsactie</string>
     <string name="set_audio">Audio</string>
     <string name="set_personalize">Personaliseer</string>
     <string name="set_play_in_list_with">Bij het afspelen vanuit de bibliotheek</string>
@@ -211,7 +212,7 @@
     <string name="lbl_confirm_delete_playlist">Verwijder afspeellijst?</string>
     <string name="set_action_mode_repeat">Herhaalmodus</string>
     <string name="desc_queue_bar">Open de wachtrij</string>
-    <string name="fmt_deletion_info">%s verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="fmt_deletion_info">%s verwijderen\? Dit kan niet ongedaan worden gemaakt.</string>
     <string name="set_cover_mode_off">Uit</string>
     <string name="set_cover_mode_high_quality">Hoge kwaliteit</string>
     <string name="lbl_genre">Genre</string>

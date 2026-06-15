@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.R as MR
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
@@ -30,6 +31,8 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
@@ -48,7 +51,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
     override fun onBindingCreated(
         binding: FragmentPlaybackBarBinding,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ) {
         super.onBindingCreated(binding, savedInstanceState)
         val context = requireContext()
@@ -69,6 +72,10 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         // Set up actions
         binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
 
+        //        binding.playbackProgressBar.wavelength = 48
+        //        binding.playbackProgressBar.speed = 20
+        //        binding.playbackProgressBar.amplitude = 5
+
         // -- VIEWMODEL SETUP ---
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
@@ -77,13 +84,11 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             playbackModel.currentBarAction,
             playbackModel.repeatMode,
             playbackModel.isShuffled,
-            ::updateBarAction,
-        )
+            ::updateBarAction)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
         super.onDestroyBinding(binding)
-        binding.playbackSecondaryAction.clearPendingIcon()
         // Marquee elements leak if they are not disabled when the views are destroyed.
         binding.playbackSong.isSelected = false
         binding.playbackInfo.isSelected = false
@@ -104,7 +109,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     }
 
     private fun updatePlaying(isPlaying: Boolean) {
-        requireBinding().playbackPlayPause.isChecked = isPlaying
+        requireBinding().playbackPlayPause.isActivated = isPlaying
     }
 
     private fun updatePosition(positionDs: Long) {
@@ -114,7 +119,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private fun updateBarAction(
         actionMode: ActionMode,
         repeatMode: RepeatMode,
-        isShuffled: Boolean,
+        isShuffled: Boolean
     ) {
         val binding = requireBinding()
         when (actionMode) {
@@ -124,8 +129,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                     if (tag != actionMode) {
                         setIconResource(R.drawable.ic_skip_next_24)
                         contentDescription = getString(R.string.desc_skip_next)
+                        iconTint = context.getAttrColorCompat(MR.attr.colorOnSurfaceVariant)
                         setOnClickListener { playbackModel.next() }
-                        isChecked = false
                         tag = actionMode
                     }
                 }
@@ -135,11 +140,12 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 binding.playbackSecondaryAction.apply {
                     if (tag != actionMode) {
                         contentDescription = getString(R.string.desc_change_repeat)
+                        iconTint = context.getColorCompat(R.color.sel_activatable_icon)
                         setOnClickListener { playbackModel.toggleRepeatMode() }
                         tag = actionMode
                     }
                     setIconResource(repeatMode.icon)
-                    isChecked = repeatMode != RepeatMode.NONE
+                    isActivated = repeatMode != RepeatMode.NONE
                 }
             }
             ActionMode.SHUFFLE -> {
@@ -148,10 +154,11 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                     if (tag != actionMode) {
                         setIconResource(R.drawable.sel_shuffle_state_24)
                         contentDescription = getString(R.string.desc_shuffle)
+                        iconTint = context.getColorCompat(R.color.sel_activatable_icon)
                         setOnClickListener { playbackModel.toggleShuffled() }
                         tag = actionMode
                     }
-                    isChecked = isShuffled
+                    isActivated = isShuffled
                 }
             }
         }

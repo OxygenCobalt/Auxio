@@ -14,7 +14,7 @@
         android:focusable="true"
         app:liftOnScroll="true">
 
-        <org.oxycblt.auxio.ui.AuxioToolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/preferences_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

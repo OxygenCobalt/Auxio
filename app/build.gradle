@@ -1,14 +1,16 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id "com.android.application"
+    id "kotlin-android"
     id "androidx.navigation.safeargs.kotlin"
     id "kotlin-parcelize"
     id "dagger.hilt.android.plugin"
+    id "kotlin-kapt"
     id "com.google.devtools.ksp"
+    id "org.jetbrains.kotlin.android"
 }
 
 android {
+    compileSdk target_sdk
     // Auxio implicitly depends on the native modules, explicitly specify it
     // here so the libraries are still stripped.
     ndkVersion ndk_version
@@ -16,13 +18,10 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "4.1.0"
-        versionCode 70
+        versionName "4.0.10"
+        versionCode 69
 
         minSdk min_sdk
-        // randomly flickers between deprecated and required depending on what mood my gradle is in
-        // keep it for safety
-        compileSdk target_sdk
         targetSdk target_sdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -30,14 +29,13 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
-        }
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs += "-Xjvm-default=all"
     }
 
     buildTypes {
@@ -73,14 +71,6 @@ android {
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_21
-        freeCompilerArgs.add("-jvm-default=enable")
-        freeCompilerArgs.add("-Xannotation-default-target=param-property")
-    }
-}
-
 dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -95,12 +85,7 @@ dependencies {
     // General
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:1.7.1"
-    implementation "androidx.activity:activity-ktx:1.13.0"
-    // good news: androidx-fragment 1.8.9's predictive back no longer crashes when you navigate
-    // back across nested views too fast
-    // bad news: it still doesn't cope well with home's inflation latency and freezes up
-    // if you navigate twice very fast and time it right
-    // keep it pinned down to pre-predictive back for now...
+    implementation "androidx.activity:activity-ktx:1.10.1"
     // noinspection GradleDependency
     implementation "androidx.fragment:fragment-ktx:1.6.2"
 
@@ -116,7 +101,7 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     // Lifecycle
-    def lifecycle_version = "2.10.0"
+    def lifecycle_version = "2.9.2"
     implementation "androidx.lifecycle:lifecycle-common:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -127,7 +112,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
 
     // Media
-    implementation "androidx.media:media:1.7.1"
+    implementation "androidx.media:media:1.7.0"
 
     // Android Auto
     implementation "androidx.car.app:app:1.7.0"
@@ -155,18 +140,18 @@ dependencies {
     implementation project(":media-lib-decoder-ffmpeg")
 
     // Image loading
-    implementation 'io.coil-kt.coil3:coil-core:3.4.0'
+    implementation 'io.coil-kt.coil3:coil-core:3.3.0'
 
     // Material
     // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
     //  PR a fix.
-    implementation "com.google.android.material:material:1.14.0-alpha10"
+    implementation "com.google.android.material:material:1.13.0-beta01"
 
     // Dependency Injection
     implementation "com.google.dagger:dagger:$hilt_version"
-    ksp "com.google.dagger:dagger-compiler:$hilt_version"
+    kapt "com.google.dagger:dagger-compiler:$hilt_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    ksp "com.google.dagger:hilt-android-compiler:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Logging
     implementation 'com.jakewharton.timber:timber:5.0.1'
@@ -178,5 +163,5 @@ dependencies {
     implementation 'com.joaomgcd:taskerpluginlibrary:0.4.10'
 
     // Fuzzy search
-    implementation 'org.apache.commons:commons-text:1.15.0'
+    implementation 'org.apache.commons:commons-text:1.14.0'
 }

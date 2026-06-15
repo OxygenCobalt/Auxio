@@ -1,9 +1,9 @@
 <p align="center"><img src="fastlane/metadata/android/en-US/images/icon.png" width="150"></p>
 <h1 align="center"><b>Auxio</b></h1>
-<h4 align="center">A simple, rational music player for Android.</h4>
+<h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.1.0">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.1.0&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.0.10">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.0.10&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -26,7 +26,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that use outdated Android functionality. In short, **It plays music.**
+Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
 
 **The default branch is the development version of the repository. For a stable version, see the master branch.**
 
@@ -54,7 +54,7 @@ precise/original dates, sort tags, and more
 - SD Card-aware folder management
 - Reliable playlisting functionality
 - Playback state persistence
-- Android Auto support
+- Android auto support
 - Automatic gapless playback
 - Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)
 - External equalizer support (ex. Wavelet)
@@ -76,21 +76,10 @@ precise/original dates, sort tags, and more
 
 You can support Auxio's development through [my Github Sponsors page](https://github.com/sponsors/OxygenCobalt). Get the ability to prioritize features and have your profile added to the README, Release Changelogs, and even the app itself!
 
-<h3 align="center">Legendary supporters:</h3>
-<p align="center">
-    <a href="https://github.com/bkkellyh"><img src="https://avatars.githubusercontent.com/u/248118457?v=4" width=250 /></a> 
-</p>
-<h3 align="center"><a href="https://github.com/bkkellyh">@bkkellyh</a> - <i>$500!</i></h3>
-
-<hr />
-
 <p align="center"><b>$8/month supporters:</b></p>
 
 <p align="center">
-    <a href="https://github.com/uku3lig"><img src="https://avatars.githubusercontent.com/u/61147779?v=4" width=50 /></a>
-</p>
-<p align="center">
-    And **1** Private Sponsor!
+    <a href="https://github.com/alanorth"><img src="https://avatars.githubusercontent.com/u/191754?v=4" width=50 /></a>
 </p>
 
 ## Building
@@ -102,68 +91,6 @@ parsing. This adds some caveats to the build process:
 download the external code.
 3. You are **unable** to build this project on windows, as the custom Media3 build runs shell scripts that
 will only work on unix-based systems.
-
-### Set up Android Studio
-
-#### Install Android Studio.
-
-```bash
-pkg -S android-studio
-```
-
-#### Configuring Android Studio:
-
-- Be sure to have NDK tools, version 28.2.13676358. You can search it on Languages & Frameworks > Android SDK.
-- Install Java-21 with your system package manager
-
-    ```bash
-    sudo pkg -S jdk21-openjdk
-    ```
-    Additionally: Set java version to jdk21-openjdk
-
-- Run ./gradlew assembleDebug
-
-#### Connecting to your Android Device
-
-You can connect your Mobile Phone through USB to run the app. 
-
-1. **Enable Developer Options on your phone**
-   - Go to **Settings > About phone**  
-   - Tap **Build number** 7 times until you see *"You are now a developer!"*
-
-2. **Enable USB debugging**
-   - Go to **Settings > Developer options**  
-   - Turn on **USB debugging**
-
-3. **Connect your phone to the computer**
-   - Use a USB cable  
-   - On your phone, accept the *Allow USB debugging?* prompt
-
-4. **Verify that your device is detected**
-   ```bash
-   cd ~/Android/Sdk/platform-tools
-   ./adb devices
-   ```
-
-Android Studio also offers virtual devices that come with this pre-configured.
-
-#### Install the app on the Android Phone
-To install the app on your physical device or emulator, run this command:
-
-```bash
-./gradlew installDebug
-```
-
-Auxio should now appear in the list of Apps
-
-#### Load music to Auxio (Optional)
-
-You can move files from your pc to your device / emulator to test the music using this command:
-
-```bash
-cd ~/Android/Sdk/platform-tools
-./adb push ~Music/ /sdcard/Music
-```
 
 ## Contributing
 

@@ -36,9 +36,8 @@ internal data class RawPlaylist(
     @Relation(
         parentColumn = "playlistUid",
         entityColumn = "songUid",
-        associateBy = Junction(PlaylistSongCrossRef::class),
-    )
-    val songs: List<PlaylistSong>,
+        associateBy = Junction(PlaylistSongCrossRef::class))
+    val songs: List<PlaylistSong>
 )
 
 /**
@@ -64,5 +63,5 @@ internal data class RawPlaylist(
 internal data class PlaylistSongCrossRef(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(index = true) val playlistUid: Music.UID,
-    @ColumnInfo(index = true) val songUid: Music.UID,
+    @ColumnInfo(index = true) val songUid: Music.UID
 )

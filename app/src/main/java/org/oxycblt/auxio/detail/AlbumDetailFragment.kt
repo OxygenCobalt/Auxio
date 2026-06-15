@@ -41,6 +41,7 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
@@ -61,8 +62,6 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
 
     override fun getDetailListAdapter() = albumListAdapter
 
-    override fun getToolbarParent() = detailModel.currentAlbum.value
-
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
@@ -77,11 +76,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::updatePlayback,
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
@@ -92,21 +87,12 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         detailModel.albumSongInstructions.consume()
     }
 
-    override fun onPlayParent(parent: Album) {
-        playbackModel.play(parent)
-    }
-
-    override fun onShuffleParent(parent: Album) {
-        playbackModel.shuffle(parent)
-    }
-
     override fun onRealClick(item: Song) {
         playbackModel.play(item, detailModel.playInAlbumWith)
     }
 
     override fun onOpenParentMenu() {
-        val currentAlbum = detailModel.currentAlbum.value ?: return
-        listModel.openMenu(R.menu.detail_album, currentAlbum)
+        listModel.openMenu(R.menu.detail_album, unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     override fun onOpenMenu(item: Song) {
@@ -128,7 +114,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
         val context = requireContext()
         val name = album.name.resolve(context)
 
-        binding.detailNormalToolbar.title = name
+        binding.detailToolbarTitle.text = name
         binding.detailCover.bind(album)
         // The type text depends on the release type (Album, EP, Single, etc.)
         binding.detailType.text = album.releaseType.resolve(context)
@@ -139,7 +125,9 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
 
             // Add a QoL behavior where navigation to the artist will occur if the artist
             // name is pressed.
-            setOnClickListener { detailModel.showArtist(album) }
+            setOnClickListener {
+                detailModel.showArtist(unlikelyToBeNull(detailModel.currentAlbum.value))
+            }
         }
 
         // Date, song count, and duration map to the info text
@@ -151,14 +139,20 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             text = context.getString(R.string.fmt_three, date, songCount, duration)
         }
 
-        binding.detailPlayButton?.setOnClickListener { playbackModel.play(album) }
-        binding.detailShuffleButton?.setOnClickListener { playbackModel.shuffle(album) }
-        setToolbarPlaybackButtonsEnabled(true)
+        binding.detailPlayButton?.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
+        }
+        binding.detailToolbarPlay.setOnClickListener {
+            playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
+        }
+        binding.detailShuffleButton?.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
+        }
+        binding.detailToolbarShuffle.setOnClickListener {
+            playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
+        }
         updatePlayback(
-            playbackModel.song.value,
-            playbackModel.parent.value,
-            playbackModel.isPlaying.value,
-        )
+            playbackModel.song.value, playbackModel.parent.value, playbackModel.isPlaying.value)
     }
 
     private fun updateList(list: List<Item>) {
@@ -177,8 +171,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             // Songs should be scrolled to if the album matches, or a new detail
             // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
-                val currentAlbum = detailModel.currentAlbum.value ?: return
-                if (currentAlbum == show.song.album) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == show.song.album) {
                     L.d("Navigating to a ${show.song} in this album")
                     scrollToAlbumSong(show.song)
                     detailModel.toShow.consume()
@@ -192,8 +185,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             // If the album matches, no need to do anything. Otherwise launch a new
             // detail fragment.
             is Show.AlbumDetails -> {
-                val currentAlbum = detailModel.currentAlbum.value ?: return
-                if (currentAlbum == show.album) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == show.album) {
                     L.d("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
                     detailModel.toShow.consume()
@@ -259,8 +251,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     AlbumDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray()
-                    )
+                        decision.songs.map { it.uid }.toTypedArray())
                 }
                 is PlaylistDecision.New,
                 is PlaylistDecision.Import,
@@ -279,9 +270,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         albumListAdapter.setPlaying(
-            song.takeIf { parent == detailModel.currentAlbum.value },
-            isPlaying,
-        )
+            song.takeIf { parent == detailModel.currentAlbum.value }, isPlaying)
     }
 
     private fun handlePlaybackDecision(decision: PlaybackDecision?) {
@@ -309,7 +298,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
             val binding = requireBinding()
             // RecyclerView will scroll assuming it has the total height of the screen (i.e a
             // collapsed appbar), so we need to collapse the appbar if that's the case.
-            binding.detailAppbar?.setExpanded(false)
+            binding.detailAppbar.setExpanded(false)
             if (!binding.detailRecycler.canScroll()) {
                 // Don't scroll if the RecyclerView goes off screen. If we go anyway, overscroll
                 // kicks in and creates a weird bounce effect.
@@ -329,7 +318,7 @@ class AlbumDetailFragment : DetailFragment<Album, Song>() {
                             viewEnd: Int,
                             boxStart: Int,
                             boxEnd: Int,
-                            snapPreference: Int,
+                            snapPreference: Int
                         ) =
                             (boxStart + (boxEnd - boxStart) / 2) -
                                 (viewStart + (viewEnd - viewStart) / 2)
