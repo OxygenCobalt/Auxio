@@ -84,8 +84,8 @@
     <string name="lbl_playback">İndi səslənir</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Həcm</string>
-    <string name="lbl_replaygain_track">ReplayGain Trek Nizamlanması</string>
-    <string name="lbl_replaygain_album">ReplayGain Albom Nizamlanması</string>
+    <string name="lbl_replaygain_track">ReplayGain trek nizamlanması</string>
+    <string name="lbl_replaygain_album">ReplayGain albom nizamlanması</string>
     <string name="lbl_ok">Oldu</string>
     <string name="lbl_save">Saxla</string>
     <string name="lbl_sort">Çeşidlə</string>
