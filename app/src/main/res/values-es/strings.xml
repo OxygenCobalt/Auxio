@@ -132,7 +132,7 @@
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
     <string name="set_play_song_none">Reproducir desde el elemento que se muestra</string>
     <string name="cdc_flac">Códec de audio sin pérdida libre (FLAC)</string>
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <string name="cdc_aac">Codificación de sonido avanzado (AAC)</string>
     <string name="fmt_indexing">Cargando tu biblioteca de música… (%1$d/%2$d)</string>
     <string name="fmt_lib_artist_count">Artistas cargados: %d</string>
     <string name="fmt_lib_genre_count">Géneros cargados: %d</string>
@@ -202,7 +202,7 @@
     <string name="set_cover_mode_off">Desactivadas</string>
     <string name="set_action_mode_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
-    <string name="set_separators_and">Et (&amp;)</string>
+    <string name="set_separators_and">Y griega inglesa</string>
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
@@ -351,4 +351,6 @@
     <string name="set_saf_multithread_desc">Más rápido, pero falla en algunos dispositivos</string>
     <string name="err_share_too_large">Demasiado grande para compartir</string>
     <string name="err_share_failed">Incapaz de compartir esto</string>
+    <string name="set_task_exit">Salir siempre al cerrar</string>
+    <string name="set_task_exit_desc">Detiene la reproducción cuando se elimina de los recientes, incluso si reproduce</string>
 </resources>
