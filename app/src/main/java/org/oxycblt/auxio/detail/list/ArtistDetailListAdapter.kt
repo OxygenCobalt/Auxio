@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.detail.list
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
@@ -127,8 +126,8 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: View) =
-            ArtistAlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
+        fun from(parent: ViewGroup) =
+            ArtistAlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater, parent, false))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -179,8 +178,8 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: View) =
-            ArtistSongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
+        fun from(parent: ViewGroup) =
+            ArtistSongViewHolder(ItemSongBinding.inflate(parent.context.inflater, parent, false))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

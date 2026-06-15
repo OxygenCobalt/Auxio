@@ -56,7 +56,7 @@ class CoverProvider : ContentProvider() {
         projection: Array<out String>?,
         selection: String?,
         selectionArgs: Array<out String>?,
-        sortOrder: String?
+        sortOrder: String?,
     ): Cursor = throw UnsupportedOperationException()
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? = null
@@ -67,7 +67,7 @@ class CoverProvider : ContentProvider() {
         uri: Uri,
         values: ContentValues?,
         selection: String?,
-        selectionArgs: Array<out String>?
+        selectionArgs: Array<out String>?,
     ): Int = 0
 
     companion object {

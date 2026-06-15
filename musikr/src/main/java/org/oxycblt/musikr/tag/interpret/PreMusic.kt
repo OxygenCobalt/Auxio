@@ -54,7 +54,7 @@ internal data class PreSong(
     val cover: Cover?,
     val preAlbum: PreAlbum,
     val preArtists: List<PreArtist>,
-    val preGenres: List<PreGenre>
+    val preGenres: List<PreGenre>,
 )
 
 internal data class PreAlbum(
@@ -91,7 +91,4 @@ internal data class PreArtist(val musicBrainzId: UUID?, val name: Name, val rawN
             ?: Music.UID.auxio(Music.UID.Item.ARTIST) { update(rawName) }
 }
 
-internal data class PreGenre(
-    val name: Name,
-    val rawName: String?,
-)
+internal data class PreGenre(val name: Name, val rawName: String?)

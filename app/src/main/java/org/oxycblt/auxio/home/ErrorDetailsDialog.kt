@@ -77,7 +77,8 @@ class ErrorDetailsDialog : ViewBindingMaterialDialogFragment<DialogErrorDetailsB
     private fun copyStackTrace() {
         requireNotNull(clipboardManager) { "Clipboard was unavailable" }
             .setPrimaryClip(
-                ClipData.newPlainText("Exception Stack Trace", args.error.stackTraceToString()))
+                ClipData.newPlainText("Exception Stack Trace", args.error.stackTraceToString())
+            )
         // A copy notice is shown by the system from Android 13 onwards
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             requireContext().showToast(R.string.lbl_copied)

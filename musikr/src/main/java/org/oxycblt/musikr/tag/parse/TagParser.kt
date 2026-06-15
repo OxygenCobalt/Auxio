@@ -31,6 +31,10 @@ internal interface TagParser {
 private data object TagParserImpl : TagParser {
     override fun parse(metadata: Metadata): ParsedTags {
         val compilation = metadata.isCompilation()
+        val artistMusicBrainzIds =
+            metadata.artistMusicBrainzIds() ?: metadata.composerMusicBrainzIds() ?: listOf()
+        val artistNames = metadata.artistNames() ?: metadata.composerNames() ?: listOf()
+        val artistSortNames = metadata.artistSortNames() ?: metadata.composerSortNames() ?: listOf()
         return ParsedTags(
             durationMs = metadata.properties.durationMs,
             replayGainTrackAdjustment = metadata.replayGainTrackAdjustment(),
@@ -49,9 +53,9 @@ private data object TagParserImpl : TagParser {
             // we don't have any other release types
             releaseTypes =
                 metadata.releaseTypes() ?: listOf("compilation").takeIf { compilation } ?: listOf(),
-            artistMusicBrainzIds = metadata.artistMusicBrainzIds() ?: listOf(),
-            artistNames = metadata.artistNames() ?: listOf(),
-            artistSortNames = metadata.artistSortNames() ?: listOf(),
+            artistMusicBrainzIds = artistMusicBrainzIds,
+            artistNames = artistNames,
+            artistSortNames = artistSortNames,
             albumArtistMusicBrainzIds = metadata.albumArtistMusicBrainzIds() ?: listOf(),
             // Compilation pretty heavily implies various artists in the case that we don't
             // have any other album artists
@@ -60,6 +64,7 @@ private data object TagParserImpl : TagParser {
                     ?: listOf("Various Artists").takeIf { compilation }
                     ?: listOf(),
             albumArtistSortNames = metadata.albumArtistSortNames() ?: listOf(),
-            genreNames = metadata.genreNames() ?: listOf())
+            genreNames = metadata.genreNames() ?: listOf(),
+        )
     }
 }

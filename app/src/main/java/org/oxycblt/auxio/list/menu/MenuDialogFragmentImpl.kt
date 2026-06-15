@@ -166,7 +166,8 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Menu.ForArtist>() {
                 R.id.action_play_next,
                 R.id.action_queue_add,
                 R.id.action_playlist_add,
-                R.id.action_share)
+                R.id.action_share,
+            )
         } else {
             setOf()
         }
@@ -188,7 +189,8 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Menu.ForArtist>() {
                     context.getPlural(R.plurals.fmt_song_count, menu.artist.songs.size)
                 } else {
                     getString(R.string.def_song_count)
-                })
+                },
+            )
     }
 
     override fun onClick(item: MenuItem, menu: Menu.ForArtist) {
@@ -239,7 +241,8 @@ class GenreMenuDialogFragment : MenuDialogFragment<Menu.ForGenre>() {
             getString(
                 R.string.fmt_two,
                 context.getPlural(R.plurals.fmt_artist_count, menu.genre.artists.size),
-                context.getPlural(R.plurals.fmt_song_count, menu.genre.songs.size))
+                context.getPlural(R.plurals.fmt_song_count, menu.genre.songs.size),
+            )
     }
 
     override fun onClick(item: MenuItem, menu: Menu.ForGenre) {
@@ -290,7 +293,8 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
                 R.id.action_queue_add,
                 R.id.action_playlist_add,
                 R.id.action_export,
-                R.id.action_share)
+                R.id.action_share,
+            )
         } else {
             setOf()
         }
@@ -352,7 +356,10 @@ class SelectionMenuDialogFragment : MenuDialogFragment<Menu.ForSelection>() {
 
     override fun updateMenu(binding: DialogMenuBinding, menu: Menu.ForSelection) {
         binding.menuCover.bind(
-            menu.songs, getString(R.string.desc_selection_image), R.drawable.ic_song_24)
+            menu.songs,
+            getString(R.string.desc_selection_image),
+            R.drawable.ic_song_24,
+        )
         binding.menuType.text = getString(R.string.lbl_selection)
         binding.menuName.text =
             requireContext().getPlural(R.plurals.fmt_song_count, menu.songs.size)

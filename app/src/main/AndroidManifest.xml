@@ -50,7 +50,7 @@
             android:launchMode="singleTask"
             android:allowCrossUidActivitySwitchFromBelow="false"
             android:roundIcon="@mipmap/ic_launcher"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustNothing">
 
             <intent-filter>
                 <!-- Expose that we are a music player. -->

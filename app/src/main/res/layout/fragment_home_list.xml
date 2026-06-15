@@ -28,14 +28,15 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_medium">
 
-            <ImageView
+            <org.oxycblt.auxio.home.list.CookieImageView
                 android:id="@+id/home_no_music_placeholder"
-                android:layout_width="@dimen/size_icon_huge"
-                android:layout_height="@dimen/size_icon_huge"
+                android:layout_width="@dimen/size_fast_scroll_popup"
+                android:layout_height="@dimen/size_fast_scroll_popup"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:src="@drawable/ic_song_48"
                 tools:ignore="ContentDescription"
-                app:tint="?attr/colorOnSurface" />
+                android:backgroundTint="?attr/colorSurfaceVariant"
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <TextView
                 android:id="@+id/home_no_music_msg"

@@ -21,8 +21,8 @@ package org.oxycblt.auxio.list.menu
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.view.SupportMenuInflater
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
@@ -115,7 +115,7 @@ abstract class MenuDialogFragment<M : Menu> :
         // Since we don't have (and don't want) a dummy view to inflate this menu, just
         // depend on the AndroidX Toolbar internal API and hope for the best.
         @SuppressLint("RestrictedApi") val builder = MenuBuilder(requireContext())
-        MenuInflater(requireContext()).inflate(casted.res, builder)
+        SupportMenuInflater(requireContext()).inflate(casted.res, builder)
 
         // Disable any menu options as specified by the impl
         val disabledIds = getDisabledItemIds(casted)

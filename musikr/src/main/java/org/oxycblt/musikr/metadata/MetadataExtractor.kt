@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.musikr.fs.File
 
 internal interface MetadataExtractor {
-    suspend fun extract(deviceFile: File): Metadata?
+    suspend fun extract(deviceFile: File): MetadataResult
 
     companion object {
         fun from(context: Context): MetadataExtractor =
@@ -34,13 +34,23 @@ internal interface MetadataExtractor {
     }
 }
 
+sealed interface MetadataResult {
+    data class Success(val metadata: Metadata?) : MetadataResult
+
+    data object NoMetadata : MetadataResult
+
+    data object NotAudio : MetadataResult
+
+    data object ProviderFailed : MetadataResult
+}
+
 private class MetadataExtractorImpl(private val contentResolver: ContentResolver) :
     MetadataExtractor {
-    override suspend fun extract(deviceFile: File): Metadata? =
+    override suspend fun extract(deviceFile: File): MetadataResult =
         withContext(Dispatchers.IO) {
             contentResolver.openFileDescriptor(deviceFile.uri, "r")?.use { fd ->
                 val fis = FileInputStream(fd.fileDescriptor)
                 TagLibJNI.open(deviceFile, fis).also { fis.close() }
-            }
+            } ?: MetadataResult.ProviderFailed
         }
 }

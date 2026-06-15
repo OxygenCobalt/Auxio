@@ -55,7 +55,9 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     override val theme: Int
         get() =
             sharedPreferences.getInt(
-                getString(R.string.set_key_theme), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                getString(R.string.set_key_theme),
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+            )
 
     override val useBlackTheme: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_black_theme), false)
@@ -63,7 +65,8 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     override var accent: Accent
         get() =
             Accent.from(
-                sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT))
+                sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT)
+            )
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_accent), value.index)

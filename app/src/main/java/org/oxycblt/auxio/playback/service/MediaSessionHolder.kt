@@ -42,8 +42,6 @@ import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.music.service.MediaSessionUID
 import org.oxycblt.auxio.music.service.toMediaDescription
-import org.oxycblt.auxio.playback.ActionMode
-import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
@@ -65,30 +63,28 @@ private constructor(
     private val context: Context,
     private val foregroundListener: ForegroundListener,
     private val playbackManager: PlaybackStateManager,
-    private val playbackSettings: PlaybackSettings,
     private val bitmapProvider: BitmapProvider,
     private val imageSettings: ImageSettings,
-    private val mediaSessionInterface: MediaSessionInterface
-) : PlaybackStateManager.Listener, ImageSettings.Listener, PlaybackSettings.Listener {
+    private val mediaSessionInterface: MediaSessionInterface,
+) : PlaybackStateManager.Listener, ImageSettings.Listener {
 
     class Factory
     @Inject
     constructor(
         private val playbackManager: PlaybackStateManager,
-        private val playbackSettings: PlaybackSettings,
         private val bitmapProvider: BitmapProvider,
         private val imageSettings: ImageSettings,
-        private val mediaSessionInterface: MediaSessionInterface
+        private val mediaSessionInterface: MediaSessionInterface,
     ) {
         fun create(context: Context, foregroundListener: ForegroundListener) =
             MediaSessionHolder(
                 context,
                 foregroundListener,
                 playbackManager,
-                playbackSettings,
                 bitmapProvider,
                 imageSettings,
-                mediaSessionInterface)
+                mediaSessionInterface,
+            )
     }
 
     private val mediaSession = MediaSessionCompat(context, context.packageName)
@@ -101,7 +97,6 @@ private constructor(
 
     fun attach() {
         playbackManager.addListener(this)
-        playbackSettings.registerListener(this)
         imageSettings.registerListener(this)
         mediaSession.apply {
             isActive = true
@@ -120,7 +115,6 @@ private constructor(
     fun release() {
         bitmapProvider.release()
         playbackManager.removeListener(this)
-        playbackSettings.unregisterListener(this)
         imageSettings.unregisterListener(this)
         mediaSession.apply {
             isActive = false
@@ -156,15 +150,16 @@ private constructor(
                 PlaybackStateCompat.SHUFFLE_MODE_ALL
             } else {
                 PlaybackStateCompat.SHUFFLE_MODE_NONE
-            })
-        invalidateSecondaryAction()
+            }
+        )
+        invalidateNotificationActions()
     }
 
     override fun onNewPlayback(
         parent: MusicParent?,
         queue: List<Song>,
         index: Int,
-        isShuffled: Boolean
+        isShuffled: Boolean,
     ) {
         updateMediaMetadata(playbackManager.currentSong, parent)
         updateQueue(queue)
@@ -185,9 +180,10 @@ private constructor(
                 RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
                 RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
                 RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
-            })
+            }
+        )
 
-        invalidateSecondaryAction()
+        invalidateNotificationActions()
     }
 
     // --- SETTINGS OVERRIDES ---
@@ -195,11 +191,6 @@ private constructor(
     override fun onImageSettingsChanged() {
         // Need to reload the metadata cover.
         updateMediaMetadata(playbackManager.currentSong, playbackManager.parent)
-    }
-
-    override fun onNotificationActionChanged() {
-        // Need to re-load the action shown in the notification.
-        invalidateSecondaryAction()
     }
 
     // --- MEDIASESSION OVERRIDES ---
@@ -238,7 +229,8 @@ private constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
-                    song.album.artists.resolveNames(context))
+                    song.album.artists.resolveNames(context),
+                )
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
@@ -249,13 +241,16 @@ private constructor(
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
                 .putText(
                     PlaybackNotification.KEY_PARENT,
-                    parent?.name?.resolve(context) ?: context.getString(R.string.lbl_all_songs))
+                    parent?.name?.resolve(context) ?: context.getString(R.string.lbl_all_songs),
+                )
                 .putText(
                     MetadataExtras.KEY_SUBTITLE_LINK_MEDIA_ID,
-                    MediaSessionUID.SingleItem(song.artists[0].uid).toString())
+                    MediaSessionUID.SingleItem(song.artists[0].uid).toString(),
+                )
                 .putText(
                     MetadataExtras.KEY_DESCRIPTION_LINK_MEDIA_ID,
-                    MediaSessionUID.SingleItem(song.album.uid).toString())
+                    MediaSessionUID.SingleItem(song.album.uid).toString(),
+                )
         // These fields are nullable and so we must check first before adding them to the fields.
         song.track?.let {
             L.d("Adding track information")
@@ -288,7 +283,8 @@ private constructor(
                     _notification.updateMetadata(metadata)
                     foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
                 }
-            })
+            },
+        )
     }
 
     /**
@@ -301,7 +297,9 @@ private constructor(
             queue.mapIndexed { i, song ->
                 val description =
                     song.toMediaDescription(
-                        context, { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) })
+                        context,
+                        { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) },
+                    )
                 // Store the item index so we can then use the analogous index in the
                 // playback state.
                 MediaSessionCompat.QueueItem(description, i.toLong())
@@ -324,57 +322,40 @@ private constructor(
 
         // Android 13+ relies on custom actions in the notification.
 
-        // Add the secondary action (either repeat/shuffle depending on the configuration)
-        val secondaryAction =
-            when (playbackSettings.notificationAction) {
-                ActionMode.SHUFFLE -> {
-                    L.d("Using shuffle MediaSession action")
-                    PlaybackStateCompat.CustomAction.Builder(
-                        PlaybackActions.ACTION_INVERT_SHUFFLE,
-                        context.getString(R.string.desc_shuffle),
-                        if (playbackManager.isShuffled) {
-                            R.drawable.ic_shuffle_on_24
-                        } else {
-                            R.drawable.ic_shuffle_off_24
-                        })
-                }
-                else -> {
-                    L.d("Using repeat mode MediaSession action")
-                    PlaybackStateCompat.CustomAction.Builder(
-                        PlaybackActions.ACTION_INC_REPEAT_MODE,
-                        context.getString(R.string.desc_change_repeat),
-                        playbackManager.repeatMode.icon)
-                }
-            }
-        state.addCustomAction(secondaryAction.build())
-
-        // Add the exit action so the service can be closed
-        val exitAction =
+        // Add repeat action
+        val repeatAction =
             PlaybackStateCompat.CustomAction.Builder(
-                    PlaybackActions.ACTION_EXIT,
-                    context.getString(R.string.desc_exit),
-                    R.drawable.ic_close_24)
+                    PlaybackActions.ACTION_INC_REPEAT_MODE,
+                    context.getString(R.string.desc_change_repeat),
+                    playbackManager.repeatMode.icon,
+                )
                 .build()
-        state.addCustomAction(exitAction)
+        state.addCustomAction(repeatAction)
+
+        // Add shuffle action
+        val shuffleAction =
+            PlaybackStateCompat.CustomAction.Builder(
+                    PlaybackActions.ACTION_INVERT_SHUFFLE,
+                    context.getString(R.string.desc_shuffle),
+                    if (playbackManager.isShuffled) {
+                        R.drawable.ic_shuffle_on_24
+                    } else {
+                        R.drawable.ic_shuffle_off_24
+                    },
+                )
+                .build()
+        state.addCustomAction(shuffleAction)
 
         mediaSession.setPlaybackState(state.build())
     }
 
-    /** Invalidate the "secondary" action (i.e shuffle/repeat mode). */
-    private fun invalidateSecondaryAction() {
-        L.d("Invalidating secondary action")
+    /** Invalidate both repeat and shuffle notification actions. */
+    private fun invalidateNotificationActions() {
+        L.d("Invalidating notification actions")
         invalidateSessionState()
 
-        when (playbackSettings.notificationAction) {
-            ActionMode.SHUFFLE -> {
-                L.d("Using shuffle notification action")
-                _notification.updateShuffled(playbackManager.isShuffled)
-            }
-            else -> {
-                L.d("Using repeat mode notification action")
-                _notification.updateRepeatMode(playbackManager.repeatMode)
-            }
-        }
+        _notification.updateRepeatMode(playbackManager.repeatMode)
+        _notification.updateShuffled(playbackManager.isShuffled)
 
         if (!bitmapProvider.isBusy) {
             L.d("Not loading a bitmap, post the notification")
@@ -396,7 +377,7 @@ private constructor(
 @SuppressLint("RestrictedApi")
 private class PlaybackNotification(
     private val context: Context,
-    sessionToken: MediaSessionCompat.Token
+    sessionToken: MediaSessionCompat.Token,
 ) : ForegroundServiceNotification(context, CHANNEL_INFO) {
     init {
         setSmallIcon(R.drawable.ic_auxio_24)
@@ -408,14 +389,17 @@ private class PlaybackNotification(
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))
         addAction(
-            buildAction(context, PlaybackActions.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24))
+            buildAction(context, PlaybackActions.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24)
+        )
         addAction(buildPlayPauseAction(context, true))
         addAction(
-            buildAction(context, PlaybackActions.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24))
-        addAction(buildAction(context, PlaybackActions.ACTION_EXIT, R.drawable.ic_close_24))
+            buildAction(context, PlaybackActions.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24)
+        )
+        addAction(buildShuffleAction(context, false))
 
         setStyle(
-            MediaStyle(this).setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
+            MediaStyle(this).setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3)
+        )
     }
 
     override val code: Int
@@ -430,7 +414,14 @@ private class PlaybackNotification(
      */
     fun updateMetadata(metadata: MediaMetadataCompat) {
         L.d("Updating shown metadata")
-        setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
+        val albumArt = metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART)
+        if (albumArt != null) {
+            setLargeIcon(albumArt)
+        } else {
+            // setLargeIcon(null) doesn't reliably clear the icon on all devices.
+            // Use a transparent 1x1 bitmap instead.
+            setLargeIcon(EMPTY_BITMAP)
+        }
         setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
         setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
@@ -463,14 +454,14 @@ private class PlaybackNotification(
      */
     fun updateShuffled(isShuffled: Boolean) {
         L.d("Applying shuffle action: $isShuffled")
-        mActions[0] = buildShuffleAction(context, isShuffled)
+        mActions[4] = buildShuffleAction(context, isShuffled)
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---
 
     private fun buildPlayPauseAction(
         context: Context,
-        isPlaying: Boolean
+        isPlaying: Boolean,
     ): NotificationCompat.Action {
         val drawableRes =
             if (isPlaying) {
@@ -483,14 +474,14 @@ private class PlaybackNotification(
 
     private fun buildRepeatAction(
         context: Context,
-        repeatMode: RepeatMode
+        repeatMode: RepeatMode,
     ): NotificationCompat.Action {
         return buildAction(context, PlaybackActions.ACTION_INC_REPEAT_MODE, repeatMode.icon)
     }
 
     private fun buildShuffleAction(
         context: Context,
-        isShuffled: Boolean
+        isShuffled: Boolean,
     ): NotificationCompat.Action {
         val drawableRes =
             if (isShuffled) {
@@ -503,7 +494,10 @@ private class PlaybackNotification(
 
     private fun buildAction(context: Context, actionName: String, @DrawableRes iconRes: Int) =
         NotificationCompat.Action.Builder(
-                iconRes, actionName, context.newBroadcastPendingIntent(actionName))
+                iconRes,
+                actionName,
+                context.newBroadcastPendingIntent(actionName),
+            )
             .build()
 
     companion object {
@@ -513,6 +507,10 @@ private class PlaybackNotification(
         private val CHANNEL_INFO =
             ChannelInfo(
                 id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
-                nameRes = R.string.lbl_playback)
+                nameRes = R.string.lbl_playback,
+            )
+
+        /** Cached 1x1 transparent bitmap. */
+        private val EMPTY_BITMAP: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     }
 }

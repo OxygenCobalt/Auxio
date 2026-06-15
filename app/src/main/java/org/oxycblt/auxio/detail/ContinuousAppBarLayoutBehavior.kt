@@ -38,7 +38,7 @@ constructor(context: Context? = null, attrs: AttributeSet? = null) :
     override fun onInterceptTouchEvent(
         parent: CoordinatorLayout,
         child: AppBarLayout,
-        ev: MotionEvent
+        ev: MotionEvent,
     ): Boolean {
         val consumed = super.onInterceptTouchEvent(parent, child, ev)
         when (ev.actionMasked) {
@@ -60,7 +60,7 @@ constructor(context: Context? = null, attrs: AttributeSet? = null) :
     override fun onTouchEvent(
         parent: CoordinatorLayout,
         child: AppBarLayout,
-        ev: MotionEvent
+        ev: MotionEvent,
     ): Boolean {
         val consumed = super.onTouchEvent(parent, child, ev)
         when (ev.actionMasked) {

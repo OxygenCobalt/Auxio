@@ -23,7 +23,7 @@ import org.oxycblt.musikr.playlist.PlaylistHandle
 
 internal class StoredPlaylistHandle(
     private val playlistInfo: PlaylistInfo,
-    private val playlistDao: PlaylistDao
+    private val playlistDao: PlaylistDao,
 ) : PlaylistHandle {
     override val uid = playlistInfo.playlistUid
 

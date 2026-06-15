@@ -48,6 +48,7 @@ private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : Stored
             PlaylistFile(
                 it.playlistInfo.name,
                 it.songs.map { song -> SongPointer.UID(song.songUid) },
-                StoredPlaylistHandle(it.playlistInfo, playlistDao))
+                StoredPlaylistHandle(it.playlistInfo, playlistDao),
+            )
         }
 }

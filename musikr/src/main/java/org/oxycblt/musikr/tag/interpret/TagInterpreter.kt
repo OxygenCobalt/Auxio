@@ -48,16 +48,23 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
                 song.tags.artistMusicBrainzIds,
                 song.tags.artistNames,
                 song.tags.artistSortNames,
-                interpretation)
+                interpretation,
+            )
         val albumPreArtists =
             makePreArtists(
                 song.tags.albumArtistMusicBrainzIds,
                 song.tags.albumArtistNames,
                 song.tags.albumArtistSortNames,
-                interpretation)
+                interpretation,
+            )
         val preAlbum =
             makePreAlbum(
-                song.tags, song.file, individualPreArtists, albumPreArtists, interpretation)
+                song.tags,
+                song.file,
+                individualPreArtists,
+                albumPreArtists,
+                interpretation,
+            )
         val rawArtists =
             individualPreArtists.ifEmpty { albumPreArtists }.ifEmpty { listOf(unknownPreArtist()) }
         val rawGenres =
@@ -146,7 +153,8 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             preAlbum = preAlbum,
             preArtists = rawArtists,
             preGenres = rawGenres,
-            cover = song.cover)
+            cover = song.cover,
+        )
     }
 
     private fun makePreAlbum(
@@ -154,7 +162,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         deviceFile: File,
         individualPreArtists: List<PreArtist>,
         albumPreArtists: List<PreArtist>,
-        interpretation: Interpretation
+        interpretation: Interpretation,
     ): PreAlbum {
         val name = parsedTags.albumName ?: deviceFile.path.directory.name
         return PreAlbum(
@@ -167,14 +175,16 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             preArtists =
                 PreArtistsFrom.Album(albumPreArtists).takeIf { it.preArtists.isNotEmpty() }
                     ?: PreArtistsFrom.Individual(
-                        individualPreArtists.ifEmpty { listOf(unknownPreArtist()) }))
+                        individualPreArtists.ifEmpty { listOf(unknownPreArtist()) }
+                    ),
+        )
     }
 
     private fun makePreArtists(
         rawMusicBrainzIds: List<String>,
         rawNames: List<String>,
         rawSortNames: List<String>,
-        interpretation: Interpretation
+        interpretation: Interpretation,
     ): List<PreArtist> {
         val musicBrainzIds = interpretation.separators.split(rawMusicBrainzIds)
         val names = interpretation.separators.split(rawNames)
@@ -188,7 +198,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         musicBrainzId: String?,
         rawName: String?,
         sortName: String?,
-        interpretation: Interpretation
+        interpretation: Interpretation,
     ): PreArtist {
         val name = interpretation.naming.name(rawName, sortName, Placeholder.ARTIST)
         val musicBrainzId = musicBrainzId?.toUuidOrNull()
@@ -199,7 +209,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
 
     private fun makePreGenres(
         parsedTags: ParsedTags,
-        interpretation: Interpretation
+        interpretation: Interpretation,
     ): List<PreGenre> {
         val genreNames =
             parsedTags.genreNames.parseId3GenreNames()

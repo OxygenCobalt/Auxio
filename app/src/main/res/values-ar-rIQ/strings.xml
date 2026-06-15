@@ -52,7 +52,6 @@
     <string name="set_lib_tabs_desc">تغيير ظهور وترتيب تبويتات المكتبة</string>
     <string name="set_round_mode">وضع دائري</string>
     <string name="set_round_mode_desc">تفعيل الزوايا المدورة لحدات الواجهه الاضافية (يتطلب اغلفة الالبوم ان تكون مدورة)</string>
-    <string name="set_notif_action">فعالية تنبيه مخصصة</string>
     <string name="set_audio">صوتيات</string>
     <string name="set_replay_gain_mode">صخب الصوت</string>
     <string name="set_replay_gain_mode_track">تفضيل المقطع</string>

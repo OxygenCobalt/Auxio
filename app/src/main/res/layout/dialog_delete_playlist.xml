@@ -7,5 +7,5 @@
     android:paddingStart="@dimen/spacing_large"
     android:paddingTop="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_large"
-    android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+    android:textAppearance="?attr/textAppearanceBodyLarge"
     tools:text="Delete Playlist 16? This cannot be undone." />

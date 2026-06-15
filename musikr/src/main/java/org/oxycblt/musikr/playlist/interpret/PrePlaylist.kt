@@ -32,7 +32,7 @@ internal data class PrePlaylist(
     override val name: Name.Known,
     override val rawName: String?,
     override val handle: PlaylistHandle,
-    val songPointers: List<SongPointer>
+    val songPointers: List<SongPointer>,
 ) : PrePlaylistInfo
 
 internal data class PostPlaylist(

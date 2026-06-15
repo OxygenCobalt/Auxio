@@ -150,7 +150,7 @@ interface PlaybackStateHolder {
         rawQueue: RawQueue,
         positionMs: Long,
         repeatMode: RepeatMode,
-        ack: StateAck.NewPlayback?
+        ack: StateAck.NewPlayback?,
     )
 
     /** End whatever ongoing playback session may be going on */
@@ -219,11 +219,7 @@ sealed interface StateAck {
  *   nonsensical value that cannot be used to obtain next and last songs without first resolving the
  *   queue.
  */
-data class RawQueue(
-    val heap: List<Song>,
-    val shuffledMapping: List<Int>,
-    val heapIndex: Int,
-) {
+data class RawQueue(val heap: List<Song>, val shuffledMapping: List<Int>, val heapIndex: Int) {
     /** Whether the queue is currently shuffled. */
     val isShuffled = shuffledMapping.isNotEmpty()
 
@@ -275,7 +271,7 @@ data class QueueChange(val type: Type, val instructions: UpdateInstructions) {
          * The current song has changed, possibly alongside the mapping and index depending on the
          * context.
          */
-        SONG
+        SONG,
     }
 }
 
@@ -308,7 +304,7 @@ private constructor(
     /** The position when this instance was created, in milliseconds. */
     private val initPositionMs: Long,
     /** The time this instance was created, as a unix epoch timestamp. */
-    private val creationTime: Long
+    private val creationTime: Long,
 ) {
     /**
      * Calculate the "real" playback position this instance contains, in milliseconds.
@@ -347,7 +343,8 @@ private constructor(
                 // Not advancing, so don't move the position.
                 0f
             },
-            creationTime)
+            creationTime,
+        )
 
     // Equality ignores the creation time to prevent functionally identical states
     // from being non-equal.
@@ -380,13 +377,15 @@ private constructor(
                 // Minor sanity check: Make sure that advancing can't occur if already paused.
                 isPlaying && isAdvancing,
                 positionMs,
-                SystemClock.elapsedRealtime())
+                SystemClock.elapsedRealtime(),
+            )
 
         fun nil() =
             Progression(
                 isPlaying = false,
                 isAdvancing = false,
                 initPositionMs = 0,
-                creationTime = SystemClock.elapsedRealtime())
+                creationTime = SystemClock.elapsedRealtime(),
+            )
     }
 }

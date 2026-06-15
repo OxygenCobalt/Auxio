@@ -98,7 +98,7 @@ interface EditClickListListener<in T> : ClickableListListener<T>, EditableListLi
         item: T,
         viewHolder: RecyclerView.ViewHolder,
         bodyView: View = viewHolder.itemView,
-        dragHandle: View
+        dragHandle: View,
     ) {
         bind(item, viewHolder, bodyView)
         bind(viewHolder, dragHandle)
@@ -138,7 +138,7 @@ interface SelectableListListener<in T> : ClickableListListener<T> {
         item: T,
         viewHolder: RecyclerView.ViewHolder,
         bodyView: View = viewHolder.itemView,
-        menuButton: View
+        menuButton: View,
     ) {
         bind(item, viewHolder, bodyView)
         // Map long clicks to the selection listener.

@@ -21,19 +21,21 @@ package org.oxycblt.auxio.list.recycler
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.isInvisible
+import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.R as MR
+import com.google.android.material.shape.MaterialShapeDrawable
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.recycler.MaterialDragCallback.ViewHolder
+import org.oxycblt.auxio.ui.Effect
+import org.oxycblt.auxio.ui.Spatial
 import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.getInteger
+import org.oxycblt.auxio.util.getDimenPixels
 import timber.log.Timber as L
 
 /**
@@ -44,16 +46,40 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
-    private var shouldLift = true
+    data class AnimBundle(
+        val cornerAnim: SpringAnimation,
+        val elevationAnim: SpringAnimation,
+        val translateZAnim: SpringAnimation,
+        val alphaAnim: SpringAnimation,
+        val causedBy: CausedBy,
+    ) {
+        fun cancel() {
+            cornerAnim.cancel()
+            elevationAnim.cancel()
+            translateZAnim.cancel()
+            alphaAnim.cancel()
+        }
+    }
+
+    enum class CausedBy {
+        CLICK,
+        RELEASE,
+    }
+
+    private val itemCornerSpring = Spatial.DEFAULT
+    private val itemAlphaSpring = Effect.DEFAULT
+    private val itemTranslateZString = Spatial.DEFAULT
+    private val itemAnims = mutableMapOf<View, AnimBundle>()
 
     final override fun getMovementFlags(
         recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
+        viewHolder: RecyclerView.ViewHolder,
     ) =
         if (viewHolder is ViewHolder && viewHolder.enabled) {
             makeFlag(
-                ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
-                makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
+                ItemTouchHelper.ACTION_STATE_DRAG,
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ) or makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
         } else {
             0
         }
@@ -63,18 +89,24 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         viewSize: Int,
         viewSizeOutOfBounds: Int,
         totalSize: Int,
-        msSinceStartScroll: Long
+        msSinceStartScroll: Long,
     ): Int {
         // Clamp the scroll speed to prevent the lists from freaking out
         // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
         val standardSpeed =
             super.interpolateOutOfBoundsScroll(
-                recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll)
+                recyclerView,
+                viewSize,
+                viewSizeOutOfBounds,
+                totalSize,
+                msSinceStartScroll,
+            )
 
         val clampedAbsVelocity =
             max(
                 MINIMUM_INITIAL_DRAG_VELOCITY,
-                min(abs(standardSpeed), MAXIMUM_INITIAL_DRAG_VELOCITY))
+                min(abs(standardSpeed), MAXIMUM_INITIAL_DRAG_VELOCITY),
+            )
 
         return clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
     }
@@ -86,29 +118,30 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         dX: Float,
         dY: Float,
         actionState: Int,
-        isCurrentlyActive: Boolean
+        isCurrentlyActive: Boolean,
     ) {
         val holder = viewHolder as ViewHolder
 
         // Hook drag events to "lifting" the item (i.e raising it's elevation). Make sure
         // this is only done once when the item is initially picked up.
-        if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+        if (isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             L.d("Lifting ViewHolder")
-
-            val bg = holder.background
+            val bg = holder.liftableBackground as MaterialShapeDrawable
             val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
-            holder.root
-                .animate()
-                .translationZ(elevation)
-                .setDuration(
-                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
-                .setUpdateListener {
-                    bg.alpha = ((holder.root.translationZ / elevation) * 255).toInt()
-                }
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .start()
-
-            shouldLift = false
+            val cornerSize = recyclerView.context.getDimen(R.dimen.spacing_mid_large)
+            val itemAnim = itemAnims[holder.root]
+            if (itemAnim?.causedBy != CausedBy.CLICK) {
+                itemAnim?.cancel()
+                itemAnims[holder.root] =
+                    AnimBundle(
+                        cornerAnim = itemCornerSpring.corners(holder.root.context, bg, cornerSize),
+                        elevationAnim =
+                            itemCornerSpring.elevation(holder.root.context, bg, elevation),
+                        translateZAnim = itemTranslateZString.translateZ(holder.root, elevation),
+                        alphaAnim = itemAlphaSpring.alpha(holder.root.context, bg, 255),
+                        causedBy = CausedBy.CLICK,
+                    )
+            }
         }
 
         // We show a background with a delete icon behind the item each time one is swiped
@@ -126,6 +159,11 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // this ourselves.
         holder.body.translationX = dX
         holder.root.translationY = dY
+        val cornerSize = recyclerView.context.getDimen(R.dimen.spacing_mid_large)
+        val threshold = recyclerView.context.getDimenPixels(R.dimen.size_touchable_large)
+        val bg = holder.roundableBackground as MaterialShapeDrawable
+        val progressiveCornerSize = (cornerSize * abs(dX) / threshold).coerceAtMost(cornerSize)
+        bg.setCornerSize(progressiveCornerSize)
     }
 
     final override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
@@ -136,22 +174,20 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // translationZ is already non-zero.
         if (holder.root.translationZ != 0f) {
             L.d("Lifting ViewHolder")
-
-            val bg = holder.background
-            val elevation = recyclerView.context.getDimen(MR.dimen.m3_sys_elevation_level4)
-            holder.root
-                .animate()
-                .translationZ(0f)
-                .setDuration(
-                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
-                .setUpdateListener {
-                    bg.alpha = ((holder.root.translationZ / elevation) * 255).toInt()
-                }
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .start()
+            val bg = holder.liftableBackground as MaterialShapeDrawable
+            val itemAnim = itemAnims[holder.root]
+            if (itemAnim?.causedBy != CausedBy.RELEASE) {
+                itemAnim?.cancel()
+                itemAnims[holder.root] =
+                    AnimBundle(
+                        cornerAnim = itemCornerSpring.corners(holder.root.context, bg, 0f),
+                        elevationAnim = itemCornerSpring.elevation(holder.root.context, bg, 0f),
+                        translateZAnim = itemTranslateZString.translateZ(holder.root, 0f),
+                        alphaAnim = itemAlphaSpring.alpha(holder.root.context, bg, 0),
+                        causedBy = CausedBy.RELEASE,
+                    )
+            }
         }
-
-        shouldLift = true
 
         // Reset translations. We do not call the default implementation, so we must do
         // this ourselves.
@@ -173,7 +209,9 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         /** The scrim view showing the delete icon. Should be behind [body]. */
         val delete: View
         /** The drawable of the [body] background that can be elevated. */
-        val background: Drawable
+        val liftableBackground: Drawable
+        /** The drawable of the [body] background that can be rounded when dragging. */
+        val roundableBackground: Drawable
     }
 
     companion object {

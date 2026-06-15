@@ -394,7 +394,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
     /** The direction to sort items in. */
     enum class Direction {
         ASCENDING,
-        DESCENDING
+        DESCENDING,
     }
 
     companion object {

@@ -19,7 +19,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:maxLines="@null"
-        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
         tools:text="primary:path/to/music" />
 
     <org.oxycblt.auxio.ui.RippleFixMaterialButton

@@ -20,7 +20,6 @@ package org.oxycblt.auxio.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
@@ -44,11 +43,13 @@ import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.PlainDivider
 import org.oxycblt.auxio.list.PlainHeader
 import org.oxycblt.auxio.list.menu.Menu
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.PlaylistMessage
 import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.FadingToolbarOffsetListener
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
@@ -72,7 +73,6 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Better keyboard management
- * TODO: Multi-filtering with chips
  */
 @AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
@@ -118,10 +118,12 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
         // --- UI SETUP ---
 
+        binding.searchAppbar.addOnOffsetChangedListener(
+            FadingToolbarOffsetListener(binding.searchToolbar, binding.searchContent)
+        )
+
         binding.searchNormalToolbar.apply {
             // Initialize the current filtering mode.
-            menu.findItem(searchModel.getFilterOptionId()).isChecked = true
-
             setNavigationOnClickListener {
                 // Keyboard is no longer needed.
                 hideKeyboard()
@@ -145,6 +147,29 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             }
         }
 
+        val filters = searchModel.filters
+        binding.searchFilterSongs.isChecked = MusicType.SONGS in filters
+        binding.searchFilterAlbums.isChecked = MusicType.ALBUMS in filters
+        binding.searchFilterArtists.isChecked = MusicType.ARTISTS in filters
+        binding.searchFilterGenres.isChecked = MusicType.GENRES in filters
+        binding.searchFilterPlaylists.isChecked = MusicType.PLAYLISTS in filters
+        binding.searchFilters.apply {
+            setOnCheckedStateChangeListener { _, ids ->
+                val filters =
+                    ids.mapNotNullTo(mutableSetOf()) {
+                        when (it) {
+                            R.id.search_filter_songs -> MusicType.SONGS
+                            R.id.search_filter_albums -> MusicType.ALBUMS
+                            R.id.search_filter_artists -> MusicType.ARTISTS
+                            R.id.search_filter_genres -> MusicType.GENRES
+                            R.id.search_filter_playlists -> MusicType.PLAYLISTS
+                            else -> null
+                        }
+                    }
+                searchModel.updateFilters(filters)
+            }
+        }
+
         binding.searchRecycler.apply {
             adapter = searchAdapter
             (layoutManager as GridLayoutManager).setFullWidthLookup {
@@ -164,7 +189,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collect(musicModel.playlistMessage.flow, ::handlePlaylistMessage)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback,
+        )
         collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
         collect(detailModel.toShow.flow, ::handleShow)
     }
@@ -173,24 +202,6 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         super.onDestroyBinding(binding)
         binding.searchNormalToolbar.setOnMenuItemClickListener(null)
         binding.searchRecycler.adapter = null
-    }
-
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if (super.onMenuItemClick(item)) {
-            return true
-        }
-
-        // Ignore junk sub-menu click events
-        if (item.itemId != R.id.submenu_filtering) {
-            // Is a change in filter mode and not just a junk submenu click, update
-            // the filtering within SearchViewModel.
-            L.d("Filter mode selected")
-            item.isChecked = true
-            searchModel.setFilterOptionId(item.itemId)
-            return true
-        }
-
-        return false
     }
 
     override fun onRealClick(item: Music) {
@@ -224,6 +235,12 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             // that doesn't seem possible.
             L.d("Update finished, scrolling to top")
             binding.searchRecycler.scrollToPosition(0)
+            if (results.isEmpty()) {
+                // Expand the appbar when we no longer have results.
+                // This way the user can't softlock themselves by scrolling then
+                // switching to an empty-result query.
+                binding.searchAppbar.expandWithScrollingRecycler()
+            }
         }
     }
 
@@ -295,9 +312,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         if (selected.isNotEmpty()) {
             binding.searchSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
             if (binding.searchToolbar.setVisible(R.id.search_selection_toolbar)) {
-                // New selection started, show the keyboard to make selection easier.
-                L.d("Significant selection occurred, hiding keyboard")
+                // New selection started, show the keyboard to make selection easier and
+                // restore the appbar as well
+                L.d("Significant selection occurred, hiding keyboard & expanding AppBar")
                 hideKeyboard()
+                binding.searchAppbar.expandWithScrollingRecycler()
             }
         } else {
             binding.searchToolbar.setVisible(R.id.search_normal_toolbar)
@@ -324,7 +343,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                         decision.playlist.uid,
                         decision.template,
                         decision.applySongs.map { it.uid }.toTypedArray(),
-                        decision.reason)
+                        decision.reason,
+                    )
                 }
                 is PlaylistDecision.Delete -> {
                     L.d("Deleting ${decision.playlist}")
@@ -337,7 +357,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} to a playlist")
                     SearchFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
+                        decision.songs.map { it.uid }.toTypedArray()
+                    )
                 }
                 is PlaylistDecision.New -> {
                     error("Unexpected decision $decision")

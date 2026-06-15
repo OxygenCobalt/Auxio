@@ -27,7 +27,7 @@ import android.os.Looper
 internal class LocationObserver(
     private val context: Context,
     private val uri: Uri,
-    private val onUpdate: () -> Unit
+    private val onUpdate: () -> Unit,
 ) : ContentObserver(Handler(Looper.getMainLooper())), Runnable {
     private val handler = Handler(Looper.getMainLooper())
 

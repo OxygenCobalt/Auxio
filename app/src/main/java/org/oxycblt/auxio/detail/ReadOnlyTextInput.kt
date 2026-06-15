@@ -38,7 +38,7 @@ class ReadOnlyTextInput
 constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = R.attr.editTextStyle
+    defStyleAttr: Int = R.attr.editTextStyle,
 ) : TextInputEditText(context, attrs, defStyleAttr) {
     init {
         // Enable selection, but still disable focus (i.e Keyboard opening)
@@ -50,8 +50,10 @@ constructor(
 
     // Make text immutable
     override fun getFreezesText() = false
+
     // Prevent editing by default
     override fun getDefaultEditable() = false
+
     // Remove the movement method that allows cursor scrolling
     override fun getDefaultMovementMethod() = null
 }

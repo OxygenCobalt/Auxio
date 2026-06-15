@@ -19,14 +19,13 @@
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Formatter
+import java.util.Calendar
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
@@ -39,9 +38,8 @@ import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.playback.formatDurationMsPopup
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.MusicParent
@@ -62,10 +60,6 @@ class SongListFragment :
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     private val songAdapter = SongAdapter(this)
-
-    // Save memory by re-using the same formatter and string builder when creating popup text
-    private val formatterSb = StringBuilder(64)
-    private val formatter = Formatter(formatterSb)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentHomeListBinding.inflate(inflater)
@@ -92,7 +86,11 @@ class SongListFragment :
         collectImmediately(homeModel.empty, musicModel.indexingState, ::updateNoMusicIndicator)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback,
+        )
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -104,38 +102,45 @@ class SongListFragment :
         }
     }
 
-    override fun getPopup(pos: Int): String? {
+    override fun getPopupData(pos: Int): FastScrollRecyclerView.PopupProvider.PopupData? {
         val song = homeModel.songList.value.getOrNull(pos) ?: return null
         // Change how we display the popup depending on the current sort mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.songSort.mode) {
             // Name -> Use name
-            is Sort.Mode.ByName -> song.name.thumb()
+            is Sort.Mode.ByName ->
+                FastScrollRecyclerView.PopupProvider.PopupData(song.name.thumb() ?: "?")
 
             // Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> song.album.artists[0].name.thumb()
+            is Sort.Mode.ByArtist ->
+                FastScrollRecyclerView.PopupProvider.PopupData(
+                    song.album.artists[0].name.thumb() ?: "?"
+                )
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum -> song.album.name.thumb()
+            is Sort.Mode.ByAlbum ->
+                FastScrollRecyclerView.PopupProvider.PopupData(song.album.name.thumb() ?: "?")
 
-            // Year -> Use Full Year
-            is Sort.Mode.ByDate -> song.album.dates?.resolve(requireContext())
+            // Date -> Use year of the range minimum
+            is Sort.Mode.ByDate -> {
+                val year = song.album.dates?.min?.year ?: return null
+                FastScrollRecyclerView.PopupProvider.PopupData(getString(R.string.fmt_number, year))
+            }
 
-            // Duration -> Use formatted duration
-            is Sort.Mode.ByDuration -> song.durationMs.formatDurationMs(false)
+            // Duration -> Use compact bucket duration
+            is Sort.Mode.ByDuration ->
+                FastScrollRecyclerView.PopupProvider.PopupData(
+                    song.durationMs.formatDurationMsPopup()
+                )
 
-            // Last added -> Format as date
+            // Last added -> Use year
             is Sort.Mode.ByDateAdded -> {
-                val dateAddedMillis = song.addedMs
-                formatterSb.setLength(0)
-                DateUtils.formatDateRange(
-                        context,
-                        formatter,
-                        dateAddedMillis,
-                        dateAddedMillis,
-                        DateUtils.FORMAT_ABBREV_ALL)
-                    .toString()
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = song.addedMs
+                FastScrollRecyclerView.PopupProvider.PopupData(
+                    getString(R.string.fmt_number, calendar.get(Calendar.YEAR))
+                )
             }
 
             // Unsupported sort, error gracefully

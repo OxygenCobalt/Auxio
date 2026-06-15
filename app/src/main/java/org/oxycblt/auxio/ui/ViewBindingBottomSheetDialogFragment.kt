@@ -94,7 +94,7 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ) = onCreateBinding(inflater).also { _binding = it }.root
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -129,7 +129,8 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
             avoidUnusableCollapsedState =
                 metrics.heightPixels - metrics.widthPixels <
                     context.getDimenPixels(
-                        com.google.android.material.R.dimen.design_bottom_sheet_peek_height_min)
+                        com.google.android.material.R.dimen.design_bottom_sheet_peek_height_min
+                    )
             behavior.skipCollapsed = avoidUnusableCollapsedState
         }
 

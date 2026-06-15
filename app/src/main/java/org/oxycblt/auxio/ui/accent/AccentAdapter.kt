@@ -53,7 +53,7 @@ class AccentAdapter(private val listener: ClickableListListener<Accent>) :
     override fun onBindViewHolder(
         holder: AccentViewHolder,
         position: Int,
-        payloads: MutableList<Any>
+        payloads: MutableList<Any>,
     ) {
         val item = Accent.from(position)
         if (payloads.isEmpty()) {

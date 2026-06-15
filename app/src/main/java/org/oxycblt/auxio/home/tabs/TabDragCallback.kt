@@ -30,7 +30,7 @@ import androidx.recyclerview.widget.RecyclerView
 class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callback() {
     override fun getMovementFlags(
         recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
+        viewHolder: RecyclerView.ViewHolder,
     ) = // Allow dragging up and down only
     makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN)
 
@@ -41,7 +41,7 @@ class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callbac
         dX: Float,
         dY: Float,
         actionState: Int,
-        isCurrentlyActive: Boolean
+        isCurrentlyActive: Boolean,
     ) {
         viewHolder.itemView.translationX = dX
         viewHolder.itemView.translationY = dY
@@ -55,7 +55,7 @@ class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callbac
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
+        target: RecyclerView.ViewHolder,
     ): Boolean {
         // I don't think it's possible to jump more than one position at a time, so a swap
         // will work just fine.

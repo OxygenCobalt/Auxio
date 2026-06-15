@@ -50,7 +50,7 @@ class MediaStore
 private constructor(
     private val context: Context,
     private val volumeManager: VolumeManager,
-    private val query: Query
+    private val query: Query,
 ) : FS {
     private val pathInterpreterFactory = MediaStorePathInterpreter.Factory.from(volumeManager)
 
@@ -93,49 +93,49 @@ private constructor(
                 AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selector,
-                args.toTypedArray()) { cursor ->
-                    val pathInterpreter = pathInterpreterFactory.wrap(cursor)
-                    val idIndex =
-                        cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns._ID)
-                    val mimeTypeIndex =
-                        cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.MIME_TYPE)
-                    val sizeIndex =
-                        cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.SIZE)
-                    val dateAddedIndex =
-                        cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.DATE_ADDED)
-                    val dateModifiedIndex =
-                        cursor.getColumnIndexOrThrow(
-                            AOSPMediaStore.Audio.AudioColumns.DATE_MODIFIED)
+                args.toTypedArray(),
+            ) { cursor ->
+                val pathInterpreter = pathInterpreterFactory.wrap(cursor)
+                val idIndex = cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns._ID)
+                val mimeTypeIndex =
+                    cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.MIME_TYPE)
+                val sizeIndex = cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.SIZE)
+                val dateAddedIndex =
+                    cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.DATE_ADDED)
+                val dateModifiedIndex =
+                    cursor.getColumnIndexOrThrow(AOSPMediaStore.Audio.AudioColumns.DATE_MODIFIED)
 
-                    while (cursor.moveToNext()) {
-                        val path = pathInterpreter.extract() ?: continue
+                while (cursor.moveToNext()) {
+                    val path = pathInterpreter.extract() ?: continue
 
-                        val id = cursor.getLong(idIndex)
-                        val uri =
-                            Uri.withAppendedPath(
-                                AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
-                        val mimeType = cursor.getStringOrNull(mimeTypeIndex) ?: "audio/*"
-                        val size = cursor.getLong(sizeIndex)
-                        val dateAdded =
-                            cursor.getLong(dateAddedIndex) * 1000 // Convert to milliseconds
-                        val dateModified =
-                            cursor.getLong(dateModifiedIndex) * 1000 // Convert to milliseconds
+                    val id = cursor.getLong(idIndex)
+                    val uri =
+                        Uri.withAppendedPath(
+                            AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                            id.toString(),
+                        )
+                    val mimeType = cursor.getStringOrNull(mimeTypeIndex) ?: "audio/*"
+                    val size = cursor.getLong(sizeIndex)
+                    val dateAdded = cursor.getLong(dateAddedIndex) * 1000 // Convert to milliseconds
+                    val dateModified =
+                        cursor.getLong(dateModifiedIndex) * 1000 // Convert to milliseconds
 
-                        // Create file with empty deferred parent
-                        val deviceFile =
-                            File(
-                                uri = uri,
-                                path = path,
-                                modifiedMs = dateModified,
-                                mimeType = mimeType,
-                                size = size,
-                                addedMs = ForwardDateAdded(dateAdded),
-                                parent = null)
+                    // Create file with empty deferred parent
+                    val deviceFile =
+                        File(
+                            uri = uri,
+                            path = path,
+                            modifiedMs = dateModified,
+                            mimeType = mimeType,
+                            size = size,
+                            addedMs = ForwardDateAdded(dateAdded),
+                            parent = null,
+                        )
 
-                        allFiles.add(deviceFile)
-                        it.send(deviceFile)
-                    }
+                    allFiles.add(deviceFile)
+                    it.send(deviceFile)
                 }
+            }
         }
     }
 
@@ -150,12 +150,12 @@ private constructor(
     data class Query(
         val mode: FilterMode,
         val filtered: List<Location.Unopened>,
-        val excludeNonMusic: Boolean
+        val excludeNonMusic: Boolean,
     )
 
     enum class FilterMode {
         INCLUDE,
-        EXCLUDE
+        EXCLUDE,
     }
 
     private class ForwardDateAdded(val dateAdded: Long) : AddedMs {
@@ -165,7 +165,10 @@ private constructor(
     companion object {
         fun from(context: Context, query: Query) =
             MediaStore(
-                context = context, volumeManager = VolumeManager.from(context), query = query)
+                context = context,
+                volumeManager = VolumeManager.from(context),
+                query = query,
+            )
 
         /**
          * The base selector that works across all versions of android. Excludes files with zero
@@ -180,6 +183,7 @@ private constructor(
                 AOSPMediaStore.Audio.AudioColumns.DATE_ADDED,
                 AOSPMediaStore.Audio.AudioColumns.DATE_MODIFIED,
                 AOSPMediaStore.Audio.AudioColumns.SIZE,
-                AOSPMediaStore.Audio.AudioColumns.MIME_TYPE)
+                AOSPMediaStore.Audio.AudioColumns.MIME_TYPE,
+            )
     }
 }

@@ -32,7 +32,9 @@ class ReleaseTypeTest {
     @Test
     fun releaseType_parse_secondary() {
         assertEquals(
-            ReleaseType.Compilation(null), ReleaseType.parse(listOf("album", "compilation")))
+            ReleaseType.Compilation(null),
+            ReleaseType.parse(listOf("album", "compilation")),
+        )
         assertEquals(ReleaseType.Soundtrack, ReleaseType.parse(listOf("album", "soundtrack")))
         assertEquals(ReleaseType.Mix, ReleaseType.parse(listOf("album", "dj-mix")))
         assertEquals(ReleaseType.Mixtape, ReleaseType.parse(listOf("album", "mixtape/street")))
@@ -43,30 +45,40 @@ class ReleaseTypeTest {
     fun releaseType_parse_modifiers() {
         assertEquals(
             ReleaseType.Album(ReleaseType.Refinement.LIVE),
-            ReleaseType.parse(listOf("album", "live")))
+            ReleaseType.parse(listOf("album", "live")),
+        )
         assertEquals(
             ReleaseType.Album(ReleaseType.Refinement.REMIX),
-            ReleaseType.parse(listOf("album", "remix")))
+            ReleaseType.parse(listOf("album", "remix")),
+        )
         assertEquals(
-            ReleaseType.EP(ReleaseType.Refinement.LIVE), ReleaseType.parse(listOf("ep", "live")))
+            ReleaseType.EP(ReleaseType.Refinement.LIVE),
+            ReleaseType.parse(listOf("ep", "live")),
+        )
         assertEquals(
-            ReleaseType.EP(ReleaseType.Refinement.REMIX), ReleaseType.parse(listOf("ep", "remix")))
+            ReleaseType.EP(ReleaseType.Refinement.REMIX),
+            ReleaseType.parse(listOf("ep", "remix")),
+        )
         assertEquals(
             ReleaseType.Single(ReleaseType.Refinement.LIVE),
-            ReleaseType.parse(listOf("single", "live")))
+            ReleaseType.parse(listOf("single", "live")),
+        )
         assertEquals(
             ReleaseType.Single(ReleaseType.Refinement.REMIX),
-            ReleaseType.parse(listOf("single", "remix")))
+            ReleaseType.parse(listOf("single", "remix")),
+        )
     }
 
     @Test
     fun releaseType_parse_secondaryModifiers() {
         assertEquals(
             ReleaseType.Compilation(ReleaseType.Refinement.LIVE),
-            ReleaseType.parse(listOf("album", "compilation", "live")))
+            ReleaseType.parse(listOf("album", "compilation", "live")),
+        )
         assertEquals(
             ReleaseType.Compilation(ReleaseType.Refinement.REMIX),
-            ReleaseType.parse(listOf("album", "compilation", "remix")))
+            ReleaseType.parse(listOf("album", "compilation", "remix")),
+        )
     }
 
     @Test
@@ -80,8 +92,12 @@ class ReleaseTypeTest {
     @Test
     fun releaseType_parse_orphanedModifier() {
         assertEquals(
-            ReleaseType.Album(ReleaseType.Refinement.LIVE), ReleaseType.parse(listOf("live")))
+            ReleaseType.Album(ReleaseType.Refinement.LIVE),
+            ReleaseType.parse(listOf("live")),
+        )
         assertEquals(
-            ReleaseType.Album(ReleaseType.Refinement.REMIX), ReleaseType.parse(listOf("remix")))
+            ReleaseType.Album(ReleaseType.Refinement.REMIX),
+            ReleaseType.parse(listOf("remix")),
+        )
     }
 }

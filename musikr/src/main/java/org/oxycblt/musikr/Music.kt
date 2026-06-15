@@ -78,7 +78,7 @@ sealed interface Music {
     private constructor(
         private val format: Format,
         private val item: Item,
-        private val uuid: UUID
+        private val uuid: UUID,
     ) : Parcelable {
         // Cache the hashCode for HashMap efficiency.
         @IgnoredOnParcel private var hashCode = format.hashCode()
@@ -93,17 +93,17 @@ sealed interface Music {
         override fun equals(other: Any?) =
             other is UID && format == other.format && item == other.item && uuid == other.uuid
 
-        override fun toString() = "${format.namespace}:${item.intCode.toString(16)}-$uuid"
+        override fun toString() = "u${format.microNamespace}${item.microNamespace}$uuid"
 
-        internal enum class Item(val intCode: Int) {
+        internal enum class Item(val intCode: Int, val microNamespace: Char) {
             // Item used to be MusicType back when the music module was
             // part of Auxio, so these old integer codes remain.
             // TODO: Introduce new UID format that removes these.
-            SONG(0xA10B),
-            ALBUM(0xA10A),
-            ARTIST(0xA109),
-            GENRE(0xA108),
-            PLAYLIST(0xA107)
+            SONG(0xA10B, 's'),
+            ALBUM(0xA10A, 'a'),
+            ARTIST(0xA109, 'r'),
+            GENRE(0xA108, 'g'),
+            PLAYLIST(0xA107, 'p'),
         }
 
         /**
@@ -111,12 +111,12 @@ sealed interface Music {
          *
          * @param namespace Namespace to use in the [Music.UID]'s string representation.
          */
-        private enum class Format(val namespace: String) {
+        private enum class Format(val namespace: String, val microNamespace: Char) {
             /** @see auxio */
-            AUXIO("org.oxycblt.auxio"),
+            AUXIO("org.oxycblt.auxio", 'a'),
 
             /** @see musicBrainz */
-            MUSICBRAINZ("org.musicbrainz")
+            MUSICBRAINZ("org.musicbrainz", 'm'),
         }
 
         object TypeConverters {
@@ -177,7 +177,8 @@ sealed interface Music {
                             .or(digest[12].toLong().and(0xFF).shl(24))
                             .or(digest[13].toLong().and(0xFF).shl(16))
                             .or(digest[14].toLong().and(0xFF).shl(8))
-                            .or(digest[15].toLong().and(0xFF)))
+                            .or(digest[15].toLong().and(0xFF)),
+                    )
                 return UID(Format.AUXIO, item, uuid)
             }
 
@@ -201,6 +202,30 @@ sealed interface Music {
              *   representation was invalid.
              */
             fun fromString(uid: String): UID? {
+                if (uid.startsWith("u")) {
+                    // new compressed-format parsing
+                    val microFormat =
+                        when (uid.getOrNull(1)) {
+                            Format.AUXIO.microNamespace -> Format.AUXIO
+                            Format.MUSICBRAINZ.microNamespace -> Format.MUSICBRAINZ
+                            else -> return null
+                        }
+                    val microItem =
+                        when (uid.getOrNull(2)) {
+                            Item.SONG.microNamespace -> Item.SONG
+                            Item.ALBUM.microNamespace -> Item.ALBUM
+                            Item.ARTIST.microNamespace -> Item.ARTIST
+                            Item.GENRE.microNamespace -> Item.GENRE
+                            Item.PLAYLIST.microNamespace -> Item.PLAYLIST
+                            else -> return null
+                        }
+                    if (uid.length < 4) {
+                        // not quite sure if substring will error on malformed uids
+                        return null
+                    }
+                    val uuid = uid.substring(3 until uid.length).toUuidOrNull() ?: return null
+                    return UID(microFormat, microItem, uuid)
+                }
                 val split = uid.split(':', limit = 2)
                 if (split.size != 2) {
                     return null

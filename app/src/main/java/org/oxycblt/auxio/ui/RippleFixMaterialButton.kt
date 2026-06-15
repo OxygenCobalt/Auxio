@@ -36,7 +36,7 @@ open class RippleFixMaterialButton
 constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    @AttrRes defStyleAttr: Int = R.attr.materialButtonStyle
+    @AttrRes defStyleAttr: Int = R.attr.materialButtonStyle,
 ) : MaterialButton(context, attrs, defStyleAttr) {
     init {
         fixDoubleRipple()

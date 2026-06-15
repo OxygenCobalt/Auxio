@@ -69,7 +69,7 @@ class StoredCovers(private val coverStorage: CoverStorage) : Covers<FDCover> {
 class MutableStoredCovers(
     private val src: MutableCovers<MemoryCover>,
     private val coverStorage: CoverStorage,
-    private val transcoding: Transcoding
+    private val transcoding: Transcoding,
 ) : MutableCovers<FDCover> {
     private val base = StoredCovers(coverStorage)
 

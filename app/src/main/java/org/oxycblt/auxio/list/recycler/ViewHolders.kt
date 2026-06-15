@@ -175,7 +175,8 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
                     binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
                 } else {
                     binding.context.getString(R.string.def_song_count)
-                })
+                },
+            )
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -232,7 +233,8 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
             binding.context.getString(
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
+                binding.context.getPlural(R.plurals.fmt_song_count, genre.songs.size),
+            )
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {

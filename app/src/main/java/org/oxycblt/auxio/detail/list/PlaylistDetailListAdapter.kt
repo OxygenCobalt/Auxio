@@ -19,8 +19,8 @@
 package org.oxycblt.auxio.detail.list
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.TooltipCompat
@@ -77,7 +77,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
-        payloads: List<Any>
+        payloads: List<Any>,
     ) {
         super.onBindViewHolder(holder, position, payloads)
 
@@ -131,7 +131,9 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
                     when {
                         oldItem is Song && newItem is Song ->
                             PlaylistSongViewHolder.DIFF_CALLBACK.areContentsTheSame(
-                                oldItem, newItem)
+                                oldItem,
+                                newItem,
+                            )
                         oldItem is EditHeader && newItem is EditHeader ->
                             EditHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         else -> DetailListAdapter.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
@@ -200,8 +202,10 @@ private class EditHeaderViewHolder private constructor(private val binding: Item
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: View) =
-            EditHeaderViewHolder(ItemEditHeaderBinding.inflate(parent.context.inflater))
+        fun from(parent: ViewGroup) =
+            EditHeaderViewHolder(
+                ItemEditHeaderBinding.inflate(parent.context.inflater, parent, false)
+            )
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -229,20 +233,20 @@ private constructor(private val binding: ItemEditableSongBinding) :
     override val root = binding.root
     override val body = binding.body
     override val delete = binding.background
-    override val background =
+    override val liftableBackground =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
             alpha = 0
         }
 
+    override val roundableBackground: Drawable
+        get() =
+            MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
+                fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
+            }
+
     init {
-        binding.body.background =
-            LayerDrawable(
-                arrayOf(
-                    MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-                        fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
-                    },
-                    background))
+        binding.body.background = LayerDrawable(arrayOf(roundableBackground, liftableBackground))
     }
 
     /**
@@ -289,8 +293,10 @@ private constructor(private val binding: ItemEditableSongBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: View) =
-            PlaylistSongViewHolder(ItemEditableSongBinding.inflate(parent.context.inflater))
+        fun from(parent: ViewGroup) =
+            PlaylistSongViewHolder(
+                ItemEditableSongBinding.inflate(parent.context.inflater, parent, false)
+            )
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK = SongViewHolder.DIFF_CALLBACK

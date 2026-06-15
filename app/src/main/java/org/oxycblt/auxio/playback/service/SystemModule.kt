@@ -48,7 +48,7 @@ class SystemModule {
     @Provides
     fun mediaSourceFactory(
         dataSourceFactory: DataSource.Factory,
-        extractorsFactory: ExtractorsFactory
+        extractorsFactory: ExtractorsFactory,
     ): MediaSource.Factory = ProgressiveMediaSource.Factory(dataSourceFactory, extractorsFactory)
 
     @Provides
@@ -70,6 +70,7 @@ class SystemModule {
             MatroskaExtractor(DefaultSubtitleParserFactory.UNSUPPORTED),
             // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
             AdtsExtractor(AdtsExtractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING),
-            Mp3Extractor(Mp3Extractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING))
+            Mp3Extractor(Mp3Extractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING),
+        )
     }
 }

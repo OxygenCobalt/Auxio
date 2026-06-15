@@ -18,7 +18,11 @@
  
 package org.oxycblt.auxio.playback
 
+import android.icu.text.MeasureFormat
+import android.icu.util.Measure
+import android.icu.util.MeasureUnit
 import android.text.format.DateUtils
+import java.util.Locale
 
 /**
  * Convert milliseconds into deci-seconds (1/10th of a second).
@@ -55,6 +59,24 @@ fun Long.dsToSecs() = floorDiv(10)
  *   will be returned if the second value is 0.
  */
 fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
+
+/**
+ * Format a millisecond duration into a compact, locale-aware bucket string suitable for fast-scroll
+ * popups. Durations are bucketed into the most significant time unit:
+ * - Less than 1 minute: "<1m" (using locale-narrow minute abbreviation)
+ * - 1–59 minutes: "Nm" (e.g., "5m", "42m")
+ * - 1+ hours: "Nh" (e.g., "2h", "142h")
+ */
+fun Long.formatDurationMsPopup(): String {
+    val totalMinutes = floorDiv(60_000)
+    val totalHours = totalMinutes / 60
+    val fmt = MeasureFormat.getInstance(Locale.getDefault(), MeasureFormat.FormatWidth.NARROW)
+    return when {
+        totalMinutes < 1 -> "<" + fmt.format(Measure(1, MeasureUnit.MINUTE))
+        totalHours < 1 -> fmt.format(Measure(totalMinutes, MeasureUnit.MINUTE))
+        else -> fmt.format(Measure(totalHours, MeasureUnit.HOUR))
+    }
+}
 
 /**
  * // * Format a deci-second value (1/10th of a second) into a string duration.

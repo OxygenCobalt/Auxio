@@ -52,7 +52,7 @@ private constructor(
     private val imageSettings: ImageSettings,
     private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
-    private val uiSettings: UISettings
+    private val uiSettings: UISettings,
 ) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
     class Factory
     @Inject
@@ -60,7 +60,7 @@ private constructor(
         private val imageSettings: ImageSettings,
         private val bitmapProvider: BitmapProvider,
         private val playbackManager: PlaybackStateManager,
-        private val uiSettings: UISettings
+        private val uiSettings: UISettings,
     ) {
         fun create(context: Context) =
             WidgetComponent(context, imageSettings, bitmapProvider, playbackManager, uiSettings)
@@ -128,7 +128,8 @@ private constructor(
                     L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }
-            })
+            },
+        )
     }
 
     /** Release this instance, preventing any further events from updating the widget instances. */
@@ -157,7 +158,7 @@ private constructor(
         parent: MusicParent?,
         queue: List<Song>,
         index: Int,
-        isShuffled: Boolean
+        isShuffled: Boolean,
     ) = update()
 
     override fun onProgressionChanged(progression: Progression) = update()
@@ -184,6 +185,6 @@ private constructor(
         val cover: Bitmap?,
         val isPlaying: Boolean,
         val repeatMode: RepeatMode,
-        val isShuffled: Boolean
+        val isShuffled: Boolean,
     )
 }

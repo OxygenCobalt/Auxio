@@ -17,7 +17,7 @@
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="@string/set_pre_amp_with"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +41,7 @@
             android:layout_marginEnd="@dimen/spacing_large"
             android:gravity="center"
             android:minWidth="@dimen/size_touchable_medium"
-            android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
+            android:textAppearance="?attr/textAppearanceBodySmall"
             app:layout_constraintBottom_toBottomOf="@+id/with_tags_slider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/with_tags_slider"
@@ -54,7 +54,7 @@
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="@string/set_pre_amp_without"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/with_tags_slider" />
 
@@ -78,7 +78,7 @@
             android:layout_marginEnd="@dimen/spacing_large"
             android:gravity="center"
             android:minWidth="@dimen/size_touchable_medium"
-            android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
+            android:textAppearance="?attr/textAppearanceBodySmall"
             app:layout_constraintBottom_toBottomOf="@+id/without_tags_slider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/without_tags_slider"
@@ -93,7 +93,7 @@
             android:layout_marginEnd="@dimen/spacing_large"
             android:text="@string/set_pre_amp_warning"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
+            android:textAppearance="?attr/textAppearanceBodySmall"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/without_tags_slider" />

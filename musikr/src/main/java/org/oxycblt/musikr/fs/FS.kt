@@ -38,7 +38,7 @@ data class Directory(
     override val uri: Uri?,
     override val path: Path,
     val parent: Deferred<Directory>?,
-    var children: List<File>
+    var children: List<File>,
 ) : FSEntry
 
 data class File(
@@ -48,7 +48,7 @@ data class File(
     val modifiedMs: Long,
     val mimeType: String,
     val size: Long,
-    val parent: Deferred<Directory>?
+    val parent: Deferred<Directory>?,
 ) : FSEntry
 
 sealed interface FSUpdate {

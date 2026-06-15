@@ -64,7 +64,7 @@ sealed interface Menu {
             val res: Int,
             val songUid: Music.UID,
             val playWithCode: Int,
-            val playWithUid: Music.UID?
+            val playWithUid: Music.UID?,
         ) : Menu.Parcel
     }
 

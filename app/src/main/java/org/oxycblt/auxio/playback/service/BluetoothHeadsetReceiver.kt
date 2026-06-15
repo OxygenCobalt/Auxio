@@ -33,7 +33,9 @@ class BluetoothHeadsetReceiver : BroadcastReceiver() {
         if (intent.action == android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED) {
             val newState =
                 intent.getIntExtra(
-                    BluetoothProfile.EXTRA_STATE, BluetoothProfile.STATE_DISCONNECTED)
+                    BluetoothProfile.EXTRA_STATE,
+                    BluetoothProfile.STATE_DISCONNECTED,
+                )
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 // TODO: Initialize the service (Permission workflow must be figured out)
                 //  Perhaps move this to the internal receivers?

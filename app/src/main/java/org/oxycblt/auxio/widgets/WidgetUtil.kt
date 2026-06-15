@@ -77,7 +77,7 @@ fun RemoteViews.setLayoutDirection(@IdRes viewId: Int, layoutDirection: Int) {
 fun AppWidgetManager.updateAppWidgetCompat(
     context: Context,
     component: ComponentName,
-    views: Map<SizeF, RemoteViews>
+    views: Map<SizeF, RemoteViews>,
 ) {
     check(views.isNotEmpty()) { "Must provide a non-empty map" }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

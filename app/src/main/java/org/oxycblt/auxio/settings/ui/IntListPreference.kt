@@ -46,7 +46,7 @@ constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = androidx.preference.R.attr.dialogPreferenceStyle,
-    defStyleRes: Int = 0
+    defStyleRes: Int = 0,
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
     /** The names of each entry. */
     val entries: Array<CharSequence>
@@ -60,14 +60,19 @@ constructor(
     init {
         val prefAttrs =
             context.obtainStyledAttributes(
-                attrs, R.styleable.IntListPreference, defStyleAttr, defStyleRes)
+                attrs,
+                R.styleable.IntListPreference,
+                defStyleAttr,
+                defStyleRes,
+            )
 
         // Can't depend on ListPreference due to it working with strings we have to instead
         // define our own attributes for entries/values.
         entries = prefAttrs.getTextArrayOrThrow(R.styleable.IntListPreference_entries)
         values =
             context.resources.getIntArray(
-                prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues))
+                prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues)
+            )
 
         // entryIcons defines an additional set of icons to use for each entry.
         val iconsId = prefAttrs.getResourceId(R.styleable.IntListPreference_entryIcons, -1)

@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 interface Event<T> {
     /** The inner [StateFlow] contained by the [Event]. */
     val flow: StateFlow<T?>
+
     /**
      * Consume whatever value is currently contained by this instance.
      *
@@ -101,7 +102,7 @@ fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit)
 fun <T1, T2> Fragment.collectImmediately(
     a: StateFlow<T1>,
     b: StateFlow<T2>,
-    block: (T1, T2) -> Unit
+    block: (T1, T2) -> Unit,
 ) {
     block(a.value, b.value)
     // We can combine flows, but only if we transform them into one flow output.
@@ -124,7 +125,7 @@ fun <T1, T2, T3> Fragment.collectImmediately(
     a: StateFlow<T1>,
     b: StateFlow<T2>,
     c: StateFlow<T3>,
-    block: (T1, T2, T3) -> Unit
+    block: (T1, T2, T3) -> Unit,
 ) {
     block(a.value, b.value, c.value)
     val combine = combine(a, b, c) { a1, b2, c3 -> Triple(a1, b2, c3) }
@@ -142,7 +143,7 @@ fun <T1, T2, T3> Fragment.collectImmediately(
  */
 private fun Fragment.launch(
     state: Lifecycle.State = Lifecycle.State.STARTED,
-    block: suspend CoroutineScope.() -> Unit
+    block: suspend CoroutineScope.() -> Unit,
 ) {
     viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
 }

@@ -126,7 +126,8 @@ class MainFragment :
         sheetBackCallback =
             SheetBackPressedCallback(
                 playbackSheetBehavior = playbackSheetBehavior,
-                queueSheetBehavior = queueSheetBehavior)
+                queueSheetBehavior = queueSheetBehavior,
+            )
         val detailBackCallback =
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
@@ -145,9 +146,13 @@ class MainFragment :
 
         // Send meaningful accessibility events for bottom sheets
         ViewCompat.setAccessibilityPaneTitle(
-            binding.playbackSheet, context.getString(R.string.lbl_playback))
+            binding.playbackSheet,
+            context.getString(R.string.lbl_playback),
+        )
         ViewCompat.setAccessibilityPaneTitle(
-            binding.queueSheet, context.getString(R.string.lbl_queue))
+            binding.queueSheet,
+            context.getString(R.string.lbl_queue),
+        )
 
         if (queueSheetBehavior != null) {
             // In portrait mode, set up click listeners on the stacked sheets.
@@ -166,7 +171,8 @@ class MainFragment :
                             ShapeAppearanceModel.builder(
                                     context,
                                     MR.style.ShapeAppearance_Material3_Corner_ExtraLarge,
-                                    MR.style.ShapeAppearanceOverlay_Material3_Corner_Top)
+                                    MR.style.ShapeAppearanceOverlay_Material3_Corner_Top,
+                                )
                                 .build()
                         fillColor = context.getAttrColorCompat(MR.attr.colorSurfaceContainerHigh)
                     }
@@ -194,7 +200,8 @@ class MainFragment :
             binding,
             homeModel.songList.value,
             homeModel.isFastScrolling.value,
-            homeModel.currentTabType.value)
+            homeModel.currentTabType.value,
+        )
 
         // --- VIEWMODEL SETUP ---
         // This has to be done here instead of the playback panel to make sure that it's prioritized
@@ -281,7 +288,8 @@ class MainFragment :
                 binding,
                 homeModel.songList.value,
                 homeModel.isFastScrolling.value,
-                homeModel.currentTabType.value)
+                homeModel.currentTabType.value,
+            )
         }
 
         val playbackOutRatio = 1 - min(playbackRatio * 2, 1f)
@@ -295,7 +303,8 @@ class MainFragment :
         binding.mainSheetScrim.alpha = playbackLastStretchRatio
 
         playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(
-            normalCornerSize * (1 - playbackLastStretchRatio))
+            normalCornerSize * (1 - playbackLastStretchRatio)
+        )
         binding.exploreNavHost.isInvisible = playbackLastStretchRatio == 1f
         binding.playbackSheet.translationZ = (1 - playbackLastStretchRatio) * elevationNormal
 
@@ -398,13 +407,18 @@ class MainFragment :
             requireBinding(),
             homeModel.songList.value,
             homeModel.isFastScrolling.value,
-            homeModel.currentTabType.value)
+            homeModel.currentTabType.value,
+        )
     }
 
     private fun updateCurrentTab(tabType: MusicType) {
         val binding = requireBinding()
         updateFabVisibility(
-            binding, homeModel.songList.value, homeModel.isFastScrolling.value, tabType)
+            binding,
+            homeModel.songList.value,
+            homeModel.isFastScrolling.value,
+            tabType,
+        )
     }
 
     private fun updateIndexerState(state: IndexingState?) {
@@ -415,7 +429,8 @@ class MainFragment :
                 binding,
                 homeModel.songList.value,
                 homeModel.isFastScrolling.value,
-                homeModel.currentTabType.value)
+                homeModel.currentTabType.value,
+            )
         }
     }
 
@@ -428,7 +443,7 @@ class MainFragment :
         binding: FragmentMainBinding,
         songs: List<Song>,
         isFastScrolling: Boolean,
-        tabType: MusicType
+        tabType: MusicType,
     ) {
         // If there are no songs, it's likely that the library has not been loaded, so
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
@@ -448,15 +463,19 @@ class MainFragment :
                         object : FloatingActionButton.OnVisibilityChangedListener() {
                             override fun onHidden(fab: FloatingActionButton) {
                                 super.onHidden(fab)
-                                if (shouldHideAllFabs(
-                                    binding,
-                                    homeModel.songList.value,
-                                    homeModel.isFastScrolling.value)) {
+                                if (
+                                    shouldHideAllFabs(
+                                        binding,
+                                        homeModel.songList.value,
+                                        homeModel.isFastScrolling.value,
+                                    )
+                                ) {
                                     return
                                 }
                                 binding.homeShuffleFab.show()
                             }
-                        })
+                        }
+                    )
                 } else {
                     L.d("Showing immediately")
                     binding.homeShuffleFab.show()
@@ -473,15 +492,19 @@ class MainFragment :
                         object : FloatingActionButton.OnVisibilityChangedListener() {
                             override fun onHidden(fab: FloatingActionButton) {
                                 super.onHidden(fab)
-                                if (shouldHideAllFabs(
-                                    binding,
-                                    homeModel.songList.value,
-                                    homeModel.isFastScrolling.value)) {
+                                if (
+                                    shouldHideAllFabs(
+                                        binding,
+                                        homeModel.songList.value,
+                                        homeModel.isFastScrolling.value,
+                                    )
+                                ) {
                                     return
                                 }
                                 binding.homeNewPlaylistFab.show()
                             }
-                        })
+                        }
+                    )
                 } else {
                     L.d("Showing immediately")
                     binding.homeNewPlaylistFab.show()
@@ -493,7 +516,7 @@ class MainFragment :
     private fun shouldHideAllFabs(
         binding: FragmentMainBinding,
         songs: List<Song>,
-        isFastScrolling: Boolean
+        isFastScrolling: Boolean,
     ) =
         binding.exploreNavHost.findNavController().currentDestination?.id != R.id.home_fragment ||
             sheetRising == true ||
@@ -579,8 +602,10 @@ class MainFragment :
 
         val queueSheetBehavior =
             (binding.queueSheet.coordinatorLayoutBehavior ?: return) as QueueBottomSheetBehavior
-        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
-            queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED) {
+        if (
+            playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+                queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_EXPANDED
+        ) {
             // Queue sheet and playback sheet is expanded, close the queue sheet so the
             // playback panel can shown.
             L.d("Collapsing queue sheet")
@@ -608,8 +633,10 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         val queueSheetBehavior =
             (binding.queueSheet.coordinatorLayoutBehavior ?: return) as QueueBottomSheetBehavior
-        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
-            queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
+        if (
+            playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+                queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED
+        ) {
             // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
             queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
         }
@@ -658,7 +685,7 @@ class MainFragment :
 
     private class SheetBackPressedCallback(
         private val playbackSheetBehavior: PlaybackBottomSheetBehavior<*>,
-        private val queueSheetBehavior: QueueBottomSheetBehavior<*>?
+        private val queueSheetBehavior: QueueBottomSheetBehavior<*>?,
     ) : OnBackPressedCallback(false) {
         override fun handleOnBackStarted(backEvent: BackEventCompat) {
             if (queueSheetShown()) {
@@ -766,6 +793,7 @@ class MainFragment :
                 FloatingActionButton::class,
                 "hide",
                 FloatingActionButton.OnVisibilityChangedListener::class,
-                Boolean::class)
+                Boolean::class,
+            )
     }
 }

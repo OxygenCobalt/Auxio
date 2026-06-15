@@ -80,7 +80,7 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ) = onCreateBinding(inflater).also { _binding = it }.root
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

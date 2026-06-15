@@ -97,7 +97,8 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                         pendingPlaylist.preferredName,
                         pendingPlaylist.songs.mapNotNull { library.findSong(it.uid) },
                         pendingPlaylist.template,
-                        pendingPlaylist.reason)
+                        pendingPlaylist.reason,
+                    )
                 }
             L.d("Updated pending playlist: ${_currentPendingNewPlaylist.value?.preferredName}")
 
@@ -150,7 +151,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         context: Context,
         songUids: Array<Music.UID>,
         template: String?,
-        reason: PlaylistDecision.New.Reason
+        reason: PlaylistDecision.New.Reason,
     ) {
         L.d("Opening ${songUids.size} songs to create a playlist from")
         val library = musicRepository.library ?: return
@@ -191,7 +192,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         playlistUid: Music.UID,
         applySongUids: Array<Music.UID>,
         template: String?,
-        reason: PlaylistDecision.Rename.Reason
+        reason: PlaylistDecision.Rename.Reason,
     ) {
         L.d("Opening playlist $playlistUid to rename")
         val playlist = musicRepository.library?.findPlaylist(playlistUid)
@@ -320,14 +321,14 @@ data class PendingNewPlaylist(
     val preferredName: String,
     val songs: List<Song>,
     val template: String?,
-    val reason: PlaylistDecision.New.Reason
+    val reason: PlaylistDecision.New.Reason,
 )
 
 data class PendingRenamePlaylist(
     val playlist: Playlist,
     val applySongs: List<Song>,
     val template: String?,
-    val reason: PlaylistDecision.Rename.Reason
+    val reason: PlaylistDecision.Rename.Reason,
 )
 
 /**
@@ -338,10 +339,13 @@ data class PendingRenamePlaylist(
 sealed interface ChosenName {
     /** The current name is valid. */
     data class Valid(val value: String) : ChosenName
+
     /** The current name already exists. */
     data class AlreadyExists(val prior: String) : ChosenName
+
     /** The current name is empty. */
     data object Empty : ChosenName
+
     /** The current name only consists of whitespace. */
     data object Blank : ChosenName
 }

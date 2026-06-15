@@ -107,7 +107,7 @@ sealed interface ReleaseType {
         LIVE,
 
         /** A release consisting of another Artists remix of a prior performance. */
-        REMIX
+        REMIX,
     }
 
     companion object {
@@ -145,7 +145,7 @@ sealed interface ReleaseType {
          */
         private inline fun List<String>.parseSecondaryTypes(
             index: Int,
-            convertRefinement: (Refinement?) -> ReleaseType
+            convertRefinement: (Refinement?) -> ReleaseType,
         ): ReleaseType {
             val secondary = getOrNull(index)
             return if (secondary.equals("compilation", true)) {
@@ -169,7 +169,7 @@ sealed interface ReleaseType {
          */
         private inline fun parseSecondaryTypeImpl(
             type: String?,
-            convertRefinement: (Refinement?) -> ReleaseType
+            convertRefinement: (Refinement?) -> ReleaseType,
         ) =
             when {
                 // Parse all the types that have no children

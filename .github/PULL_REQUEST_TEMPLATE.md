@@ -22,6 +22,6 @@
 <!-- Please create a debug APK for your changes, if possible. -->
 debug.zip
 
-#### Due Diligence
+#### Due diligence
 - [ ] I have read the [Contribution Guidelines](https://github.com/OxygenCobalt/Auxio/blob/dev/.github/CONTRIBUTING.md).
 - [ ] I have read the [Why Are These Features Missing?](https://github.com/OxygenCobalt/Auxio/wiki/Why-Are-These-Features-Missing%3F) page.

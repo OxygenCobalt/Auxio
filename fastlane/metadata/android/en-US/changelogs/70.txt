@@ -1,0 +1,5 @@
+Auxio v4.1.0 refreshes the UI to align with Material 3 Expressive, improves the playback user experience, and adds a variety of general quality-of-life improvements.
+
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v4.1.0.
+
+Sorry for how long it's been between updates. I burnt out last fall and now have a busy life split across work and other projects, so my bandwidth to work on the app is heavily limited. Don't intend to abandon the app, but from here going to avoid extremely large monolithic updates like this in order to improve cadence.

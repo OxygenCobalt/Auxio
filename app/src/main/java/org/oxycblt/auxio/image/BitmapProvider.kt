@@ -44,7 +44,7 @@ class BitmapProvider
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
 ) {
     /**
      * An extension of [Disposable] with an additional [Target] to deliver the final [Bitmap] to.
@@ -96,7 +96,8 @@ constructor(
                     ImageRequest.Builder(context)
                         .data(song.cover)
                         // Use ORIGINAL sizing, as we are not loading into any View-like component.
-                        .size(Size.ORIGINAL))
+                        .size(Size.ORIGINAL)
+                )
                 .target(
                     onSuccess = {
                         synchronized(this) {
@@ -111,7 +112,8 @@ constructor(
                                 target.onCompleted(null)
                             }
                         }
-                    })
+                    },
+                )
         currentRequest = Request(imageLoader.enqueue(imageRequest.build()), target)
     }
 
