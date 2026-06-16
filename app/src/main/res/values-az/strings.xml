@@ -343,4 +343,10 @@
     <string name="set_rewind_prev">Geri atlamadan əvvəl geri sar</string>
     <string name="set_rewind_prev_desc">Əvvəlki mahnıya keçmədən əvvəl geri sar</string>
     <string name="fmt_lib_total_size">Ümumi ölçü: %s</string>
+    <string name="set_saf_multithread">Multithread Fayl Araşdırma</string>
+    <string name="set_saf_multithread_desc">Daha sürətli, lakin bəzi cihazlarda uğursuz</string>
+    <string name="err_share_too_large">Bu fayl paylaşmaq üçün çox böyükdür</string>
+    <string name="err_share_failed">Bunu paylaşmaq mümkün deyil</string>
+    <string name="set_task_exit">Bağlandıqda həmişə çıxış et</string>
+    <string name="set_task_exit_desc">Mahnı son siyahıdan çıxarıldıqda səsləndirməni dayandır</string>
 </resources>
