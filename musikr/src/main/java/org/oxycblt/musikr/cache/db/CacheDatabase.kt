@@ -63,6 +63,9 @@ internal interface CacheReadDao {
 internal interface CacheWriteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun updateSong(data: CachedFileData)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateSongs(data: List<CachedFileData>)
+
     @Transaction
     suspend fun deleteExcludingUris(uris: Set<String>) {
         val delete = selectAllUris().toSet() - uris
