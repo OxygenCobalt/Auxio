@@ -1,3 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    </resources>
+    <string name="info_app_desc">مشغّل موسيقى بسيط وعملي لنظام أندرويد.</string>
+    <string name="lbl_indexer">يتم تحميل الموسيقى</string>
+    <string name="lbl_indexing">تحميل الموسيقى</string>
+    <string name="lbl_observing">مراقبة مكتبة الموسيقى</string>
+    <string name="lbl_retry">إعادة المحاولة</string>
+</resources>
