@@ -294,7 +294,7 @@
     <string name="set_replay_gain_mode_off">Disattivato</string>
     <string name="lbl_demo">Demo</string>
     <string name="lbl_demos">Demo</string>
-    <string name="lbl_replaygain_track">Regolazione traccia ReplayGain</string>
+    <string name="lbl_replaygain_track">Regolazione ReplayGain traccia</string>
     <string name="lbl_replaygain_album">Regolazione album ReplayGain</string>
     <string name="set_remember_pause">Ricorda pausa</string>
     <string name="set_remember_pause_desc">Mantiene riproduzione/pausa durante il cambio di brano e la modifica della coda di riproduzione</string>
@@ -340,7 +340,7 @@
     <string name="lbl_no_folders">Nessuna cartella</string>
     <string name="desc_add_folder">Aggiungi cartella</string>
     <string name="lng_play_next">Prossimo brano in riproduzione</string>
-    <string name="set_filtered_folders">Cartelle con filtro</string>
+    <string name="set_filtered_folders">Cartelle filtrate</string>
     <string name="set_filter_mode">Tipo di filtro</string>
     <string name="fmt_lib_total_size">Dimensione: %s</string>
     <plurals name="fmt_seconds">
