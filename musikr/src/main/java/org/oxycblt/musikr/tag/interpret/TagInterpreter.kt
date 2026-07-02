@@ -79,57 +79,99 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
         val albumNameOrDir = song.tags.albumName ?: song.file.path.directory.name
 
         val musicBrainzId = song.tags.musicBrainzId?.toUuidOrNull()
-        val v363uid =
-            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
-                ?: Music.UID.auxio(Music.UID.Item.SONG) {
-                    update(songNameOrFileWithoutExtCorrect)
-                    update(albumNameOrDir)
-                    update(song.tags.date)
+        val musicBrainzRecordingId = song.tags.musicBrainzRecordingId?.toUuidOrNull()
+        val acoustidFingerprint = song.tags.acoustidFingerprint
 
-                    update(song.tags.track)
-                    update(song.tags.disc)
+        // Always compute hash-based UIDs. They become the canonical UIDs when no stable ID is
+        // present, and become legacyUids (for playlist migration) when one is present.
+        val v363hash =
+            Music.UID.auxio(Music.UID.Item.SONG) {
+                update(songNameOrFileWithoutExtCorrect)
+                update(albumNameOrDir)
+                update(song.tags.date)
 
-                    update(song.tags.artistNames)
-                    update(song.tags.albumArtistNames)
-                }
+                update(song.tags.track)
+                update(song.tags.disc)
+
+                update(song.tags.artistNames)
+                update(song.tags.albumArtistNames)
+            }
 
         // I was an idiot and accidentally changed the UID spec in v4.0.0, so we need to calculate
         // the broken UID too and maintain compat for that version.
-        val v400uid =
-            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
-                ?: Music.UID.auxio(Music.UID.Item.SONG) {
-                    update(songNameOrFile)
-                    update(song.tags.albumName)
-                    update(song.tags.date)
+        val v400hash =
+            Music.UID.auxio(Music.UID.Item.SONG) {
+                update(songNameOrFile)
+                update(song.tags.albumName)
+                update(song.tags.date)
 
-                    update(song.tags.track)
-                    update(song.tags.disc)
+                update(song.tags.track)
+                update(song.tags.disc)
 
-                    val artistNames = interpretation.separators.split(song.tags.artistNames)
-                    update(artistNames.ifEmpty { listOf(null) })
-                    val albumArtistNames =
-                        interpretation.separators.split(song.tags.albumArtistNames)
-                    update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
-                }
+                val artistNames = interpretation.separators.split(song.tags.artistNames)
+                update(artistNames.ifEmpty { listOf(null) })
+                val albumArtistNames = interpretation.separators.split(song.tags.albumArtistNames)
+                update(albumArtistNames.ifEmpty { artistNames }.ifEmpty { listOf(null) })
+            }
 
-        val v401uid =
-            musicBrainzId?.let { Music.UID.musicBrainz(Music.UID.Item.SONG, it) }
-                ?: Music.UID.auxio(Music.UID.Item.SONG) {
-                    update(songNameOrFileWithoutExt)
-                    update(albumNameOrDir)
-                    update(song.tags.date)
+        val v401hash =
+            Music.UID.auxio(Music.UID.Item.SONG) {
+                update(songNameOrFileWithoutExt)
+                update(albumNameOrDir)
+                update(song.tags.date)
 
-                    update(song.tags.track)
-                    update(song.tags.disc)
+                update(song.tags.track)
+                update(song.tags.disc)
 
-                    update(song.tags.artistNames)
-                    update(song.tags.albumArtistNames)
-                }
+                update(song.tags.artistNames)
+                update(song.tags.albumArtistNames)
+            }
+
+        // Select the canonical UID by priority: AcoustID (content-based, most stable) >
+        // MusicBrainz recording ID (recording-specific) >
+        // MusicBrainz release track ID (release-specific) >
+        // hash (tag-based, falls back to URI tracking for drift).
+        val stableUid =
+            when {
+                acoustidFingerprint != null ->
+                    Music.UID.acoustid(Music.UID.Item.SONG, acoustidFingerprint)
+                musicBrainzRecordingId != null ->
+                    Music.UID.musicBrainz(Music.UID.Item.SONG, musicBrainzRecordingId)
+                musicBrainzId != null -> Music.UID.musicBrainz(Music.UID.Item.SONG, musicBrainzId)
+                else -> null
+            }
+
+        val v363uid = stableUid ?: v363hash
+        val v400uid = stableUid ?: v400hash
+        val v401uid = stableUid ?: v401hash
+
+        // All lower-priority UIDs the song may have been stored under in playlists. These are
+        // used during resolution to match and migrate playlist entries stored under any older UID.
+        val legacyUids =
+            if (stableUid != null) {
+                buildList {
+                        if (acoustidFingerprint != null) {
+                            musicBrainzRecordingId?.let {
+                                add(Music.UID.musicBrainz(Music.UID.Item.SONG, it))
+                            }
+                            musicBrainzId?.let {
+                                add(Music.UID.musicBrainz(Music.UID.Item.SONG, it))
+                            }
+                        } else if (musicBrainzRecordingId != null) {
+                            musicBrainzId?.let {
+                                add(Music.UID.musicBrainz(Music.UID.Item.SONG, it))
+                            }
+                        }
+                        addAll(listOf(v363hash, v400hash, v401hash))
+                    }
+                    .distinct()
+            } else emptyList()
 
         return PreSong(
             v363Uid = v363uid,
             v400Uid = v400uid,
             v401Uid = v401uid,
+            legacyUids = legacyUids,
             uri = uri,
             path = song.file.path,
             size = song.file.size,

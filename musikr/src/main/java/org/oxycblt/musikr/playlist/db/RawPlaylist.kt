@@ -66,3 +66,10 @@ internal data class PlaylistSongCrossRef(
     @ColumnInfo(index = true) val playlistUid: Music.UID,
     @ColumnInfo(index = true) val songUid: Music.UID,
 )
+
+/**
+ * Maps a song's file URI to its last-known [Music.UID]. Updated after every index run so that any
+ * subsequent tag changes (including gaining a MusicBrainz ID) can be detected and the corresponding
+ * playlist entries migrated to the new UID.
+ */
+@Entity internal data class SongUriRecord(@PrimaryKey val uri: String, val songUid: Music.UID)

@@ -39,6 +39,21 @@ internal fun Metadata.musicBrainzId() =
             ?: id3v2["TXXX:MUSICBRAINZ_RELEASETRACKID"])
         ?.first()
 
+internal fun Metadata.musicBrainzRecordingId() =
+    (xiph["MUSICBRAINZ_TRACKID"]
+            ?: xiph["MUSICBRAINZ TRACK ID"]
+            ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ TRACK ID"]
+            ?: mp4["----:COM.APPLE.ITUNES:MUSICBRAINZ_TRACKID"]
+            ?: id3v2["TXXX:MUSICBRAINZ TRACK ID"]
+            ?: id3v2["TXXX:MUSICBRAINZ_TRACKID"])
+        ?.first()
+
+internal fun Metadata.acoustidFingerprint() =
+    (xiph["ACOUSTID_FINGERPRINT"]
+            ?: mp4["----:COM.APPLE.ITUNES:ACOUSTID_FINGERPRINT"]
+            ?: id3v2["TXXX:ACOUSTID_FINGERPRINT"])
+        ?.first()
+
 internal fun Metadata.name() =
     (xiph["TITLE"] ?: mp4["©nam"] ?: mp4["©trk"] ?: id3v2["TIT2"])?.first()
 
