@@ -121,6 +121,8 @@ pkg -S android-studio
     ```
     Additionally: Set java version to jdk21-openjdk
 
+- Create an empty file at media/libraries/common_ktx/proguard-rules.txt
+
 - Run ./gradlew assembleDebug
 
 #### Connecting to your Android Device
