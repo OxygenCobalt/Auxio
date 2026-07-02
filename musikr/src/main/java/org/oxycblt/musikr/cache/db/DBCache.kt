@@ -104,6 +104,8 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
         fun from(context: Context) = from(CacheDatabase.from(context))
 
         internal fun from(db: CacheDatabase) = DBCache(db.readDao())
+
+        internal fun from(readDao: CacheReadDao) = DBCache(readDao)
     }
 }
 
@@ -118,38 +120,13 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
     override suspend fun read(file: File) = inner.read(file)
 
     override suspend fun write(cachedFile: CachedFile) {
-        val dbSong =
-            CachedFileData(
-                uri = cachedFile.file.uri,
-                modifiedMs = cachedFile.file.modifiedMs,
-                addedMs = cachedFile.addedMs,
-                mimeType = cachedFile.audio?.properties?.mimeType,
-                durationMs = cachedFile.audio?.properties?.durationMs,
-                bitrateKbps = cachedFile.audio?.properties?.bitrateKbps,
-                sampleRateHz = cachedFile.audio?.properties?.sampleRateHz,
-                musicBrainzId = cachedFile.audio?.tags?.musicBrainzId,
-                name = cachedFile.audio?.tags?.name,
-                sortName = cachedFile.audio?.tags?.sortName,
-                track = cachedFile.audio?.tags?.track,
-                disc = cachedFile.audio?.tags?.disc,
-                subtitle = cachedFile.audio?.tags?.subtitle,
-                date = cachedFile.audio?.tags?.date,
-                albumMusicBrainzId = cachedFile.audio?.tags?.albumMusicBrainzId,
-                albumName = cachedFile.audio?.tags?.albumName,
-                albumSortName = cachedFile.audio?.tags?.albumSortName,
-                releaseTypes = cachedFile.audio?.tags?.releaseTypes,
-                artistMusicBrainzIds = cachedFile.audio?.tags?.artistMusicBrainzIds,
-                artistNames = cachedFile.audio?.tags?.artistNames,
-                artistSortNames = cachedFile.audio?.tags?.artistSortNames,
-                albumArtistMusicBrainzIds = cachedFile.audio?.tags?.albumArtistMusicBrainzIds,
-                albumArtistNames = cachedFile.audio?.tags?.albumArtistNames,
-                albumArtistSortNames = cachedFile.audio?.tags?.albumArtistSortNames,
-                genreNames = cachedFile.audio?.tags?.genreNames,
-                replayGainTrackAdjustment = cachedFile.audio?.tags?.replayGainTrackAdjustment,
-                replayGainAlbumAdjustment = cachedFile.audio?.tags?.replayGainAlbumAdjustment,
-                coverId = cachedFile.audio?.coverId,
-            )
-        writeDao.updateSong(dbSong)
+        writeDao.updateSong(cachedFile.toDbData())
+    }
+
+    override suspend fun writeAll(cachedFiles: List<CachedFile>) {
+        for (chunk in cachedFiles.chunked(BATCH_SIZE)) {
+            writeDao.updateSongs(chunk.map { it.toDbData() })
+        }
     }
 
     override suspend fun cleanup(excluding: List<CachedFile>) {
@@ -170,5 +147,42 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
             val db = CacheDatabase.from(context)
             return MutableDBCache(DBCache.from(db), db.writeDao())
         }
+
+        internal fun from(inner: DBCache, writeDao: CacheWriteDao) =
+            MutableDBCache(inner, writeDao)
+
+        private const val BATCH_SIZE = 500
     }
 }
+
+private fun CachedFile.toDbData() =
+    CachedFileData(
+        uri = file.uri,
+        modifiedMs = file.modifiedMs,
+        addedMs = addedMs,
+        mimeType = audio?.properties?.mimeType,
+        durationMs = audio?.properties?.durationMs,
+        bitrateKbps = audio?.properties?.bitrateKbps,
+        sampleRateHz = audio?.properties?.sampleRateHz,
+        musicBrainzId = audio?.tags?.musicBrainzId,
+        name = audio?.tags?.name,
+        sortName = audio?.tags?.sortName,
+        track = audio?.tags?.track,
+        disc = audio?.tags?.disc,
+        subtitle = audio?.tags?.subtitle,
+        date = audio?.tags?.date,
+        albumMusicBrainzId = audio?.tags?.albumMusicBrainzId,
+        albumName = audio?.tags?.albumName,
+        albumSortName = audio?.tags?.albumSortName,
+        releaseTypes = audio?.tags?.releaseTypes,
+        artistMusicBrainzIds = audio?.tags?.artistMusicBrainzIds,
+        artistNames = audio?.tags?.artistNames,
+        artistSortNames = audio?.tags?.artistSortNames,
+        albumArtistMusicBrainzIds = audio?.tags?.albumArtistMusicBrainzIds,
+        albumArtistNames = audio?.tags?.albumArtistNames,
+        albumArtistSortNames = audio?.tags?.albumArtistSortNames,
+        genreNames = audio?.tags?.genreNames,
+        replayGainTrackAdjustment = audio?.tags?.replayGainTrackAdjustment,
+        replayGainAlbumAdjustment = audio?.tags?.replayGainAlbumAdjustment,
+        coverId = audio?.coverId,
+    )
