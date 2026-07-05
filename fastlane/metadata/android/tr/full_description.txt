@@ -6,8 +6,7 @@ Auxio, diğer müzik çalarlarda bulunan birçok gereksiz özellik olmadan hızl
 - En son Materyal Tasarım yönergelerinden türetilen hızlı kullanıcı arayüzü
 - Uç durumlardan ziyade kullanım kolaylığına öncelik veren fikir sahibi kullanıcı deneyimi
 - Özelleştirilebilir davranış
-- Disk numaraları, çoklu sanatçılar, sürüm türleri için destek,
-kesin/orijinal tarihler, sıralama etiketleri ve daha fazlası
+- Disk numaraları, çoklu sanatçılar, sürüm türleri ,kesin/orijinal tarihler, sıralama etiketleri ve daha fazlası için destek
 - Sanatçıları ve albüm sanatçılarını birleştiren gelişmiş sanatçı sistemi
 - SD Card-aware klasör yönetimi
 - Güvenilir çalma listesi işlevi
