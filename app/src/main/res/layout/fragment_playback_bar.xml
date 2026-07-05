@@ -73,7 +73,7 @@
                 app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
                 app:icon="@drawable/sel_playing_state_24" />
 
-            <org.oxycblt.auxio.ui.WidthFixMaterialButton
+            <org.oxycblt.auxio.playback.ui.button.WidthFixMaterialButton
                 android:id="@+id/playback_secondary_action"
                 style="@style/Widget.Material3Expressive.Button.IconButton.Outlined"
                 app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
