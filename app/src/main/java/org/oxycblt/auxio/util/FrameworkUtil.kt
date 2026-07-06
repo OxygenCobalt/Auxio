@@ -156,7 +156,41 @@ fun ViewPager2.dampen() {
     RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
 }
 
+/**
+ * Reflect into a [ViewPager2]'s internal [RecyclerView].
+ */
 fun ViewPager2.recycler() = (VP_RECYCLER_FIELD.get(this) as RecyclerView)
+
+/**
+ * Move to [item] using smooth drag gestures instead of the RecyclerView's scroll interpolator,
+ * which is far faster/choppier/blunt and doesn't look as good at all.
+ *
+ * Proposed by Codex, cleaned up / cognitive ownership by me
+ */
+fun ViewPager2.smoothScrollByPageTo(item: Int, durationMs: Int = 300) {
+    // Nothing to actually do if there's no data.
+    val adapter = adapter ?: return
+    if (adapter.itemCount <= 0) {
+        return
+    }
+
+    // Actually figure out how long we have to
+    // coerceIn is codex defensiveness but honestly I'd rather just do nothing
+    // if we go OOB, makes index logic easier.
+    val target = item.coerceIn(0, adapter.itemCount - 1)
+    val delta = target - currentItem
+    if (delta == 0) {
+        return
+    }
+
+    val recycler = recycler()
+    recycler.stopScroll()
+
+    // Note: Assumption is horizonal ViewPager, less logic to manage.
+    // TODO: Fix ViewPager2 RTL Support
+    val direction = if (isRtl) -1 else 1
+    recycler.smoothScrollBy(width * delta * direction, 0, null, durationMs)
+}
 
 /**
  * Crash-safe wrapped around [NavController.navigate] that will not crash if multiple destinations
