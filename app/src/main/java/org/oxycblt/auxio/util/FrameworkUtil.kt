@@ -156,9 +156,7 @@ fun ViewPager2.dampen() {
     RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
 }
 
-/**
- * Reflect into a [ViewPager2]'s internal [RecyclerView].
- */
+/** Reflect into a [ViewPager2]'s internal [RecyclerView]. */
 fun ViewPager2.recycler() = (VP_RECYCLER_FIELD.get(this) as RecyclerView)
 
 /**

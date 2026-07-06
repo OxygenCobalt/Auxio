@@ -299,7 +299,8 @@ class PlaybackPanelFragment :
     private fun updatePager(queue: PagerQueue) {
         // Right now there's easily 140ms of frame skipping when going next/prev. This is primarily
         // the fault of specifically the nested bottom sheet UI setup, which is intractable to
-        // optimize. If I don't do multiple remeasures/relayouts on every slightest state instability
+        // optimize. If I don't do multiple remeasures/relayouts on every slightest state
+        // instability
         // I will suddenly encounter insane issues where the sheet fails to measure, appears below
         // the sidebar, flies away, not changing with ui scale, etc, often only on third-party OEM
         // ROMs that randomly mangle  SDK APIs and the SystemUI chrome for no reason.
@@ -369,10 +370,7 @@ class PlaybackPanelFragment :
             if (command.update == null && abs(delta) == 1) {
                 binding.playbackPager.smoothScrollByPageTo(command.scroll)
             } else {
-                binding.playbackPager.setCurrentItem(
-                    command.scroll,
-                    false,
-                )
+                binding.playbackPager.setCurrentItem(command.scroll, false)
             }
         }
     }

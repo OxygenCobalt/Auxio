@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 Auxio Project
+ * ScaledPlaybackButtonGroup.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.playback.ui.button
 
 import android.content.Context
@@ -9,11 +27,11 @@ import com.google.android.material.button.MaterialButtonGroup
 import kotlin.math.min
 
 /**
- * A [com.google.android.material.button.MaterialButtonGroup] that scales playback controls down
- * to actually fit mid-sized screens.
+ * A [com.google.android.material.button.MaterialButtonGroup] that scales playback controls down to
+ * actually fit mid-sized screens.
  *
- * M3 Expressive for some reason only has "Large" and then massively smaller "Medium"/"Small"
- * size classes. So either you clip on smaller phones or jump to an unusable button row sizing.
+ * M3 Expressive for some reason only has "Large" and then massively smaller "Medium"/"Small" size
+ * classes. So either you clip on smaller phones or jump to an unusable button row sizing.
  *
  * Fix this by just force-scaling down buttons.
  *

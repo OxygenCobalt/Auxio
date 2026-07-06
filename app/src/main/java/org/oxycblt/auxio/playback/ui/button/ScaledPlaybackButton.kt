@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 Auxio Project
+ * ScaledPlaybackButton.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.playback.ui.button
 
 import android.annotation.SuppressLint
@@ -13,9 +31,9 @@ import com.google.android.material.shape.RelativeCornerSize
 import com.google.android.material.shape.ShapeAppearance
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.shape.StateListShapeAppearanceModel
-import org.oxycblt.auxio.util.lazyReflectedMethod
 import java.lang.reflect.Method
 import kotlin.math.max
+import org.oxycblt.auxio.util.lazyReflectedMethod
 
 /**
  * Companion scalable button to [ScaledPlaybackButtonGroup], see that.
@@ -39,19 +57,20 @@ constructor(
         // so that our scaling applies to the correct dimens
         val contentWidth = paddingStart + paddingEnd + iconSize
         val contentHeight = paddingTop + paddingBottom + iconSize
-        baseMetrics = BaseMetrics(
-            width = max(minimumWidth, contentWidth),
-            height = max(minimumHeight, contentHeight),
-            minimumWidth = minimumWidth,
-            minimumHeight = minimumHeight,
-            paddingStart = paddingStart,
-            paddingTop = paddingTop,
-            paddingEnd = paddingEnd,
-            paddingBottom = paddingBottom,
-            iconSize = iconSize,
-            strokeWidth = strokeWidth,
-            shapeAppearance = shapeAppearance
-        )
+        baseMetrics =
+            BaseMetrics(
+                width = max(minimumWidth, contentWidth),
+                height = max(minimumHeight, contentHeight),
+                minimumWidth = minimumWidth,
+                minimumHeight = minimumHeight,
+                paddingStart = paddingStart,
+                paddingTop = paddingTop,
+                paddingEnd = paddingEnd,
+                paddingBottom = paddingBottom,
+                iconSize = iconSize,
+                strokeWidth = strokeWidth,
+                shapeAppearance = shapeAppearance,
+            )
     }
 
     val baseWidth: Int
@@ -99,7 +118,8 @@ constructor(
 
         // Scale stroke width if necessary
         // A bit inaccurate (they actually step from 3, 2, 1) but better to interpolate honestly
-        strokeWidth = if (baseMetrics.strokeWidth > 0) max(1, baseMetrics.strokeWidth.scale(scale)) else 0
+        strokeWidth =
+            if (baseMetrics.strokeWidth > 0) max(1, baseMetrics.strokeWidth.scale(scale)) else 0
 
         shapeAppearance = baseMetrics.shapeAppearance.scale(scale)
     }
@@ -108,11 +128,9 @@ constructor(
 
     private fun ShapeAppearance.scale(scale: Float): ShapeAppearance =
         when (this) {
-            is StateListShapeAppearanceModel ->
-                withTransformedCornerSizes { it.scale(scale) }
+            is StateListShapeAppearanceModel -> withTransformedCornerSizes { it.scale(scale) }
 
-            is ShapeAppearanceModel ->
-                withTransformedCornerSizes { it.scale(scale) }
+            is ShapeAppearanceModel -> withTransformedCornerSizes { it.scale(scale) }
 
             else -> this
         }
@@ -140,6 +158,6 @@ constructor(
 
     private companion object {
         private val METHOD_RECOVER_ORIG_PARAMS: Method by
-        lazyReflectedMethod(MaterialButton::class, "recoverOriginalLayoutParams")
+            lazyReflectedMethod(MaterialButton::class, "recoverOriginalLayoutParams")
     }
 }
