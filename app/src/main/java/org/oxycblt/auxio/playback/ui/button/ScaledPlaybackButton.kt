@@ -50,7 +50,6 @@ constructor(
 ) : WidthFixMaterialButton(context, attrs, defStyleAttr) {
     private var baseMetrics: BaseMetrics
     private var lastScale: Float? = null
-    private var scaledShapeAppearance: ShapeAppearance? = null
 
     init {
         // We need to capture the buttons original state w /o any transforms
