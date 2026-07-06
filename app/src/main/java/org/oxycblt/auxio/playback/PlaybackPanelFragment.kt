@@ -54,6 +54,7 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
 import org.oxycblt.auxio.util.recycler
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.smoothScrollByPageTo
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
