@@ -16,23 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.playback.ui.button
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import com.google.android.material.R
+import org.oxycblt.auxio.ui.RippleFixMaterialButton
 
 /**
- * [RippleFixMaterialButton] that works around another bug where switching the icon during a press
- * breaks width expansion animations.
+ * [org.oxycblt.auxio.ui.RippleFixMaterialButton] that works around another bug where switching the
+ * icon during a press breaks width expansion animations.
  *
  * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Should animate icon transitions to make this look less bad.
  */
-class WidthFixMaterialButton
+open class WidthFixMaterialButton
 @JvmOverloads
 constructor(
     context: Context,

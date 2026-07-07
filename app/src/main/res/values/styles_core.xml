@@ -19,6 +19,16 @@
 
         <!-- Material configuration -->
 <!--        <item name="colorOutline">@color/overlay_stroke</item>-->
+        <item name="motionSpringFastSpatial">@style/Motion.Material3.Spring.Standard.Fast.Spatial</item>
+        <item name="motionSpringFastEffects">@style/Motion.Material3.Spring.Standard.Fast.Effects</item>
+        <item name="motionSpringDefaultSpatial">
+            @style/Motion.Material3.Spring.Standard.Default.Spatial
+        </item>
+        <item name="motionSpringDefaultEffects">
+            @style/Motion.Material3.Spring.Standard.Default.Effects
+        </item>
+        <item name="motionSpringSlowSpatial">@style/Motion.Material3.Spring.Standard.Slow.Spatial</item>
+        <item name="motionSpringSlowEffects">@style/Motion.Material3.Spring.Standard.Slow.Effects</item>
         <item name="appBarLayoutStyle">@style/Widget.Auxio.AppBarLayout</item>
         <item name="toolbarStyle">@style/Widget.Auxio.Toolbar</item>
         <item name="tabStyle">@style/Widget.Auxio.TabLayout</item>

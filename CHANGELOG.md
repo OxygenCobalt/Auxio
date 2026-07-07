@@ -1,3 +1,14 @@
+## v4.1.1
+
+## What's Fixed
+- Stopped crashes on some SystemUIs due to placeholder covers that
+were too small
+
+## What's Improved
+- Stopped the skip next/previous cover animation from being as choppy
+	- Not fully unfortunately due to various limitations
+- Buttons are no longer much smaller than before on smaller devices
+
 ## v4.1.0
 
 ## What's New

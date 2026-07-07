@@ -510,7 +510,7 @@ private class PlaybackNotification(
                 nameRes = R.string.lbl_playback,
             )
 
-        /** Cached 1x1 transparent bitmap. */
-        private val EMPTY_BITMAP: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        /** Cached 2x2 transparent bitmap. 2x2 to stop palette extraction blowing up the app */
+        private val EMPTY_BITMAP: Bitmap = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888)
     }
 }

@@ -217,6 +217,7 @@
 
     <style name="Widget.Auxio.TextView.Base" parent="Widget.AppCompat.TextView">
         <item name="android:textAlignment">viewStart</item>
+        <item name="emojiCompatEnabled">false</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Item.Base" parent="Widget.Auxio.TextView.Base">

@@ -54,6 +54,7 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
 import org.oxycblt.auxio.util.recycler
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.smoothScrollByPageTo
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
@@ -296,6 +297,47 @@ class PlaybackPanelFragment :
     }
 
     private fun updatePager(queue: PagerQueue) {
+        // Right now there's easily 140ms of frame skipping when going next/prev. This is primarily
+        // the fault of specifically the nested bottom sheet UI setup, which is intractable to
+        // optimize. If I don't do multiple remeasures/relayouts on every slightest state
+        // instability
+        // I will suddenly encounter insane issues where the sheet fails to measure, appears below
+        // the sidebar, flies away, not changing with ui scale, etc, often only on third-party OEM
+        // ROMs that randomly mangle  SDK APIs and the SystemUI chrome for no reason.
+        //
+        // Historically this was not an issue, as I did not animate next/prev. Now I do, and it's
+        // highly noticeable. So at least for plain next/prev I have to hack around it, do not
+        // execute any transition until the state has fully adjudicated and laid out the UI. It's
+        // not effective for swiping but there's nothing I can do there.
+        //
+        // Eventually one day Claude Fable 6.7 will probably be able to figure out that you need to
+        // reflect into System.FoobaCrumbo::beegieConnector(GoolaUtils.PlubBud) and call it
+        // specifically with 0x189B31FA alongside disabling the AndroidX Helpo SuperCharge by
+        // manually clobbering `BottomSheetM2InternalBoogieCompat::scrimbloManager` to null for it
+        // to not actually randomly mangle the sheets and do it in 1 clean layout, but for now I
+        // must do this to keep my sanity.
+        //
+        // Actual snippet here was codex, just cleaned & adapted it / cognitive ownership
+        requireBinding().playbackPager.apply {
+            if (!isAttachedToWindow) {
+                post { updatePagerImpl(queue) }
+                return
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isHardwareAccelerated) {
+                // New version using post-Q frame hooks
+                viewTreeObserver.registerFrameCommitCallback {
+                    post { postOnAnimation { updatePagerImpl(queue) } }
+                }
+                postInvalidateOnAnimation()
+            } else {
+                // Let current layout happen, then wait for the next to conclude
+                postOnAnimation { postOnAnimation { updatePagerImpl(queue) } }
+            }
+        }
+    }
+
+    private fun updatePagerImpl(queue: PagerQueue) {
         val binding = requireBinding()
 
         val command = playbackModel.pagerCommand.consume()
@@ -325,10 +367,11 @@ class PlaybackPanelFragment :
                 // user scroll, carry on
                 return
             }
-            binding.playbackPager.setCurrentItem(
-                command.scroll,
-                command.update == null && abs(delta) == 1,
-            )
+            if (command.update == null && abs(delta) == 1) {
+                binding.playbackPager.smoothScrollByPageTo(command.scroll)
+            } else {
+                binding.playbackPager.setCurrentItem(command.scroll, false)
+            }
         }
     }
 
