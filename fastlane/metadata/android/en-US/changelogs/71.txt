@@ -1,0 +1,4 @@
+Auxio v4.1.0 refreshes the UI to align with Material 3 Expressive, improves the playback user experience, and adds a variety of general quality-of-life improvements.
+This patch fixes playback buttons being smaller than before on some devices alongside fixing a crash / alleviating some UI jank on skipping to the next/prev song
+
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v4.1.1.
