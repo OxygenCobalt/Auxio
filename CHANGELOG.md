@@ -1,3 +1,8 @@
+## v4.1.2
+
+## What's Fixed
+- Fixed crash on startup due to missing method
+
 ## v4.1.1
 
 ## What's Fixed

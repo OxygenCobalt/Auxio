@@ -24,6 +24,12 @@
 # Also it's easier to fix issues if the stack trace symbols remain unmangled.
 -dontobfuscate
 
+# Used reflectively by ScaledPlaybackButton to undo MaterialButtonGroup's temporary width
+# mutations before applying playback-specific scaling.
+-keepclassmembers class com.google.android.material.button.MaterialButton {
+    void recoverOriginalLayoutParams();
+}
+
 # Make AGP shut up about classes that aren't even used.
 -dontwarn org.bouncycastle.jsse.BCSSLParameters
 -dontwarn org.bouncycastle.jsse.BCSSLSocket
