@@ -339,7 +339,9 @@ class PlaybackPanelFragment :
     }
 
     private fun updatePagerImpl(queue: PagerQueue) {
-        val binding = requireBinding()
+        // Android insanity means this may be executed after view destruction
+        // but only on some devices.
+        val binding = binding ?: return
 
         val command = playbackModel.pagerCommand.consume()
         if (command == null) {
