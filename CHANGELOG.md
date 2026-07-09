@@ -1,3 +1,8 @@
+## v4.1.3
+
+## What's Fixed
+- Fixed another crash with the changes to make the playback pager smoother
+
 ## v4.1.2
 
 ## What's Fixed
