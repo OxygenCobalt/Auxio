@@ -23,6 +23,7 @@ import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.smartshuffle.SmartShuffle
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
 import org.oxycblt.musikr.Genre
@@ -88,6 +89,7 @@ constructor(
     val playbackSettings: PlaybackSettings,
     val listSettings: ListSettings,
     val musicRepository: MusicRepository,
+    val smartShuffle: SmartShuffle,
 ) : PlaybackCommand.Factory {
     data class PlaybackCommandImpl(
         override val song: Song?,
@@ -117,7 +119,14 @@ constructor(
     override fun songFromPlaylist(song: Song, playlist: Playlist, shuffle: ShuffleMode) =
         newCommand(song, playlist, playlist.songs, shuffle)
 
-    override fun all(shuffle: ShuffleMode) = newCommand(null, shuffle)
+    override fun all(shuffle: ShuffleMode): PlaybackCommand? {
+        val library = musicRepository.library ?: return null
+        return if (shuffle == ShuffleMode.ON) {
+            newCommand(null, null, smartShuffle.queue(library.songs), ShuffleMode.OFF)
+        } else {
+            newCommand(null, null, library.songs, listSettings.songSort, shuffle)
+        }
+    }
 
     override fun songs(songs: List<Song>, shuffle: ShuffleMode) =
         newCommand(null, null, songs, shuffle)

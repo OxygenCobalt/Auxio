@@ -342,6 +342,15 @@
     <!-- Different from "Reload music" -->
     <string name="set_rescan">Rescan music</string>
     <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
+    <string name="set_songs_to_review">Songs to review</string>
+    <string name="set_songs_to_review_desc">Songs Smart Shuffle thinks you dislike</string>
+    <string name="set_songs_to_review_count">%d songs marked as disliked</string>
+    <string name="set_songs_to_review_none">No disliked songs yet</string>
+    <string name="lng_empty_songs_to_review">No songs to review. Keep listening — skips will surface tracks you may want to delete.</string>
+    <string name="fmt_disliked_song_info">%1$s · %2$d skips · %3$d listens</string>
+    <string name="desc_forgive_song">Keep this song in shuffle</string>
+    <string name="desc_delete_song">Delete this song from the device</string>
+    <string name="err_delete_song">Could not delete this song. Open details for the file path and remove it manually.</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_index_failed">Music loading failed</string>
