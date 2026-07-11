@@ -28,6 +28,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.smartshuffle.SmartShuffle
+import org.oxycblt.auxio.smartshuffle.SmartShuffleTracker
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
 import timber.log.Timber as L
@@ -42,6 +43,7 @@ private constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
     private val smartShuffle: SmartShuffle,
+    private val smartShuffleTracker: SmartShuffleTracker,
     private val widgetComponent: WidgetComponent,
     private val onExitRequested: () -> Unit,
     private val onLikeChanged: () -> Unit,
@@ -54,6 +56,7 @@ private constructor(
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings,
         private val smartShuffle: SmartShuffle,
+        private val smartShuffleTracker: SmartShuffleTracker,
     ) {
         fun create(
             context: Context,
@@ -66,6 +69,7 @@ private constructor(
                 playbackManager,
                 playbackSettings,
                 smartShuffle,
+                smartShuffleTracker,
                 widgetComponent,
                 onExitRequested,
                 onLikeChanged,
@@ -132,6 +136,8 @@ private constructor(
                         L.d("Already liked — treating as dislike")
                         smartShuffle.dislike(song)
                         onLikeChanged()
+                        // Dislike already recorded preference; don't also count this as an early skip.
+                        smartShuffleTracker.suppressFinish(song)
                         playbackManager.next()
                     } else {
                         smartShuffle.like(song)

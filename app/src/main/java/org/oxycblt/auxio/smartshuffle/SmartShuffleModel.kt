@@ -162,6 +162,10 @@ class SmartShuffleModel(
         songsSinceLastStrongLike += 1
     }
 
+    /**
+     * Implicit strong listen (e.g. played ≥85%). Boosts recommendations but does not fill the
+     * heart — only [recordExplicitLike] does that.
+     */
     fun recordStrongLike(song: Song, nowMs: Long = System.currentTimeMillis()) =
         recordStrongLike(song.uid.toString(), song.smartFeatures(), nowMs)
 
@@ -170,46 +174,52 @@ class SmartShuffleModel(
         features: List<String>,
         nowMs: Long = System.currentTimeMillis(),
     ) {
-        val bonus = 50 + 4 * songsSinceLastStrongLike
-        engage(uid, features, bonus)
-        onListen(uid, nowMs)
-        songsSinceLastStrongLike = 0
-        val stats = songStats.getOrPut(uid) { SongStats() }
-        stats.liked = true
-        stats.undesirable = false
-        stats.forgiven = true
-        stats.skipStreak = 0
+        applyStrongLikeBoost(uid, features, nowMs)
+    }
+
+    /** Explicit heart tap: same boost as a strong listen, plus marks the song as liked. */
+    fun recordExplicitLike(song: Song, nowMs: Long = System.currentTimeMillis()) =
+        recordExplicitLike(song.uid.toString(), song.smartFeatures(), nowMs)
+
+    fun recordExplicitLike(
+        uid: String,
+        features: List<String>,
+        nowMs: Long = System.currentTimeMillis(),
+    ) {
+        applyStrongLikeBoost(uid, features, nowMs)
+        songStats.getOrPut(uid) { SongStats() }.liked = true
     }
 
     fun isLiked(uid: String): Boolean = songStats[uid]?.liked == true
 
     fun isLiked(song: Song): Boolean = isLiked(song.uid.toString())
 
-    fun clearLike(uid: String) {
-        songStats[uid]?.liked = false
-    }
-
     /**
      * Explicit dislike: strong negative engagement, clear any like, and mark the song undesirable
-     * so it is excluded from smart queues and listed under Songs to review.
+     * so it is excluded from smart queues and listed under Songs to review. Skip counters are left
+     * to the tracker for implicit early skips only.
      */
-    fun recordExplicitDislike(song: Song, nowMs: Long = System.currentTimeMillis()) =
-        recordExplicitDislike(song.uid.toString(), song.smartFeatures(), nowMs)
+    fun recordExplicitDislike(song: Song) =
+        recordExplicitDislike(song.uid.toString(), song.smartFeatures())
 
-    fun recordExplicitDislike(
-        uid: String,
-        features: List<String>,
-        nowMs: Long = System.currentTimeMillis(),
-    ) {
+    fun recordExplicitDislike(uid: String, features: List<String>) {
         engage(uid, features, EXPLICIT_DISLIKE_POINTS)
         val stats = songStats.getOrPut(uid) { SongStats() }
         stats.liked = false
         stats.undesirable = true
         stats.forgiven = false
-        stats.skips += 1
-        stats.skipStreak += 1
-        stats.lastSkipMs = nowMs
         songsSinceLastStrongLike += 1
+    }
+
+    private fun applyStrongLikeBoost(uid: String, features: List<String>, nowMs: Long) {
+        val bonus = 50 + 4 * songsSinceLastStrongLike
+        engage(uid, features, bonus)
+        onListen(uid, nowMs)
+        songsSinceLastStrongLike = 0
+        val stats = songStats.getOrPut(uid) { SongStats() }
+        stats.undesirable = false
+        stats.forgiven = true
+        stats.skipStreak = 0
     }
 
     fun isDisliked(uid: String): Boolean = songStats[uid]?.isExcluded == true

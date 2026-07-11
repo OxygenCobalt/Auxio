@@ -38,6 +38,7 @@ constructor(
     private var isPlaying = false
     private var started = false
     private var globalSkipStreak = 0
+    private var suppressFinishUid: String? = null
     private val sessionListens = mutableSetOf<String>()
 
     fun start() {
@@ -55,8 +56,17 @@ constructor(
         started = false
         finishCurrent()
         current = null
+        suppressFinishUid = null
         playbackManager.removeListener(this)
         smartShuffle.flush()
+    }
+
+    /**
+     * Skip the next [finishCurrent] for [song] (e.g. after an explicit dislike that already
+     * recorded preference and is about to call [PlaybackStateManager.next]).
+     */
+    fun suppressFinish(song: Song) {
+        suppressFinishUid = song.uid.toString()
     }
 
     override fun onNewPlayback(
@@ -91,6 +101,7 @@ constructor(
         current = null
         sessionListens.clear()
         globalSkipStreak = 0
+        suppressFinishUid = null
         smartShuffle.flush()
     }
 
@@ -106,10 +117,15 @@ constructor(
     private fun finishCurrent() {
         val tracked = current ?: return
         current = null
-        val listenedMs = tracked.playedMs()
         val song = tracked.song
-        val durationMs = song.durationMs.coerceAtLeast(1)
         val uidKey = song.uid.toString()
+        if (suppressFinishUid == uidKey) {
+            suppressFinishUid = null
+            return
+        }
+
+        val listenedMs = tracked.playedMs()
+        val durationMs = song.durationMs.coerceAtLeast(1)
 
         val strongThreshold = minOf(90_000L, (durationMs * 0.85).toLong())
         val solidThreshold = minOf(45_000L, (durationMs * 0.50).toLong())
@@ -135,7 +151,8 @@ constructor(
                 }
             }
             listenedMs <= earlySkipThreshold -> {
-                // Per-song skipStreak (no solid listen between) marks undesirable at 2+.
+                // Per-song skipStreak (no solid listen between) marks undesirable at 4
+                // consecutive early skips, or 6 lifetime early skips.
                 // Global streak escalates the point penalty while the user is in skip mode.
                 globalSkipStreak = (globalSkipStreak + 1).coerceAtMost(10)
                 smartShuffle.recordEarlySkip(song, globalStreak = globalSkipStreak)

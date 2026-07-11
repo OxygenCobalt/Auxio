@@ -131,13 +131,12 @@ class SmartShuffle @Inject constructor(private val store: SmartShuffleStore) {
     @Synchronized
     fun recordStrongLike(song: Song) {
         model.recordStrongLike(song)
-        flushAsync()
-        bumpPreferenceRevision()
+        scheduleSave()
     }
 
     @Synchronized
     fun like(song: Song) {
-        model.recordStrongLike(song)
+        model.recordExplicitLike(song)
         flushAsync()
         bumpPreferenceRevision()
     }

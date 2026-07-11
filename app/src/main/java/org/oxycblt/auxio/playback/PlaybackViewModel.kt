@@ -37,6 +37,7 @@ import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.smartshuffle.SmartShuffle
+import org.oxycblt.auxio.smartshuffle.SmartShuffleTracker
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.musikr.Album
@@ -63,6 +64,7 @@ constructor(
     private val commandFactory: PlaybackCommand.Factory,
     private val listSettings: ListSettings,
     private val smartShuffle: SmartShuffle,
+    private val smartShuffleTracker: SmartShuffleTracker,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
@@ -664,6 +666,8 @@ constructor(
             smartShuffle.dislike(song)
             _isLiked.value = false
             _dislikedEvent.put(Unit)
+            // Dislike already recorded preference; don't also count this as an early skip.
+            smartShuffleTracker.suppressFinish(song)
             playbackManager.next()
         } else {
             L.d("Liking current song")
