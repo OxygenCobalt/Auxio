@@ -21,15 +21,22 @@ package org.oxycblt.auxio.smartshuffle
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.json.JSONObject
 import timber.log.Timber as L
 
 @Singleton
-class SmartShuffleStore @Inject constructor(@ApplicationContext context: Context) {
-    private val file = File(context.filesDir, FILE_NAME)
+class SmartShuffleStore @Inject constructor(@ApplicationContext context: Context) :
+    SmartShuffleStoreBackend(File(context.filesDir, FILE_NAME)) {
+    companion object {
+        const val FILE_NAME = "smart_shuffle_model.json"
+    }
+}
 
+/** File-backed persistence, extracted for unit tests without Android. */
+open class SmartShuffleStoreBackend(private val file: File) {
     @Synchronized
     fun load(): SmartShuffleModel {
         if (!file.exists()) {
@@ -103,16 +110,22 @@ class SmartShuffleStore @Inject constructor(@ApplicationContext context: Context
         }
         root.put("songs", songsObject)
 
-        // Atomic replace avoids a truncated file if the process dies mid-write.
-        val tmp = File(file.parentFile, "$FILE_NAME.tmp")
-        tmp.writeText(root.toString())
+        // Atomic replace + fsync reduces truncated/corrupt files on process death.
+        val parent = file.parentFile ?: return
+        if (!parent.exists()) {
+            parent.mkdirs()
+        }
+        val tmp = File(parent, "${file.name}.tmp")
+        FileOutputStream(tmp).use { fos ->
+            fos.write(root.toString().toByteArray(Charsets.UTF_8))
+            fos.fd.sync()
+        }
         if (!tmp.renameTo(file)) {
-            tmp.copyTo(file, overwrite = true)
+            FileOutputStream(file).use { fos ->
+                fos.write(tmp.readBytes())
+                fos.fd.sync()
+            }
             tmp.delete()
         }
-    }
-
-    private companion object {
-        const val FILE_NAME = "smart_shuffle_model.json"
     }
 }

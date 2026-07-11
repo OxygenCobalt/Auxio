@@ -31,33 +31,51 @@ class SmartShuffleModel(
     val songStats: MutableMap<String, SongStats> = mutableMapOf(),
     var songsSinceLastStrongLike: Int = 0,
 ) {
-    fun score(song: Song, nowMs: Long = System.currentTimeMillis()): Double {
-        val stats = songStats[song.uid.toString()]
+    fun score(song: Song, nowMs: Long = System.currentTimeMillis()): Double =
+        score(song.uid.toString(), song.smartFeatures(), song.cover != null, nowMs)
+
+    fun score(
+        uid: String,
+        features: List<String>,
+        hasCover: Boolean,
+        nowMs: Long = System.currentTimeMillis(),
+    ): Double {
+        val stats = songStats[uid]
         if (stats != null && stats.isExcluded) {
             return UNDESIRABLE_SCORE
         }
 
         val featureScore =
-            song.smartFeatures().sumOf { feature ->
+            features.sumOf { feature ->
                 val raw = (featureScores[feature] ?: 0).toDouble()
                 if (feature.startsWith("song:")) raw * SONG_FEATURE_WEIGHT else raw
             }
         val fatigue = -80.0 * effectiveSeen(stats, nowMs).coerceAtMost(MAX_FATIGUE_SEEN)
-        val base = if (song.cover != null) 5.0 else 0.0
+        val base = if (hasCover) 5.0 else 0.0
         return base + featureScore + fatigue
     }
 
-    fun engage(song: Song, points: Int) {
-        val uid = song.uid.toString()
+    fun engage(song: Song, points: Int) =
+        engage(song.uid.toString(), song.smartFeatures(), points)
+
+    fun engage(uid: String, features: List<String>, points: Int) {
         val stats = songStats.getOrPut(uid) { SongStats() }
         stats.engagement += points
-        for (feature in song.smartFeatures()) {
-            featureScores[feature] = (featureScores[feature] ?: 0) + points
+        for (feature in features) {
+            val next = ((featureScores[feature] ?: 0) + points).coerceIn(-FEATURE_CAP, FEATURE_CAP)
+            if (next == 0) {
+                featureScores.remove(feature)
+            } else {
+                featureScores[feature] = next
+            }
         }
     }
 
-    fun markSeen(song: Song, nowMs: Long = System.currentTimeMillis()) {
-        val stats = songStats.getOrPut(song.uid.toString()) { SongStats() }
+    fun markSeen(song: Song, nowMs: Long = System.currentTimeMillis()) =
+        markSeen(song.uid.toString(), nowMs)
+
+    fun markSeen(uid: String, nowMs: Long = System.currentTimeMillis()) {
+        val stats = songStats.getOrPut(uid) { SongStats() }
         decaySeen(stats, nowMs)
         stats.seen += 1
         stats.lastSeenMs = nowMs
@@ -70,14 +88,52 @@ class SmartShuffleModel(
         }
     }
 
-    fun recordEarlySkip(song: Song, globalStreak: Int, nowMs: Long = System.currentTimeMillis()) {
+    /** Remove stale song data and rebuild feature weights from the current library. */
+    fun reconcile(songs: Collection<Song>, nowMs: Long = System.currentTimeMillis()) {
+        val activeUids = songs.mapTo(HashSet(songs.size)) { it.uid.toString() }
+        decayAllSeen(nowMs)
+        songStats.keys.retainAll(activeUids)
+
+        val rebuilt = mutableMapOf<String, Long>()
+        for (song in songs) {
+            val engagement = songStats[song.uid.toString()]?.engagement?.toLong() ?: continue
+            if (engagement == 0L) {
+                continue
+            }
+            for (feature in song.smartFeatures()) {
+                rebuilt[feature] = (rebuilt[feature] ?: 0L) + engagement
+            }
+        }
+        featureScores.clear()
+        for ((feature, score) in rebuilt) {
+            val bounded = score.coerceIn(-FEATURE_CAP.toLong(), FEATURE_CAP.toLong()).toInt()
+            if (bounded != 0) {
+                featureScores[feature] = bounded
+            }
+        }
+    }
+
+    fun recordEarlySkip(
+        song: Song,
+        globalStreak: Int,
+        nowMs: Long = System.currentTimeMillis(),
+    ) = recordEarlySkip(song.uid.toString(), song.smartFeatures(), globalStreak, nowMs)
+
+    fun recordEarlySkip(
+        uid: String,
+        features: List<String>,
+        globalStreak: Int,
+        nowMs: Long = System.currentTimeMillis(),
+    ) {
         val points = -5 * globalStreak.coerceIn(1, MAX_SKIP_STREAK_MULTIPLIER)
-        engage(song, points)
-        val stats = songStats.getOrPut(song.uid.toString()) { SongStats() }
+        engage(uid, features, points)
+        val stats = songStats.getOrPut(uid) { SongStats() }
         stats.skips += 1
         stats.skipStreak += 1
         stats.lastSkipMs = nowMs
         songsSinceLastStrongLike += 1
+        // Require sustained dislike: several consecutive early skips of the *same* song,
+        // or a higher lifetime skip count. Rapid library browsing alone should not ban tracks.
         if (stats.skipStreak >= BACK_TO_BACK_SKIP_THRESHOLD ||
             stats.skips >= TOTAL_SKIP_THRESHOLD) {
             stats.undesirable = true
@@ -85,27 +141,51 @@ class SmartShuffleModel(
         }
     }
 
-    fun recordMidAbandon(song: Song) {
-        engage(song, -2)
+    fun recordMidAbandon(song: Song) =
+        recordMidAbandon(song.uid.toString(), song.smartFeatures())
+
+    fun recordMidAbandon(uid: String, features: List<String>) {
+        engage(uid, features, -2)
         songsSinceLastStrongLike += 1
     }
 
-    fun recordSolidListen(song: Song, nowMs: Long = System.currentTimeMillis()) {
-        engage(song, 20)
-        onListen(song, nowMs)
+    fun recordSolidListen(song: Song, nowMs: Long = System.currentTimeMillis()) =
+        recordSolidListen(song.uid.toString(), song.smartFeatures(), nowMs)
+
+    fun recordSolidListen(
+        uid: String,
+        features: List<String>,
+        nowMs: Long = System.currentTimeMillis(),
+    ) {
+        engage(uid, features, 20)
+        onListen(uid, nowMs)
         songsSinceLastStrongLike += 1
     }
 
-    fun recordStrongLike(song: Song, nowMs: Long = System.currentTimeMillis()) {
+    fun recordStrongLike(song: Song, nowMs: Long = System.currentTimeMillis()) =
+        recordStrongLike(song.uid.toString(), song.smartFeatures(), nowMs)
+
+    fun recordStrongLike(
+        uid: String,
+        features: List<String>,
+        nowMs: Long = System.currentTimeMillis(),
+    ) {
         val bonus = 50 + 4 * songsSinceLastStrongLike
-        engage(song, bonus)
-        onListen(song, nowMs)
+        engage(uid, features, bonus)
+        onListen(uid, nowMs)
         songsSinceLastStrongLike = 0
     }
 
-    fun recordReplay(song: Song, nowMs: Long = System.currentTimeMillis()) {
-        engage(song, 75)
-        onListen(song, nowMs)
+    fun recordReplay(song: Song, nowMs: Long = System.currentTimeMillis()) =
+        recordReplay(song.uid.toString(), song.smartFeatures(), nowMs)
+
+    fun recordReplay(
+        uid: String,
+        features: List<String>,
+        nowMs: Long = System.currentTimeMillis(),
+    ) {
+        engage(uid, features, 75)
+        onListen(uid, nowMs)
         songsSinceLastStrongLike = 0
     }
 
@@ -127,10 +207,12 @@ class SmartShuffleModel(
             .map { it.key to it.value }
             .sortedByDescending { it.second.skips }
 
-    fun isExcluded(song: Song): Boolean = songStats[song.uid.toString()]?.isExcluded == true
+    fun isExcluded(song: Song): Boolean = isExcluded(song.uid.toString())
 
-    private fun onListen(song: Song, nowMs: Long) {
-        val stats = songStats.getOrPut(song.uid.toString()) { SongStats() }
+    fun isExcluded(uid: String): Boolean = songStats[uid]?.isExcluded == true
+
+    private fun onListen(uid: String, nowMs: Long) {
+        val stats = songStats.getOrPut(uid) { SongStats() }
         stats.listens += 1
         stats.skipStreak = 0
         stats.lastListenMs = nowMs
@@ -151,14 +233,17 @@ class SmartShuffleModel(
         stats.lastSeenMs += decaySteps * SEEN_DECAY_MS
     }
 
-    private companion object {
+    internal companion object {
         const val SONG_FEATURE_WEIGHT = 0.25
         const val MAX_FATIGUE_SEEN = 5
         const val UNDESIRABLE_SCORE = -1_000_000_000.0
-        const val BACK_TO_BACK_SKIP_THRESHOLD = 2
-        const val TOTAL_SKIP_THRESHOLD = 3
+        /** Consecutive early skips of the same song without a solid listen. */
+        const val BACK_TO_BACK_SKIP_THRESHOLD = 4
+        /** Lifetime early skips before auto-exclude. */
+        const val TOTAL_SKIP_THRESHOLD = 6
         const val MAX_SKIP_STREAK_MULTIPLIER = 10
         const val SEEN_DECAY_MS = 12L * 60L * 60L * 1000L
+        const val FEATURE_CAP = 5_000
     }
 }
 

@@ -48,6 +48,12 @@ interface PlaybackCommand {
     val queue: List<Song>
     /** Whether to shuffle or not. * */
     val shuffled: Boolean
+    /**
+     * When [shuffled] is true, keep the provided [queue] order (identity shuffle map) instead of
+     * randomly reordering. Used by Smart Shuffle so Android Auto still reports shuffle-on.
+     */
+    val orderedShuffle: Boolean
+        get() = false
 
     interface Factory {
         fun song(song: Song, shuffle: ShuffleMode): PlaybackCommand?
@@ -96,10 +102,11 @@ constructor(
         override val parent: MusicParent?,
         override val queue: List<Song>,
         override val shuffled: Boolean,
+        override val orderedShuffle: Boolean = false,
     ) : PlaybackCommand {
         // Only show queue count to reduce memory use
         override fun toString() =
-            "PlaybackCommand(song=$song, parent=$parent, queue=${queue.size} songs, shuffled=$shuffled)"
+            "PlaybackCommand(song=$song, parent=$parent, queue=${queue.size} songs, shuffled=$shuffled, orderedShuffle=$orderedShuffle)"
     }
 
     override fun song(song: Song, shuffle: ShuffleMode) =
@@ -122,7 +129,15 @@ constructor(
     override fun all(shuffle: ShuffleMode): PlaybackCommand? {
         val library = musicRepository.library ?: return null
         return if (shuffle == ShuffleMode.ON) {
-            newCommand(null, null, smartShuffle.queue(library.songs), ShuffleMode.OFF)
+            // Smart-ordered queue with shuffle reported ON for Android Auto / UI, without
+            // letting ExoPlayer randomly reshuffle on top.
+            PlaybackCommandImpl(
+                song = null,
+                parent = null,
+                queue = smartShuffle.queue(library.songs),
+                shuffled = true,
+                orderedShuffle = true,
+            )
         } else {
             newCommand(null, null, library.songs, listSettings.songSort, shuffle)
         }
