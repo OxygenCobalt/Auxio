@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
@@ -38,6 +40,11 @@ class SmartShuffle @Inject constructor(private val store: SmartShuffleStore) {
     private val scheduleLock = Any()
     private var pendingSave: Future<*>? = null
     private var saveGeneration = 0L
+
+    private val _likesRevision = MutableStateFlow(0)
+    /** Bumps whenever an explicit/strong like is recorded so UI can refresh. */
+    val likesRevision: StateFlow<Int>
+        get() = _likesRevision
 
     /**
      * Build a learned playback order.
@@ -124,8 +131,22 @@ class SmartShuffle @Inject constructor(private val store: SmartShuffleStore) {
     @Synchronized
     fun recordStrongLike(song: Song) {
         model.recordStrongLike(song)
-        scheduleSave()
+        flushAsync()
+        _likesRevision.value = _likesRevision.value + 1
     }
+
+    @Synchronized
+    fun like(song: Song) {
+        model.recordStrongLike(song)
+        flushAsync()
+        _likesRevision.value = _likesRevision.value + 1
+    }
+
+    @Synchronized
+    fun isLiked(song: Song): Boolean = model.isLiked(song)
+
+    @Synchronized
+    fun isLiked(uid: String): Boolean = model.isLiked(uid)
 
     @Synchronized
     fun recordReplay(song: Song) {

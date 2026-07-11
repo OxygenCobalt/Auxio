@@ -35,6 +35,7 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
+import org.oxycblt.auxio.smartshuffle.SmartShuffle
 import org.oxycblt.auxio.smartshuffle.SmartShuffleTracker
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.musikr.MusicParent
@@ -52,6 +53,7 @@ private constructor(
     widgetComponentFactory: WidgetComponent.Factory,
     systemReceiverFactory: SystemPlaybackReceiver.Factory,
     private val smartShuffleTracker: SmartShuffleTracker,
+    smartShuffle: SmartShuffle,
 ) : PlaybackStateManager.Listener {
     class Factory
     @Inject
@@ -63,6 +65,7 @@ private constructor(
         private val widgetComponentFactory: WidgetComponent.Factory,
         private val systemReceiverFactory: SystemPlaybackReceiver.Factory,
         private val smartShuffleTracker: SmartShuffleTracker,
+        private val smartShuffle: SmartShuffle,
     ) {
         fun create(context: Context, foregroundListener: ForegroundListener) =
             PlaybackServiceFragment(
@@ -75,6 +78,7 @@ private constructor(
                 widgetComponentFactory,
                 systemReceiverFactory,
                 smartShuffleTracker,
+                smartShuffle,
             )
     }
 
@@ -89,7 +93,15 @@ private constructor(
             context,
             widgetComponent,
             onExitRequested = { playbackManager.endSession() },
+            onLikeChanged = { sessionHolder.refreshAfterLike() },
         )
+
+    init {
+        // Keep Android Auto / notification like action in sync with mobile likes.
+        scope.launch {
+            smartShuffle.likesRevision.collect { sessionHolder.refreshAfterLike() }
+        }
+    }
 
     private fun scheduleAutoStop() {
         autoStopJob?.cancel()

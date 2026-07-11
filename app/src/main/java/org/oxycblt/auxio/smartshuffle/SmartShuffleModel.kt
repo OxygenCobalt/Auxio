@@ -174,6 +174,19 @@ class SmartShuffleModel(
         engage(uid, features, bonus)
         onListen(uid, nowMs)
         songsSinceLastStrongLike = 0
+        val stats = songStats.getOrPut(uid) { SongStats() }
+        stats.liked = true
+        stats.undesirable = false
+        stats.forgiven = true
+        stats.skipStreak = 0
+    }
+
+    fun isLiked(uid: String): Boolean = songStats[uid]?.liked == true
+
+    fun isLiked(song: Song): Boolean = isLiked(song.uid.toString())
+
+    fun clearLike(uid: String) {
+        songStats[uid]?.liked = false
     }
 
     fun recordReplay(song: Song, nowMs: Long = System.currentTimeMillis()) =
@@ -258,6 +271,7 @@ data class SongStats(
     var lastSeenMs: Long = 0L,
     var undesirable: Boolean = false,
     var forgiven: Boolean = false,
+    var liked: Boolean = false,
 ) {
     val isExcluded: Boolean
         get() = undesirable && !forgiven

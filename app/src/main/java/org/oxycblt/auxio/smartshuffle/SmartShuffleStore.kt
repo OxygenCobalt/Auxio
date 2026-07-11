@@ -67,6 +67,7 @@ open class SmartShuffleStoreBackend(private val file: File) {
                         lastSeenMs = statsObject.optLong("lastSeenMs"),
                         undesirable = statsObject.optBoolean("undesirable"),
                         forgiven = statsObject.optBoolean("forgiven"),
+                        liked = statsObject.optBoolean("liked"),
                     )
             }
 
@@ -105,7 +106,8 @@ open class SmartShuffleStoreBackend(private val file: File) {
                     .put("lastListenMs", stats.lastListenMs)
                     .put("lastSeenMs", stats.lastSeenMs)
                     .put("undesirable", stats.undesirable)
-                    .put("forgiven", stats.forgiven),
+                    .put("forgiven", stats.forgiven)
+                    .put("liked", stats.liked),
             )
         }
         root.put("songs", songsObject)

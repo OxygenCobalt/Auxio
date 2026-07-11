@@ -372,6 +372,10 @@
     <string name="desc_skip_prev">Skip to last song</string>
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
+    <string name="desc_like">Like this song</string>
+    <string name="desc_liked">Song liked</string>
+    <string name="lbl_like">Like</string>
+    <string name="lng_song_liked">Liked — Smart Shuffle will play more like this</string>
     <string name="desc_exit">Stop playback</string>
 
     <string name="desc_remove_song">Remove this song</string>

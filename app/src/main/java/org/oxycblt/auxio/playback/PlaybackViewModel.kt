@@ -36,6 +36,7 @@ import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
+import org.oxycblt.auxio.smartshuffle.SmartShuffle
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.musikr.Album
@@ -61,6 +62,7 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     private val commandFactory: PlaybackCommand.Factory,
     private val listSettings: ListSettings,
+    private val smartShuffle: SmartShuffle,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
@@ -76,6 +78,16 @@ constructor(
     /** Whether playback is ongoing or paused. */
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
+
+    private val _isLiked = MutableStateFlow(false)
+    /** Whether the current song was explicitly liked for Smart Shuffle. */
+    val isLiked: StateFlow<Boolean>
+        get() = _isLiked
+
+    private val _likedEvent = MutableEvent<Unit>()
+    /** One-shot event after the user likes the current song. */
+    val likedEvent: Event<Unit>
+        get() = _likedEvent
 
     private val _positionDs = MutableStateFlow(0L)
     /** The current position, in deci-seconds (1/10th of a second). */
@@ -131,6 +143,10 @@ constructor(
     init {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
+        refreshLiked()
+        viewModelScope.launch {
+            smartShuffle.likesRevision.collect { refreshLiked() }
+        }
     }
 
     override fun onCleared() {
@@ -142,6 +158,7 @@ constructor(
         L.d("Index moved, updating current song")
         _positionDs.value = playbackManager.progression.calculateElapsedPositionMs().msToDs()
         _song.value = playbackManager.currentSong
+        refreshLiked()
 
         _pagerCommand.put(PagerCommand(update = null, scroll = index))
         _pagerQueue.value = _pagerQueue.value.copy(index = index)
@@ -152,6 +169,7 @@ constructor(
         if (change.type == QueueChange.Type.SONG) {
             L.d("Queue changed, updating current song")
             _song.value = playbackManager.currentSong
+            refreshLiked()
         }
 
         _pagerCommand.put(
@@ -181,6 +199,7 @@ constructor(
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
+        refreshLiked()
 
         _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
         _pagerQueue.value = PagerQueue(queue = queue, index = index)
@@ -621,6 +640,30 @@ constructor(
     fun toggleShuffled() {
         L.d("Toggling shuffled state")
         playbackManager.shuffled(!playbackManager.isShuffled)
+    }
+
+    /**
+     * Explicitly like the current song for Smart Shuffle recommendations. Also clears any
+     * undesirable flag so the track stays in rotation.
+     */
+    fun likeCurrentSong() {
+        val song = playbackManager.currentSong
+        if (song == null) {
+            L.w("Cannot like without a current song")
+            return
+        }
+        L.d("Liking current song")
+        val alreadyLiked = smartShuffle.isLiked(song)
+        smartShuffle.like(song)
+        _isLiked.value = true
+        if (!alreadyLiked) {
+            _likedEvent.put(Unit)
+        }
+    }
+
+    private fun refreshLiked() {
+        val song = playbackManager.currentSong
+        _isLiked.value = song != null && smartShuffle.isLiked(song)
     }
 
     /**

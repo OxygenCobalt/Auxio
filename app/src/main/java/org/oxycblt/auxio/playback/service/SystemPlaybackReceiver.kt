@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import javax.inject.Inject
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.smartshuffle.SmartShuffle
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
 import timber.log.Timber as L
@@ -40,8 +41,10 @@ private constructor(
     private val context: Context,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
+    private val smartShuffle: SmartShuffle,
     private val widgetComponent: WidgetComponent,
     private val onExitRequested: () -> Unit,
+    private val onLikeChanged: () -> Unit,
 ) : BroadcastReceiver() {
     private var initialHeadsetPlugEventHandled = false
 
@@ -50,18 +53,22 @@ private constructor(
     constructor(
         private val playbackManager: PlaybackStateManager,
         private val playbackSettings: PlaybackSettings,
+        private val smartShuffle: SmartShuffle,
     ) {
         fun create(
             context: Context,
             widgetComponent: WidgetComponent,
             onExitRequested: () -> Unit,
+            onLikeChanged: () -> Unit = {},
         ) =
             SystemPlaybackReceiver(
                 context,
                 playbackManager,
                 playbackSettings,
+                smartShuffle,
                 widgetComponent,
                 onExitRequested,
+                onLikeChanged,
             )
     }
 
@@ -117,6 +124,14 @@ private constructor(
                 L.d("Received shuffle event")
                 playbackManager.shuffled(!playbackManager.isShuffled)
             }
+            PlaybackActions.ACTION_LIKE -> {
+                L.d("Received like event")
+                val song = playbackManager.currentSong
+                if (song != null) {
+                    smartShuffle.like(song)
+                    onLikeChanged()
+                }
+            }
             PlaybackActions.ACTION_SKIP_PREV -> {
                 L.d("Received skip previous event")
                 playbackManager.prev()
@@ -164,6 +179,7 @@ private constructor(
                 addAction(AudioManager.ACTION_HEADSET_PLUG)
                 addAction(PlaybackActions.ACTION_INC_REPEAT_MODE)
                 addAction(PlaybackActions.ACTION_INVERT_SHUFFLE)
+                addAction(PlaybackActions.ACTION_LIKE)
                 addAction(PlaybackActions.ACTION_SKIP_PREV)
                 addAction(PlaybackActions.ACTION_PLAY_PAUSE)
                 addAction(PlaybackActions.ACTION_SKIP_NEXT)
