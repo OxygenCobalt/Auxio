@@ -41,10 +41,10 @@ class SmartShuffle @Inject constructor(private val store: SmartShuffleStore) {
     private var pendingSave: Future<*>? = null
     private var saveGeneration = 0L
 
-    private val _likesRevision = MutableStateFlow(0)
-    /** Bumps whenever an explicit/strong like is recorded so UI can refresh. */
-    val likesRevision: StateFlow<Int>
-        get() = _likesRevision
+    private val _preferenceRevision = MutableStateFlow(0)
+    /** Bumps whenever an explicit like/dislike is recorded so UI can refresh. */
+    val preferenceRevision: StateFlow<Int>
+        get() = _preferenceRevision
 
     /**
      * Build a learned playback order.
@@ -132,14 +132,14 @@ class SmartShuffle @Inject constructor(private val store: SmartShuffleStore) {
     fun recordStrongLike(song: Song) {
         model.recordStrongLike(song)
         flushAsync()
-        _likesRevision.value = _likesRevision.value + 1
+        bumpPreferenceRevision()
     }
 
     @Synchronized
     fun like(song: Song) {
         model.recordStrongLike(song)
         flushAsync()
-        _likesRevision.value = _likesRevision.value + 1
+        bumpPreferenceRevision()
     }
 
     @Synchronized
@@ -149,9 +149,26 @@ class SmartShuffle @Inject constructor(private val store: SmartShuffleStore) {
     fun isLiked(uid: String): Boolean = model.isLiked(uid)
 
     @Synchronized
+    fun dislike(song: Song) {
+        model.recordExplicitDislike(song)
+        flushAsync()
+        bumpPreferenceRevision()
+    }
+
+    @Synchronized
+    fun isDisliked(song: Song): Boolean = model.isDisliked(song)
+
+    @Synchronized
+    fun isDisliked(uid: String): Boolean = model.isDisliked(uid)
+
+    @Synchronized
     fun recordReplay(song: Song) {
         model.recordReplay(song)
         scheduleSave()
+    }
+
+    private fun bumpPreferenceRevision() {
+        _preferenceRevision.value = _preferenceRevision.value + 1
     }
 
     @Synchronized

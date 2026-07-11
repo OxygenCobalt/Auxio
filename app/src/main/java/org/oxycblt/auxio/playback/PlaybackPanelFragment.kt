@@ -184,6 +184,7 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.isLiked, ::updateLiked)
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
         collect(playbackModel.likedEvent.flow, ::handleLikedEvent)
+        collect(playbackModel.dislikedEvent.flow, ::handleDislikedEvent)
     }
 
     // FIXME: Old code!! Maybe not necessary anymore?
@@ -312,6 +313,12 @@ class PlaybackPanelFragment :
         if (event == null) return
         playbackModel.likedEvent.consume()
         requireContext().showToast(R.string.lng_song_liked)
+    }
+
+    private fun handleDislikedEvent(event: Unit?) {
+        if (event == null) return
+        playbackModel.dislikedEvent.consume()
+        requireContext().showToast(R.string.lng_song_disliked)
     }
 
     private fun updatePager(queue: PagerQueue) {

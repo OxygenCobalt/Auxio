@@ -189,6 +189,33 @@ class SmartShuffleModel(
         songStats[uid]?.liked = false
     }
 
+    /**
+     * Explicit dislike: strong negative engagement, clear any like, and mark the song undesirable
+     * so it is excluded from smart queues and listed under Songs to review.
+     */
+    fun recordExplicitDislike(song: Song, nowMs: Long = System.currentTimeMillis()) =
+        recordExplicitDislike(song.uid.toString(), song.smartFeatures(), nowMs)
+
+    fun recordExplicitDislike(
+        uid: String,
+        features: List<String>,
+        nowMs: Long = System.currentTimeMillis(),
+    ) {
+        engage(uid, features, EXPLICIT_DISLIKE_POINTS)
+        val stats = songStats.getOrPut(uid) { SongStats() }
+        stats.liked = false
+        stats.undesirable = true
+        stats.forgiven = false
+        stats.skips += 1
+        stats.skipStreak += 1
+        stats.lastSkipMs = nowMs
+        songsSinceLastStrongLike += 1
+    }
+
+    fun isDisliked(uid: String): Boolean = songStats[uid]?.isExcluded == true
+
+    fun isDisliked(song: Song): Boolean = isDisliked(song.uid.toString())
+
     fun recordReplay(song: Song, nowMs: Long = System.currentTimeMillis()) =
         recordReplay(song.uid.toString(), song.smartFeatures(), nowMs)
 
@@ -257,6 +284,8 @@ class SmartShuffleModel(
         const val MAX_SKIP_STREAK_MULTIPLIER = 10
         const val SEEN_DECAY_MS = 12L * 60L * 60L * 1000L
         const val FEATURE_CAP = 5_000
+        /** Strong negative engagement applied on an explicit dislike. */
+        const val EXPLICIT_DISLIKE_POINTS = -60
     }
 }
 

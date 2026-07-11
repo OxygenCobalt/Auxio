@@ -350,13 +350,16 @@ private constructor(
                 .build()
         state.addCustomAction(shuffleAction)
 
-        // Like / strong preference for Smart Shuffle (Android Auto + notification)
+        // Like toggle for Smart Shuffle (Android Auto + notification).
+        // Filled heart = liked; tapping again dislikes and skips.
         val song = playbackManager.currentSong
         val liked = song != null && smartShuffle.isLiked(song)
         val likeAction =
             PlaybackStateCompat.CustomAction.Builder(
                     PlaybackActions.ACTION_LIKE,
-                    context.getString(R.string.lbl_like),
+                    context.getString(
+                        if (liked) R.string.desc_liked else R.string.lbl_like
+                    ),
                     if (liked) R.drawable.ic_heart_filled_24 else R.drawable.ic_heart_outline_24,
                 )
                 .build()

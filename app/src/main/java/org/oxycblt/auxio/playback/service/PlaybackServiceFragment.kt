@@ -99,7 +99,7 @@ private constructor(
     init {
         // Keep Android Auto / notification like action in sync with mobile likes.
         scope.launch {
-            smartShuffle.likesRevision.collect { sessionHolder.refreshAfterLike() }
+            smartShuffle.preferenceRevision.collect { sessionHolder.refreshAfterLike() }
         }
     }
 

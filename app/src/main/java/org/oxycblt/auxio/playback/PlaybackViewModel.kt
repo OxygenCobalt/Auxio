@@ -89,6 +89,11 @@ constructor(
     val likedEvent: Event<Unit>
         get() = _likedEvent
 
+    private val _dislikedEvent = MutableEvent<Unit>()
+    /** One-shot event after the user removes a like (explicit dislike). */
+    val dislikedEvent: Event<Unit>
+        get() = _dislikedEvent
+
     private val _positionDs = MutableStateFlow(0L)
     /** The current position, in deci-seconds (1/10th of a second). */
     val positionDs: StateFlow<Long>
@@ -143,9 +148,9 @@ constructor(
     init {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
-        refreshLiked()
+        refreshPreferenceState()
         viewModelScope.launch {
-            smartShuffle.likesRevision.collect { refreshLiked() }
+            smartShuffle.preferenceRevision.collect { refreshPreferenceState() }
         }
     }
 
@@ -158,7 +163,7 @@ constructor(
         L.d("Index moved, updating current song")
         _positionDs.value = playbackManager.progression.calculateElapsedPositionMs().msToDs()
         _song.value = playbackManager.currentSong
-        refreshLiked()
+        refreshPreferenceState()
 
         _pagerCommand.put(PagerCommand(update = null, scroll = index))
         _pagerQueue.value = _pagerQueue.value.copy(index = index)
@@ -169,7 +174,7 @@ constructor(
         if (change.type == QueueChange.Type.SONG) {
             L.d("Queue changed, updating current song")
             _song.value = playbackManager.currentSong
-            refreshLiked()
+            refreshPreferenceState()
         }
 
         _pagerCommand.put(
@@ -199,7 +204,7 @@ constructor(
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
-        refreshLiked()
+        refreshPreferenceState()
 
         _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
         _pagerQueue.value = PagerQueue(queue = queue, index = index)
@@ -643,25 +648,32 @@ constructor(
     }
 
     /**
-     * Explicitly like the current song for Smart Shuffle recommendations. Also clears any
-     * undesirable flag so the track stays in rotation.
+     * Toggle preference for the current song.
+     *
+     * - Not liked → like (boost recommendations, clear undesirable)
+     * - Already liked → dislike (mark undesirable, skip to next)
      */
     fun likeCurrentSong() {
         val song = playbackManager.currentSong
         if (song == null) {
-            L.w("Cannot like without a current song")
+            L.w("Cannot like/dislike without a current song")
             return
         }
-        L.d("Liking current song")
-        val alreadyLiked = smartShuffle.isLiked(song)
-        smartShuffle.like(song)
-        _isLiked.value = true
-        if (!alreadyLiked) {
+        if (smartShuffle.isLiked(song)) {
+            L.d("Already liked — disliking current song")
+            smartShuffle.dislike(song)
+            _isLiked.value = false
+            _dislikedEvent.put(Unit)
+            playbackManager.next()
+        } else {
+            L.d("Liking current song")
+            smartShuffle.like(song)
+            _isLiked.value = true
             _likedEvent.put(Unit)
         }
     }
 
-    private fun refreshLiked() {
+    private fun refreshPreferenceState() {
         val song = playbackManager.currentSong
         _isLiked.value = song != null && smartShuffle.isLiked(song)
     }

@@ -128,8 +128,15 @@ private constructor(
                 L.d("Received like event")
                 val song = playbackManager.currentSong
                 if (song != null) {
-                    smartShuffle.like(song)
-                    onLikeChanged()
+                    if (smartShuffle.isLiked(song)) {
+                        L.d("Already liked — treating as dislike")
+                        smartShuffle.dislike(song)
+                        onLikeChanged()
+                        playbackManager.next()
+                    } else {
+                        smartShuffle.like(song)
+                        onLikeChanged()
+                    }
                 }
             }
             PlaybackActions.ACTION_SKIP_PREV -> {
