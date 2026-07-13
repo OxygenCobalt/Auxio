@@ -26,7 +26,12 @@ import org.oxycblt.musikr.playlist.db.StoredPlaylists
 import org.oxycblt.musikr.tag.interpret.Naming
 import org.oxycblt.musikr.tag.interpret.Separators
 
-data class Config(val fs: FS, val storage: Storage, val interpretation: Interpretation)
+data class Config(
+    val fs: FS,
+    val storage: Storage,
+    val interpretation: Interpretation,
+    val withExternalPlaylists: Boolean,
+)
 
 /** Side-effect laden [Config] for use during music loading and [MutableLibrary] operation. */
 data class Storage(

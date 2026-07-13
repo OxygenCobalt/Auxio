@@ -233,6 +233,7 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
             binding.locationsWithHiddenSwitch.isChecked = query.withHidden
             binding.locationsMultithreadSwitch.isChecked = query.multithread
         }
+        binding.locationsImportPlaylistsSwitch.isChecked = musicSettings.importPlaylistFiles
         // Load MediaStore data
         musicSettings.mediaStoreQuery.let { query ->
             filterLocationAdapter.addAll(query.filtered)
@@ -485,6 +486,10 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 locationsMultithreadTitle.isVisible = isExtrasExpanded
                 locationsMultithreadDesc.isVisible = isExtrasExpanded
                 locationsMultithread.isVisible = isExtrasExpanded
+
+                locationsImportPlaylistsTitle.isVisible = isExtrasExpanded
+                locationsImportPlaylistsDesc.isVisible = isExtrasExpanded
+                locationsImportPlaylists.isVisible = isExtrasExpanded
             } else {
                 // System Database mode - show filter mode when expanded
                 // Hide include section
@@ -521,6 +526,10 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
                 locationsMultithreadTitle.isVisible = false
                 locationsMultithreadDesc.isVisible = false
                 locationsMultithread.isVisible = false
+
+                locationsImportPlaylistsTitle.isVisible = false
+                locationsImportPlaylistsDesc.isVisible = false
+                locationsImportPlaylists.isVisible = false
             }
         }
     }
@@ -579,6 +588,8 @@ class LocationsDialog : ViewBindingMaterialDialogFragment<DialogMusicLocationsBi
         // Save the mode setting
         musicSettings.locationMode =
             if (isFilePickerMode) LocationMode.SAF else LocationMode.MEDIA_STORE
+
+        musicSettings.importPlaylistFiles = binding.locationsImportPlaylistsSwitch.isChecked
 
         // If no configuration changed but permission was granted in this session,
         // force a location update

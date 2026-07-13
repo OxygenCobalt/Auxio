@@ -26,7 +26,19 @@ import org.oxycblt.musikr.playlist.PlaylistHandle
 import org.oxycblt.musikr.playlist.SongPointer
 
 abstract class StoredPlaylists {
-    internal abstract suspend fun new(name: String, songs: List<Song>): PlaylistHandle
+    internal abstract suspend fun new(
+        name: String,
+        songs: List<Song>,
+        uid: Music.UID = Music.UID.auxio(Music.UID.Item.PLAYLIST),
+        updatedAt: Long = System.currentTimeMillis(),
+    ): PlaylistHandle
+
+    internal abstract suspend fun overwrite(
+        name: String,
+        songs: List<Song>,
+        uid: Music.UID,
+        updatedAt: Long,
+    ): PlaylistHandle
 
     internal abstract suspend fun read(): List<PlaylistFile>
 
@@ -37,9 +49,26 @@ abstract class StoredPlaylists {
 }
 
 private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : StoredPlaylists() {
-    override suspend fun new(name: String, songs: List<Song>): PlaylistHandle {
-        val info = PlaylistInfo(Music.UID.auxio(Music.UID.Item.PLAYLIST), name)
+    override suspend fun new(
+        name: String,
+        songs: List<Song>,
+        uid: Music.UID,
+        updatedAt: Long,
+    ): PlaylistHandle {
+        val info = PlaylistInfo(uid, name, updatedAt)
         playlistDao.insertPlaylist(RawPlaylist(info, songs.map { PlaylistSong(it.uid) }))
+        return StoredPlaylistHandle(info, playlistDao)
+    }
+
+    override suspend fun overwrite(
+        name: String,
+        songs: List<Song>,
+        uid: Music.UID,
+        updatedAt: Long,
+    ): PlaylistHandle {
+        val info = PlaylistInfo(uid, name, updatedAt)
+        playlistDao.replacePlaylistInfo(info)
+        playlistDao.replacePlaylistSongs(uid, songs.map { PlaylistSong(it.uid) })
         return StoredPlaylistHandle(info, playlistDao)
     }
 

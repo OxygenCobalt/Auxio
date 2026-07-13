@@ -64,6 +64,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     /** Whether to use the file-system cache for improved loading times. */
     val useFileTreeCache: Boolean
 
+    var importPlaylistFiles: Boolean
+
     fun forceLocationUpdate()
 
     interface Listener {
@@ -112,6 +114,15 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
 
     override val useFileTreeCache: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_fs_cache), false)
+
+    override var importPlaylistFiles: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_import_playlists), false)
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(getString(R.string.set_key_import_playlists), value)
+                apply()
+            }
+        }
 
     override var locationMode: LocationMode
         get() {
@@ -236,6 +247,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext private val cont
             getString(R.string.set_key_filtered_locations),
             getString(R.string.set_key_exclude_non_music),
             getString(R.string.set_key_separators),
+            getString(R.string.set_key_import_playlists),
             getString(R.string.set_key_auto_sort_names) -> {
                 L.d("Dispatching indexing setting change for $key")
                 listener.onIndexingSettingChanged()

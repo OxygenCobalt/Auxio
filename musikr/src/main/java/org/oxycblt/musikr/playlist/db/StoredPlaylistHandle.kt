@@ -26,17 +26,22 @@ internal class StoredPlaylistHandle(
     private val playlistDao: PlaylistDao,
 ) : PlaylistHandle {
     override val uid = playlistInfo.playlistUid
+    override val updatedAt = playlistInfo.updatedAt
 
     override suspend fun rename(name: String) {
-        playlistDao.replacePlaylistInfo(playlistInfo.copy(name = name))
+        playlistDao.replacePlaylistInfo(
+            playlistInfo.copy(name = name, updatedAt = System.currentTimeMillis())
+        )
     }
 
     override suspend fun rewrite(songs: List<Song>) {
         playlistDao.replacePlaylistSongs(uid, songs.map { PlaylistSong(it.uid) })
+        playlistDao.touchPlaylist(uid, System.currentTimeMillis())
     }
 
     override suspend fun add(songs: List<Song>) {
         playlistDao.insertPlaylistSongs(uid, songs.map { PlaylistSong(it.uid) })
+        playlistDao.touchPlaylist(uid, System.currentTimeMillis())
     }
 
     override suspend fun delete() {
