@@ -28,6 +28,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import org.oxycblt.musikr.Music
 
 /**
@@ -37,7 +39,7 @@ import org.oxycblt.musikr.Music
  */
 @Database(
     entities = [PlaylistInfo::class, PlaylistSong::class, PlaylistSongCrossRef::class],
-    version = 30,
+    version = 31,
     exportSchema = false,
 )
 @TypeConverters(Music.UID.TypeConverters::class)
@@ -45,12 +47,23 @@ internal abstract class PlaylistDatabase : RoomDatabase() {
     abstract fun playlistDao(): PlaylistDao
 
     companion object {
+        private val MIGRATION_30_31 =
+            object : Migration(30, 31) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        "ALTER TABLE PlaylistInfo ADD COLUMN updatedAt INTEGER NOT NULL DEFAULT 0"
+                    )
+                    db.execSQL("UPDATE PlaylistInfo SET updatedAt = ${System.currentTimeMillis()}")
+                }
+            }
+
         fun from(context: Context) =
             Room.databaseBuilder(
                     context.applicationContext,
                     PlaylistDatabase::class.java,
                     "user_music.db",
                 )
+                .addMigrations(MIGRATION_30_31)
                 .fallbackToDestructiveMigration(true)
                 .build()
     }
@@ -145,6 +158,9 @@ internal abstract class PlaylistDao {
             songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) }
         )
     }
+
+    @Query("UPDATE PlaylistInfo SET updatedAt = :updatedAt WHERE playlistUid = :playlistUid")
+    abstract suspend fun touchPlaylist(playlistUid: Music.UID, updatedAt: Long)
 
     /** Internal, do not use. */
     @Insert(onConflict = OnConflictStrategy.ABORT)

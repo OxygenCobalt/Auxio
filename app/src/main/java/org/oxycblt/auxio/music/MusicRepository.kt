@@ -406,7 +406,7 @@ constructor(
         L.d("FS: $fs")
         val storage = Storage(cache, covers, storedPlaylists)
         val interpretation = Interpretation(nameFactory, separators)
-        val config = Config(fs, storage, interpretation)
+        val config = Config(fs, storage, interpretation, musicSettings.importPlaylistFiles)
         L.d("Running index...")
         val start = System.currentTimeMillis()
         val result = Musikr.new(context, config).run(::emitIndexingProgress)
