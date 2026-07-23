@@ -51,6 +51,7 @@ import org.oxycblt.auxio.playback.ui.swiper.CarouselTransformer
 import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
 import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
 import org.oxycblt.auxio.util.recycler
@@ -166,6 +167,7 @@ class PlaybackPanelFragment :
         }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
+        binding.playbackLike.setOnClickListener { playbackModel.likeCurrentSong() }
         binding.playbackMore?.setOnClickListener {
             playbackModel.song.value?.let {
                 listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
@@ -179,7 +181,10 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
+        collectImmediately(playbackModel.isLiked, ::updateLiked)
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
+        collect(playbackModel.likedEvent.flow, ::handleLikedEvent)
+        collect(playbackModel.dislikedEvent.flow, ::handleDislikedEvent)
     }
 
     // FIXME: Old code!! Maybe not necessary anymore?
@@ -295,6 +300,25 @@ class PlaybackPanelFragment :
 
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isChecked = isShuffled
+    }
+
+    private fun updateLiked(isLiked: Boolean) {
+        val likeButton = requireBinding().playbackLike
+        likeButton.isChecked = isLiked
+        likeButton.contentDescription =
+            getString(if (isLiked) R.string.desc_liked else R.string.desc_like)
+    }
+
+    private fun handleLikedEvent(event: Unit?) {
+        if (event == null) return
+        playbackModel.likedEvent.consume()
+        requireContext().showToast(R.string.lng_song_liked)
+    }
+
+    private fun handleDislikedEvent(event: Unit?) {
+        if (event == null) return
+        playbackModel.dislikedEvent.consume()
+        requireContext().showToast(R.string.lng_song_disliked)
     }
 
     private fun updatePager(queue: PagerQueue) {

@@ -254,7 +254,13 @@ class ExoPlaybackStateHolder(
                 ?.let { command.queue.indexOf(it) }
                 .also { check(it != -1) { "Start song not in queue" } }
         if (command.shuffled) {
-            player.setShuffleOrder(BetterShuffleOrder(command.queue.size, startIndex ?: -1))
+            player.setShuffleOrder(
+                if (command.orderedShuffle) {
+                    BetterShuffleOrder.identity(command.queue.size)
+                } else {
+                    BetterShuffleOrder(command.queue.size, startIndex ?: -1)
+                }
+            )
         }
         val target = startIndex ?: player.currentTimeline.getFirstWindowIndex(command.shuffled)
         player.seekTo(target, C.TIME_UNSET)

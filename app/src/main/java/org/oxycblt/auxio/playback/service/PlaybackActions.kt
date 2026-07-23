@@ -23,6 +23,7 @@ import org.oxycblt.auxio.BuildConfig
 object PlaybackActions {
     const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"
     const val ACTION_INVERT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
+    const val ACTION_LIKE = BuildConfig.APPLICATION_ID + ".action.LIKE"
     const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
     const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
     const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"

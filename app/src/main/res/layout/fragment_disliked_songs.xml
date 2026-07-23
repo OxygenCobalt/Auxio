@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:transitionGroup="true"
+    tools:context=".smartshuffle.DislikedSongsFragment">
+
+    <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
+        android:id="@+id/disliked_appbar"
+        style="@style/Widget.Auxio.AppBarLayout"
+        app:liftOnScroll="true">
+
+        <org.oxycblt.auxio.ui.AuxioToolbar
+            android:id="@+id/disliked_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/ic_back_24"
+            app:title="@string/set_songs_to_review" />
+
+    </org.oxycblt.auxio.ui.CoordinatorAppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/disliked_recycler"
+            style="@style/Widget.Auxio.RecyclerView.Linear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_disliked_song" />
+
+        <TextView
+            android:id="@+id/disliked_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/spacing_medium"
+            android:text="@string/lng_empty_songs_to_review"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

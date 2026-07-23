@@ -36,6 +36,8 @@ import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
+import org.oxycblt.auxio.smartshuffle.SmartShuffle
+import org.oxycblt.auxio.smartshuffle.SmartShuffleTracker
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.musikr.Album
@@ -61,6 +63,8 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     private val commandFactory: PlaybackCommand.Factory,
     private val listSettings: ListSettings,
+    private val smartShuffle: SmartShuffle,
+    private val smartShuffleTracker: SmartShuffleTracker,
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
@@ -76,6 +80,21 @@ constructor(
     /** Whether playback is ongoing or paused. */
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
+
+    private val _isLiked = MutableStateFlow(false)
+    /** Whether the current song was explicitly liked for Smart Shuffle. */
+    val isLiked: StateFlow<Boolean>
+        get() = _isLiked
+
+    private val _likedEvent = MutableEvent<Unit>()
+    /** One-shot event after the user likes the current song. */
+    val likedEvent: Event<Unit>
+        get() = _likedEvent
+
+    private val _dislikedEvent = MutableEvent<Unit>()
+    /** One-shot event after the user removes a like (explicit dislike). */
+    val dislikedEvent: Event<Unit>
+        get() = _dislikedEvent
 
     private val _positionDs = MutableStateFlow(0L)
     /** The current position, in deci-seconds (1/10th of a second). */
@@ -131,6 +150,10 @@ constructor(
     init {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
+        refreshPreferenceState()
+        viewModelScope.launch {
+            smartShuffle.preferenceRevision.collect { refreshPreferenceState() }
+        }
     }
 
     override fun onCleared() {
@@ -142,6 +165,7 @@ constructor(
         L.d("Index moved, updating current song")
         _positionDs.value = playbackManager.progression.calculateElapsedPositionMs().msToDs()
         _song.value = playbackManager.currentSong
+        refreshPreferenceState()
 
         _pagerCommand.put(PagerCommand(update = null, scroll = index))
         _pagerQueue.value = _pagerQueue.value.copy(index = index)
@@ -152,6 +176,7 @@ constructor(
         if (change.type == QueueChange.Type.SONG) {
             L.d("Queue changed, updating current song")
             _song.value = playbackManager.currentSong
+            refreshPreferenceState()
         }
 
         _pagerCommand.put(
@@ -181,6 +206,7 @@ constructor(
         _song.value = playbackManager.currentSong
         _parent.value = parent
         _isShuffled.value = isShuffled
+        refreshPreferenceState()
 
         _pagerCommand.put(PagerCommand(update = UpdateInstructions.Replace(0), scroll = index))
         _pagerQueue.value = PagerQueue(queue = queue, index = index)
@@ -621,6 +647,39 @@ constructor(
     fun toggleShuffled() {
         L.d("Toggling shuffled state")
         playbackManager.shuffled(!playbackManager.isShuffled)
+    }
+
+    /**
+     * Toggle preference for the current song.
+     *
+     * - Not liked → like (boost recommendations, clear undesirable)
+     * - Already liked → dislike (mark undesirable, skip to next)
+     */
+    fun likeCurrentSong() {
+        val song = playbackManager.currentSong
+        if (song == null) {
+            L.w("Cannot like/dislike without a current song")
+            return
+        }
+        if (smartShuffle.isLiked(song)) {
+            L.d("Already liked — disliking current song")
+            smartShuffle.dislike(song)
+            _isLiked.value = false
+            _dislikedEvent.put(Unit)
+            // Dislike already recorded preference; don't also count this as an early skip.
+            smartShuffleTracker.suppressFinish(song)
+            playbackManager.next()
+        } else {
+            L.d("Liking current song")
+            smartShuffle.like(song)
+            _isLiked.value = true
+            _likedEvent.put(Unit)
+        }
+    }
+
+    private fun refreshPreferenceState() {
+        val song = playbackManager.currentSong
+        _isLiked.value = song != null && smartShuffle.isLiked(song)
     }
 
     /**
