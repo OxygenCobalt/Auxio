@@ -40,6 +40,8 @@ private data object TagParserImpl : TagParser {
             replayGainTrackAdjustment = metadata.replayGainTrackAdjustment(),
             replayGainAlbumAdjustment = metadata.replayGainAlbumAdjustment(),
             musicBrainzId = metadata.musicBrainzId(),
+            musicBrainzRecordingId = metadata.musicBrainzRecordingId(),
+            acoustidFingerprint = metadata.acoustidFingerprint(),
             name = metadata.name(),
             sortName = metadata.sortName(),
             track = metadata.track(),

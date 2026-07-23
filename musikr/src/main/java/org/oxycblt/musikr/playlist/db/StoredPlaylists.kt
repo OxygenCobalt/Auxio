@@ -30,6 +30,22 @@ abstract class StoredPlaylists {
 
     internal abstract suspend fun read(): List<PlaylistFile>
 
+    internal abstract suspend fun migrate(migrations: Map<Music.UID, Music.UID>)
+
+    /**
+     * Compare [currentUriToUid] (uri → canonical UID for every song in the current index run)
+     * against the stored URI index and return a map of old UID → new UID for every song whose UID
+     * has changed since the last run.
+     */
+    internal abstract suspend fun computeUriMigrations(
+        currentUriToUid: Map<String, Music.UID>
+    ): Map<Music.UID, Music.UID>
+
+    /**
+     * Persist [uriToUid] as the new URI index, replacing whatever was stored from the previous run.
+     */
+    internal abstract suspend fun updateUriIndex(uriToUid: Map<String, Music.UID>)
+
     companion object {
         fun from(context: Context): StoredPlaylists =
             StoredPlaylistsImpl(PlaylistDatabase.from(context).playlistDao())
@@ -51,4 +67,27 @@ private class StoredPlaylistsImpl(private val playlistDao: PlaylistDao) : Stored
                 StoredPlaylistHandle(it.playlistInfo, playlistDao),
             )
         }
+
+    override suspend fun migrate(migrations: Map<Music.UID, Music.UID>) {
+        for ((oldUid, newUid) in migrations) {
+            playlistDao.migrateSongUid(oldUid, newUid)
+        }
+    }
+
+    override suspend fun computeUriMigrations(
+        currentUriToUid: Map<String, Music.UID>
+    ): Map<Music.UID, Music.UID> {
+        val migrations = mutableMapOf<Music.UID, Music.UID>()
+        for (record in playlistDao.readUriRecords()) {
+            val newUid = currentUriToUid[record.uri] ?: continue
+            if (newUid != record.songUid) {
+                migrations[record.songUid] = newUid
+            }
+        }
+        return migrations
+    }
+
+    override suspend fun updateUriIndex(uriToUid: Map<String, Music.UID>) {
+        playlistDao.replaceUriIndex(uriToUid.map { (uri, uid) -> SongUriRecord(uri, uid) })
+    }
 }
