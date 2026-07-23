@@ -95,8 +95,14 @@ constructor(
                 .onConfigRequest(
                     ImageRequest.Builder(context)
                         .data(song.cover)
-                        // Use ORIGINAL sizing, as we are not loading into any View-like component.
-                        .size(Size.ORIGINAL)
+                        // dot166: No longer using Size.ORIGINAL because on Android 17
+                        // (Cinnamon Bun) Size.ORIGINAL causes issues #1380, #1382 and #1385
+                        // set to 640x640 as it was larger artwork that broke the notification,
+                        // tested with ワールズエンド・ダンスホール (World's End Dancehall) by wowaka
+                        // this patch does not affect widgets, as widgets already force ORIGINAL
+                        // anyway, was originally 512x512, but @programmerlexi suggested it be
+                        // 640x640 as that is the most common resolution (according to them)
+                        .size(Size(width = 640, height = 640))
                 )
                 .target(
                     onSuccess = {
