@@ -22,6 +22,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -30,6 +31,8 @@ import androidx.car.app.mediaextensions.MetadataExtras
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import androidx.media.session.MediaButtonReceiver
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
@@ -46,6 +49,8 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 import org.oxycblt.musikr.MusicParent
@@ -94,6 +99,8 @@ private constructor(
     private val _notification = PlaybackNotification(context, mediaSession.sessionToken)
     val notification: ForegroundServiceNotification
         get() = _notification
+
+    private val systemCoverResizing = context.getDimenPixels(R.dimen.system_cover_resizing)
 
     fun attach() {
         playbackManager.addListener(this)
@@ -267,11 +274,21 @@ private constructor(
         }
 
         // We are normally supposed to use URIs for album art, but that removes some of the
-        // nice things we can do like square cropping or high quality covers. Instead,
-        // we load a full-size bitmap into the media session and take the performance hit.
+        // nice things we can do like square cropping (we crop at runtime since it lets us avoid
+        // heavy image processing pipelines) or high quality covers (the default lower downsamples
+        // much more than the runtime bitmap downsampler). Instead, we load a full-size bitmap into
+        // the media session and take the performance hit.
         bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
+                override fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder =
+                    // Android 17 optimized cover downsampling which accidentally made it so that
+                    // hardware bitmap covers would actually crash it. Fix this by manually
+                    // downsampling to 320x320dp, as disabling hardware bitmaps trashes performance.
+                    // If I remember correctly this is somehow still higher quality than the URI
+                    // loading.
+                    builder.size(systemCoverResizing)
+
                 override fun onCompleted(bitmap: Bitmap?) {
                     L.d("Bitmap loaded, applying media session and posting notification")
                     if (bitmap != null) {
