@@ -1,0 +1,4 @@
+Auxio v4.1.0 refreshes the UI to align with Material 3 Expressive, improves the playback user experience, and adds a variety of general quality-of-life improvements.
+This patch fixes a critical issue where the notification would not show any music information or incorrectly show it on Android 17.
+
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v4.1.4.
