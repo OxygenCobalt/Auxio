@@ -50,8 +50,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 import org.oxycblt.musikr.MusicParent
@@ -286,7 +284,8 @@ private constructor(
                     // downsampling to whatever the system imagines, as disabling hardware bitmaps
                     // trashes performance. If I remember correctly this is somehow still higher
                     // quality than the URI loading.
-                    builder.size(MediaSessionCompat.getBitmapDimensionLimit())
+                    builder
+                        .size(MediaSessionCompat.getBitmapDimensionLimit())
                         .memoryCachePolicy(CachePolicy.READ_ONLY)
                         .allowHardware(Build.VERSION.SDK_INT < 37)
 
