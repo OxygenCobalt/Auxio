@@ -127,7 +127,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
 
     // Media
-    implementation "androidx.media:media:1.7.1"
+    implementation "androidx.media:media:1.8.0"
 
     // Android Auto
     implementation "androidx.car.app:app:1.7.0"

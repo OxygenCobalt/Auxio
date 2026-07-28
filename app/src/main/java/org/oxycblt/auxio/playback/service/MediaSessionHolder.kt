@@ -100,8 +100,6 @@ private constructor(
     val notification: ForegroundServiceNotification
         get() = _notification
 
-    private val systemCoverResizing = context.getDimenPixels(R.dimen.system_cover_resizing)
-
     fun attach() {
         playbackManager.addListener(this)
         imageSettings.registerListener(this)
@@ -287,7 +285,7 @@ private constructor(
                     // downsampling to 320x320dp, as disabling hardware bitmaps trashes performance.
                     // If I remember correctly this is somehow still higher quality than the URI
                     // loading.
-                    builder.size(systemCoverResizing)
+                    builder.size(MediaSessionCompat.getBitmapDimensionLimit())
 
                 override fun onCompleted(bitmap: Bitmap?) {
                     L.d("Bitmap loaded, applying media session and posting notification")

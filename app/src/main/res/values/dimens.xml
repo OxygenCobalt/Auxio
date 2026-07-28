@@ -53,6 +53,4 @@
 
     <dimen name="outline_small">1dp</dimen>
     <dimen name="outline_large">2dp</dimen>
-
-    <dimen name="system_cover_resizing">320dp</dimen>
 </resources>
