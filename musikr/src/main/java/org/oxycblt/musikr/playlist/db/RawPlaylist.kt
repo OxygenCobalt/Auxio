@@ -46,7 +46,12 @@ internal data class RawPlaylist(
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-@Entity internal data class PlaylistInfo(@PrimaryKey val playlistUid: Music.UID, val name: String)
+@Entity
+internal data class PlaylistInfo(
+    @PrimaryKey val playlistUid: Music.UID,
+    val name: String,
+    @ColumnInfo(defaultValue = "0") val updatedAt: Long = 0,
+)
 
 /**
  * Song information corresponding to a [RawPlaylist] entry.

@@ -88,6 +88,11 @@ data class ImportedPlaylist(val name: String?, val paths: List<PossiblePaths>)
 
 typealias PossiblePaths = List<Path>
 
+internal fun deriveNameFromFileName(fileName: String?): String? {
+    val base = fileName?.substringBeforeLast(".") ?: return null
+    return base.replace(Regex("[_-]"), " ").replace(Regex("\\s+"), " ")
+}
+
 private class ExternalPlaylistManagerImpl(
     private val context: Context,
     private val documentPathFactory: DocumentPathFactory,
@@ -101,19 +106,11 @@ private class ExternalPlaylistManagerImpl(
         return try {
             context.contentResolverSafe.openInputStream(uri)?.use {
                 val imported = m3u.read(it, filePath.directory) ?: return null
-                val name = imported.name
-                if (name != null) {
+                if (imported.name != null) {
                     return imported
                 }
-                // Strip extension
-                val fileName = filePath.name ?: return imported
-                val split = fileName.split(".")
-                var newName = split[0]
-                // Replace delimiters with space
-                newName = newName.replace(Regex("[_-]"), " ")
-                // Replace long stretches of whitespace with one space
-                newName = newName.replace(Regex("\\s+"), " ")
-                return ImportedPlaylist(newName, imported.paths)
+                val derivedName = deriveNameFromFileName(filePath.name) ?: return imported
+                return ImportedPlaylist(derivedName, imported.paths)
             }
         } catch (e: Exception) {
             null

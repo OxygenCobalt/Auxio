@@ -24,12 +24,18 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import org.oxycblt.musikr.Config
+import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Storage
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedFile
 import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.fs.FS
 import org.oxycblt.musikr.fs.File
+import org.oxycblt.musikr.fs.saf.contentResolverSafe
+import org.oxycblt.musikr.playlist.PendingImportHandle
+import org.oxycblt.musikr.playlist.PlaylistFile
+import org.oxycblt.musikr.playlist.SongPointer
+import org.oxycblt.musikr.playlist.deriveNameFromFileName
 import org.oxycblt.musikr.playlist.m3u.M3U
 import org.oxycblt.musikr.util.mapParallel
 import org.oxycblt.musikr.util.merge
@@ -40,11 +46,18 @@ internal interface ExploreStep {
 
     companion object {
         fun from(context: Context, config: Config): ExploreStep =
-            ExploreStepImpl(config.fs, config.storage)
+            ExploreStepImpl(context, config.fs, config.storage, config.withExternalPlaylists)
     }
 }
 
-private class ExploreStepImpl(private val fs: FS, private val storage: Storage) : ExploreStep {
+private class ExploreStepImpl(
+    private val context: Context,
+    private val fs: FS,
+    private val storage: Storage,
+    private val withExternalPlaylists: Boolean,
+) : ExploreStep {
+    private val m3u = M3U.from(context)
+
     override suspend fun explore(
         scope: CoroutineScope,
         explored: Channel<Explored>,
@@ -52,15 +65,20 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
         val files = Channel<File>(Channel.UNLIMITED)
         val filesTask = fs.explore(files)
 
+        val storedPlaylists = storage.storedPlaylists.read()
+
         val classified = Channel<Classified>(Channel.UNLIMITED)
         val classifiedTask =
             scope.mapParallel(PARALLELISM, files, classified, Dispatchers.IO) { file ->
+                if (file.isM3U()) {
+                    val playlist = if (withExternalPlaylists) readM3UPlaylist(file) else null
+                    return@mapParallel Finalized(playlist?.let { RawPlaylist(it) } ?: NotAudio)
+                }
                 if (
-                    file.mimeType == M3U.MIME_TYPE ||
-                        (!file.mimeType.startsWith("audio/") &&
-                            file.mimeType != "application/ogg" &&
-                            file.mimeType != "application/x-ogg" &&
-                            file.mimeType != "application/octet-stream")
+                    !file.mimeType.startsWith("audio/") &&
+                        file.mimeType != "application/ogg" &&
+                        file.mimeType != "application/x-ogg" &&
+                        file.mimeType != "application/octet-stream"
                 ) {
                     return@mapParallel Finalized(NotAudio)
                 }
@@ -103,7 +121,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
         val playlists = Channel<Explored>(Channel.UNLIMITED)
         val playlistsTask =
             scope.tryAsyncWith(playlists, Dispatchers.IO) {
-                for (playlist in storage.storedPlaylists.read()) {
+                for (playlist in storedPlaylists) {
                     val rawPlaylist = RawPlaylist(playlist)
                     it.send(rawPlaylist)
                 }
@@ -120,6 +138,27 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
             }
 
         return scope.merge(filesTask, classifiedTask, exploredTask, playlistsTask, mergeTask)
+    }
+
+    private fun File.isM3U(): Boolean {
+        if (mimeType == M3U.MIME_TYPE) return true
+        val name = path.name?.lowercase() ?: return false
+        return name.endsWith(".m3u") || name.endsWith(".m3u8")
+    }
+
+    private fun readM3UPlaylist(file: File): PlaylistFile? {
+        val uid =
+            Music.UID.auxio(Music.UID.Item.PLAYLIST) { update(file.path.toString().toByteArray()) }
+        val imported =
+            context.contentResolverSafe.openInputStream(file.uri)?.use { stream ->
+                m3u.read(stream, file.path.directory)
+            } ?: return null
+        val name = deriveNameFromFileName(file.path.name) ?: return null
+        return PlaylistFile(
+            name,
+            imported.paths.map { SongPointer.Path(it) },
+            PendingImportHandle(uid, file.modifiedMs),
+        )
     }
 
     private sealed interface Classified

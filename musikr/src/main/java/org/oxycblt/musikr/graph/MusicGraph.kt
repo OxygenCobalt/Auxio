@@ -21,6 +21,7 @@ package org.oxycblt.musikr.graph
 import android.content.Context
 import java.io.File
 import org.oxycblt.musikr.Music
+import org.oxycblt.musikr.fs.Path
 import org.oxycblt.musikr.playlist.SongPointer
 import org.oxycblt.musikr.playlist.interpret.PrePlaylist
 import org.oxycblt.musikr.tag.interpret.PreAlbum
@@ -314,6 +315,9 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 it.pointerMap[v400Pointer]?.forEach { index -> it.songVertices[index] = vertex }
                 val v401Pointer = SongPointer.UID(entry.value.preSong.v401Uid)
                 it.pointerMap[v401Pointer]?.forEach { index -> it.songVertices[index] = vertex }
+                it.pathPointerMap[vertex.preSong.path]?.forEach { index ->
+                    if (it.songVertices[index] == null) it.songVertices[index] = vertex
+                }
             }
         }
 
@@ -576,5 +580,13 @@ internal class PlaylistVertex(val prePlaylist: PrePlaylist) {
             .withIndex()
             .groupBy { it.value }
             .mapValuesTo(mutableMapOf()) { entry -> entry.value.map { it.index } }
+    val pathPointerMap: Map<Path, List<Int>> =
+        prePlaylist.songPointers
+            .withIndex()
+            .flatMap { (index, pointer) ->
+                if (pointer is SongPointer.Path) pointer.options.map { it to index }
+                else emptyList()
+            }
+            .groupBy({ it.first }, { it.second })
     val tag: Any? = null
 }

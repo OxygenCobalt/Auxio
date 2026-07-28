@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2024 Auxio Project
- * PlaylistFile.kt is part of Auxio.
+ * Copyright (c) 2026 Auxio Project
+ * PendingImportHandle.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,28 +21,13 @@ package org.oxycblt.musikr.playlist
 import org.oxycblt.musikr.Music
 import org.oxycblt.musikr.Song
 
-internal data class PlaylistFile(
-    val name: String,
-    val songPointers: List<SongPointer>,
-    val handle: PlaylistHandle,
-)
+internal class PendingImportHandle(override val uid: Music.UID, override val updatedAt: Long) :
+    PlaylistHandle {
+    override suspend fun rename(name: String) {}
 
-internal sealed interface SongPointer {
-    data class UID(val uid: Music.UID) : SongPointer
+    override suspend fun add(songs: List<Song>) {}
 
-    data class Path(val options: List<org.oxycblt.musikr.fs.Path>) : SongPointer
-}
+    override suspend fun rewrite(songs: List<Song>) {}
 
-internal interface PlaylistHandle {
-    val uid: Music.UID
-
-    val updatedAt: Long
-
-    suspend fun rename(name: String)
-
-    suspend fun add(songs: List<Song>)
-
-    suspend fun rewrite(songs: List<Song>)
-
-    suspend fun delete()
+    override suspend fun delete() {}
 }

@@ -522,6 +522,59 @@
                 tools:listitem="@layout/item_music_location" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/locations_import_playlists"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_large"
+            android:layout_marginVertical="@dimen/spacing_medium"
+            app:layout_constraintTop_toBottomOf="@+id/locations_multithread"
+            tools:layout_editor_absoluteX="24dp">
+
+            <TextView
+                android:id="@+id/locations_import_playlists_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/set_import_playlists"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toTopOf="@+id/locations_import_playlists_desc"
+                app:layout_constraintEnd_toStartOf="@+id/locations_import_playlists_switch"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/locations_import_playlists_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/set_import_playlists_desc"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/locations_import_playlists_switch"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/locations_import_playlists_title" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/locations_import_playlists_switch"
+                style="@style/Widget.Auxio.RecyclerView.Linear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_music_location" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
