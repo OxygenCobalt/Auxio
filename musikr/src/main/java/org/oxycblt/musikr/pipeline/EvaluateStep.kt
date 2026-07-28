@@ -65,6 +65,29 @@ private class EvaluateStepImpl(
         }
         val graph = builder.build()
 
+        // Build the uri → uid map for every song in this index run.
+        val currentUriToUid =
+            graph.songVertex.associate { it.preSong.uri.toString() to it.preSong.v363Uid }
+
+        // Collect UID migrations from two sources and apply them together:
+        //  1. legacyUids probe: hash UIDs the song carried before gaining a MusicBrainz ID
+        //     (handles the "only MB ID added, other tags unchanged" case without a prior URI
+        // record).
+        //  2. URI index diff: any song whose file URI was previously mapped to a different UID
+        //     (handles tag changes, MB ID + tag changes together, or any other UID drift).
+        val uriMigrations = storedPlaylists.computeUriMigrations(currentUriToUid)
+        val allMigrations = graph.uidMigrations + uriMigrations
+        storedPlaylists.migrate(allMigrations)
+
+        // Persist the current uri → uid mapping so the next run can detect further UID changes.
+        storedPlaylists.updateUriIndex(currentUriToUid)
+
+        // Apply URI migrations to the in-memory graph so the current rescan shows correct playlist
+        // contents immediately. The graph was built before migrations were computed (the DB still
+        // had old UIDs when PlaylistVertex.pointerMap was populated), so without this songs whose
+        // UID changed this run would appear missing until a second rescan.
+        graph.applyMigrations(uriMigrations)
+
         // Render graph to Graphviz in debug mode
         if (BuildConfig.DEBUG) {
             try {

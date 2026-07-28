@@ -36,7 +36,37 @@ internal data class MusicGraph(
     val artistVertex: List<ArtistVertex>,
     val genreVertex: List<GenreVertex>,
     val playlistVertex: Set<PlaylistVertex>,
+    /**
+     * Old hash UIDs → new MusicBrainz UIDs for songs that gained a MusicBrainz ID since the last
+     * index run. Populated during playlist resolution whenever a legacy UID matched a stored
+     * playlist entry. Used to update the playlist DB so future runs resolve cleanly.
+     */
+    val uidMigrations: Map<Music.UID, Music.UID>,
 ) {
+    /**
+     * Re-resolve playlist vertices for any songs whose UID changed after the graph was built. The
+     * URI-index migrations are computed after [build] returns, so they can't be applied during the
+     * normal resolution pass. Calling this before [org.oxycblt.musikr.model.LibraryFactory.create]
+     * ensures the current rescan reflects the correct playlist contents immediately rather than
+     * requiring a second rescan.
+     *
+     * @param migrations Map of old UID → new UID, as produced by
+     *   [org.oxycblt.musikr.playlist.db.StoredPlaylists.computeUriMigrations].
+     */
+    fun applyMigrations(migrations: Map<Music.UID, Music.UID>) {
+        if (migrations.isEmpty()) return
+        val uidToVertex = songVertex.associateBy { it.preSong.v363Uid }
+        for (playlist in playlistVertex) {
+            for ((oldUid, newUid) in migrations) {
+                val indices = playlist.pointerMap[SongPointer.UID(oldUid)] ?: continue
+                val vertex = uidToVertex[newUid] ?: continue
+                for (index in indices) {
+                    playlist.songVertices[index] = vertex
+                }
+            }
+        }
+    }
+
     interface Builder {
         fun add(preSong: PreSong)
 
@@ -184,6 +214,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
     private val artistVertices = mutableMapOf<PreArtist, ArtistVertex>()
     private val genreVertices = mutableMapOf<PreGenre, GenreVertex>()
     private val playlistVertices = mutableSetOf<PlaylistVertex>()
+    private val uidMigrations = mutableMapOf<Music.UID, Music.UID>()
 
     override fun add(preSong: PreSong) {
         val uid = preSong.v363Uid
@@ -314,6 +345,19 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 it.pointerMap[v400Pointer]?.forEach { index -> it.songVertices[index] = vertex }
                 val v401Pointer = SongPointer.UID(entry.value.preSong.v401Uid)
                 it.pointerMap[v401Pointer]?.forEach { index -> it.songVertices[index] = vertex }
+
+                // Probe hash UIDs the song carried before gaining a MusicBrainz ID. If any
+                // playlist still references the old hash UID, resolve it now and record the
+                // migration so the DB can be updated to the canonical MusicBrainz UID.
+                for (legacyUid in entry.value.preSong.legacyUids) {
+                    val legacyPointer = SongPointer.UID(legacyUid)
+                    if (it.pointerMap[legacyPointer] != null) {
+                        it.pointerMap[legacyPointer]!!.forEach { index ->
+                            it.songVertices[index] = vertex
+                        }
+                        uidMigrations[legacyUid] = entry.key
+                    }
+                }
             }
         }
 
@@ -324,6 +368,7 @@ private class MusicGraphBuilderImpl : MusicGraph.Builder {
                 artistVertices.values.toList(),
                 genreVertices.values.toList(),
                 playlistVertices,
+                uidMigrations,
             )
 
         return graph
