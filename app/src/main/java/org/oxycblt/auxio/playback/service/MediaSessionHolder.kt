@@ -31,6 +31,7 @@ import androidx.car.app.mediaextensions.MetadataExtras
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import androidx.media.session.MediaButtonReceiver
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import javax.inject.Inject
@@ -282,10 +283,12 @@ private constructor(
                 override fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder =
                     // Android 17 optimized cover downsampling which accidentally made it so that
                     // hardware bitmap covers would actually crash it. Fix this by manually
-                    // downsampling to 320x320dp, as disabling hardware bitmaps trashes performance.
-                    // If I remember correctly this is somehow still higher quality than the URI
-                    // loading.
+                    // downsampling to whatever the system imagines, as disabling hardware bitmaps
+                    // trashes performance. If I remember correctly this is somehow still higher
+                    // quality than the URI loading.
                     builder.size(MediaSessionCompat.getBitmapDimensionLimit())
+                        .memoryCachePolicy(CachePolicy.READ_ONLY)
+                        .allowHardware(Build.VERSION.SDK_INT < 37)
 
                 override fun onCompleted(bitmap: Bitmap?) {
                     L.d("Bitmap loaded, applying media session and posting notification")
