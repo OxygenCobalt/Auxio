@@ -69,6 +69,16 @@ interface PlaybackStateHolder {
     fun seekTo(positionMs: Long)
 
     /**
+     * Begin temporary scanning within the current track.
+     *
+     * Scanning must not cross track boundaries.
+     */
+    fun startScan(direction: ScanDirection)
+
+    /** Stop scanning and resume normal playback at the scanned position. */
+    fun stopScan()
+
+    /**
      * Update the repeat mode of the audio player.
      *
      * @param repeatMode The new repeat mode.
@@ -303,8 +313,12 @@ private constructor(
     private val isAdvancing: Boolean,
     /** The position when this instance was created, in milliseconds. */
     private val initPositionMs: Long,
-    /** The time this instance was created, as a unix epoch timestamp. */
+    /** The time this instance was created, as an elapsed realtime timestamp. */
     private val creationTime: Long,
+    /** Signed media-position change per second of elapsed time. */
+    val rate: Float,
+    /** Maximum valid position in this track. */
+    private val durationMs: Long,
 ) {
     /**
      * Calculate the "real" playback position this instance contains, in milliseconds.
@@ -312,14 +326,14 @@ private constructor(
      * @return If paused, the original position will be returned. Otherwise, it will be the original
      *   position plus the time elapsed since this state was created.
      */
-    fun calculateElapsedPositionMs() =
-        if (isAdvancing) {
-            initPositionMs + (SystemClock.elapsedRealtime() - creationTime)
-        } else {
-            // Not advancing due to buffering or some unrelated pausing, such as
-            // a transient audio focus change.
-            initPositionMs
+    fun calculateElapsedPositionMs(): Long {
+        if (!isAdvancing) {
+            return initPositionMs.coerceIn(0, durationMs)
         }
+
+        val elapsedMs = SystemClock.elapsedRealtime() - creationTime
+        return (initPositionMs + elapsedMs * rate).toLong().coerceIn(0, durationMs)
+    }
 
     /**
      * Load this instance into a [PlaybackStateCompat].
@@ -338,7 +352,7 @@ private constructor(
             },
             initPositionMs,
             if (isAdvancing) {
-                1f
+                rate
             } else {
                 // Not advancing, so don't move the position.
                 0f
@@ -353,12 +367,16 @@ private constructor(
         other is Progression &&
             isPlaying == other.isPlaying &&
             isAdvancing == other.isAdvancing &&
-            initPositionMs == other.initPositionMs
+            initPositionMs == other.initPositionMs &&
+            rate == other.rate &&
+            durationMs == other.durationMs
 
     override fun hashCode(): Int {
         var result = isPlaying.hashCode()
         result = 31 * result + isAdvancing.hashCode()
         result = 31 * result + initPositionMs.hashCode()
+        result = 31 * result + rate.hashCode()
+        result = 31 * result + durationMs.hashCode()
         return result
     }
 
@@ -371,13 +389,21 @@ private constructor(
          * @param isAdvancing Whether the player is actively playing audio in this moment.
          * @param positionMs The current position of the player.
          */
-        fun from(isPlaying: Boolean, isAdvancing: Boolean, positionMs: Long) =
+        fun from(
+            isPlaying: Boolean,
+            isAdvancing: Boolean,
+            positionMs: Long,
+            rate: Float,
+            durationMs: Long,
+        ) =
             Progression(
-                isPlaying,
+                isPlaying = isPlaying,
                 // Minor sanity check: Make sure that advancing can't occur if already paused.
-                isPlaying && isAdvancing,
-                positionMs,
-                SystemClock.elapsedRealtime(),
+                isAdvancing = isPlaying && isAdvancing,
+                initPositionMs = positionMs,
+                creationTime = SystemClock.elapsedRealtime(),
+                rate = rate,
+                durationMs = durationMs,
             )
 
         fun nil() =
@@ -386,6 +412,8 @@ private constructor(
                 isAdvancing = false,
                 initPositionMs = 0,
                 creationTime = SystemClock.elapsedRealtime(),
+                rate = 0f,
+                durationMs = 0,
             )
     }
 }

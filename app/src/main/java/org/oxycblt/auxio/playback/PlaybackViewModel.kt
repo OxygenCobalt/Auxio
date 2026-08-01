@@ -35,6 +35,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ScanDirection
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -473,6 +474,18 @@ constructor(
                 (currentPositionMs + STEP_INCREMENT).coerceAtMost(currentSong.durationMs)
             playbackManager.seekTo(newPositionMs)
         }
+    }
+
+    /** Begin scanning through the current track while a transport button is held. */
+    fun startScan(direction: ScanDirection) {
+        L.d("Starting scan in direction $direction")
+        playbackManager.startScan(direction)
+    }
+
+    /** Stop scanning and return to normal playback. */
+    fun stopScan() {
+        L.d("Stopping scan")
+        playbackManager.stopScan()
     }
 
     // --- QUEUE FUNCTIONS ---

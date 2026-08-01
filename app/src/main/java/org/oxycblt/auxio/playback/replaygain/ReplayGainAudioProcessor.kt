@@ -50,12 +50,17 @@ constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
 ) : BaseAudioProcessor(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
+    @Volatile
     private var volume = 1f
         set(value) {
             field = value
             // Processed bytes are no longer valid, flush the stream
             flush()
         }
+
+    /** The current linear ReplayGain amplification. */
+    val amplification: Float
+        get() = volume
 
     fun attach() {
         playbackManager.addListener(this)
