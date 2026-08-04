@@ -1,3 +1,13 @@
+## v4.1.5
+
+## What's Fixed
+- Fixed playlist edits would not persist between app starts.
+
+## v4.1.4
+
+## What's Fixed
+- Fixed notification not showing music information or failing to show correct music information on Android 17.
+
 ## v4.1.3
 
 ## What's Fixed
