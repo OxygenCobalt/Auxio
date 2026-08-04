@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.settings
 
 import android.os.Bundle
@@ -26,9 +26,11 @@ import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+import org.oxycblt.auxio.smartshuffle.SmartShuffle
 import org.oxycblt.auxio.util.navigateSafe
 import timber.log.Timber as L
 
@@ -40,6 +42,7 @@ import timber.log.Timber as L
 @AndroidEntryPoint
 class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
     private val musicModel: MusicViewModel by activityViewModels()
+    @Inject lateinit var smartShuffle: SmartShuffle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +51,11 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         returnTransition = MaterialFadeThrough()
         exitTransition = MaterialFadeThrough()
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateSongsToReviewSummary()
     }
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
@@ -82,11 +90,27 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
                 L.d("Navigating to audio preferences")
                 findNavController().navigateSafe(RootPreferenceFragmentDirections.audioPeferences())
             }
+            getString(R.string.set_key_songs_to_review) -> {
+                L.d("Navigating to songs to review")
+                findNavController().navigateSafe(RootPreferenceFragmentDirections.songsToReview())
+            }
             getString(R.string.set_key_reindex) -> musicModel.refresh()
             getString(R.string.set_key_rescan) -> musicModel.rescan()
             else -> return super.onPreferenceTreeClick(preference)
         }
 
         return true
+    }
+
+    private fun updateSongsToReviewSummary() {
+        val preference =
+            findPreference<Preference>(getString(R.string.set_key_songs_to_review)) ?: return
+        val count = smartShuffle.undesirableCount()
+        preference.summary =
+            if (count == 0) {
+                getString(R.string.set_songs_to_review_none)
+            } else {
+                getString(R.string.set_songs_to_review_count, count)
+            }
     }
 }

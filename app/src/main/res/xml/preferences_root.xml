@@ -34,6 +34,11 @@
             app:title="@string/set_locations" />
 
         <Preference
+            app:key="@string/set_key_songs_to_review"
+            app:summary="@string/set_songs_to_review_desc"
+            app:title="@string/set_songs_to_review" />
+
+        <Preference
             app:key="@string/set_key_reindex"
             app:summary="@string/set_reindex_desc"
             app:title="@string/set_reindex" />

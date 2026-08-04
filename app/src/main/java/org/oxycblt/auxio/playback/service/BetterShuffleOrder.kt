@@ -125,6 +125,8 @@ class BetterShuffleOrder(private val shuffled: IntArray) : ShuffleOrder {
     }
 
     companion object {
+        fun identity(length: Int) = BetterShuffleOrder(IntArray(length) { it })
+
         private fun createShuffledList(length: Int, startIndex: Int): IntArray {
             val shuffled = IntArray(length)
             for (i in 0 until length) {

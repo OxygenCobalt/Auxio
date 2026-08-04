@@ -50,6 +50,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.smartshuffle.SmartShuffle
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 import org.oxycblt.musikr.MusicParent
@@ -70,6 +71,7 @@ private constructor(
     private val bitmapProvider: BitmapProvider,
     private val imageSettings: ImageSettings,
     private val mediaSessionInterface: MediaSessionInterface,
+    private val smartShuffle: SmartShuffle,
 ) : PlaybackStateManager.Listener, ImageSettings.Listener {
 
     class Factory
@@ -79,6 +81,7 @@ private constructor(
         private val bitmapProvider: BitmapProvider,
         private val imageSettings: ImageSettings,
         private val mediaSessionInterface: MediaSessionInterface,
+        private val smartShuffle: SmartShuffle,
     ) {
         fun create(context: Context, foregroundListener: ForegroundListener) =
             MediaSessionHolder(
@@ -88,6 +91,7 @@ private constructor(
                 bitmapProvider,
                 imageSettings,
                 mediaSessionInterface,
+                smartShuffle,
             )
     }
 
@@ -363,7 +367,30 @@ private constructor(
                 .build()
         state.addCustomAction(shuffleAction)
 
+        // Like toggle for Smart Shuffle (Android Auto + notification).
+        // Filled heart = liked; tapping again dislikes and skips.
+        val song = playbackManager.currentSong
+        val liked = song != null && smartShuffle.isLiked(song)
+        val likeAction =
+            PlaybackStateCompat.CustomAction.Builder(
+                    PlaybackActions.ACTION_LIKE,
+                    context.getString(
+                        if (liked) R.string.desc_liked else R.string.lbl_like
+                    ),
+                    if (liked) R.drawable.ic_heart_filled_24 else R.drawable.ic_heart_outline_24,
+                )
+                .build()
+        state.addCustomAction(likeAction)
+
         mediaSession.setPlaybackState(state.build())
+    }
+
+    /** Refresh session/notification after an explicit like from Android Auto or UI. */
+    fun refreshAfterLike() {
+        invalidateSessionState()
+        if (!bitmapProvider.isBusy) {
+            foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
+        }
     }
 
     /** Invalidate both repeat and shuffle notification actions. */

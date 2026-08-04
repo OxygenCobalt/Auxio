@@ -12,6 +12,7 @@
 
     <string name="set_key_reindex" translatable="false">auxio_reindex</string>
     <string name="set_key_rescan" translatable="false">auxio_rescan</string>
+    <string name="set_key_songs_to_review" translatable="false">auxio_songs_to_review</string>
     <string name="set_key_observing" translatable="false">auxio_observing</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
     <string name="set_key_excluded_dirs" translatable="false">auxio_excluded_dirs</string>
