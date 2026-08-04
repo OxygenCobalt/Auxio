@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for Android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.1.4">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.1.4&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v4.1.5">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v4.1.5&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -79,8 +79,11 @@ You can support Auxio's development through [my Github Sponsors page](https://gi
 <h3 align="center">Legendary supporters:</h3>
 <p align="center">
     <a href="https://github.com/bkkellyh"><img src="https://avatars.githubusercontent.com/u/248118457?v=4" width=250 /></a> 
+    <a href="ttps://github.com/gruntstumper"><img src="https://avatars.githubusercontent.com/u/308816080?v=4" width=125 /></a> 
 </p>
-<h3 align="center"><a href="https://github.com/bkkellyh">@bkkellyh</a> - <i>$500!</i></h3>
+<h3 align="center">
+    <a href="https://github.com/bkkellyh">@bkkellyh</a> - <i>$500!</i>, <a href="https://github.com/gruntstumper">@gruntstumper</a> - $100
+</h3>
 
 <hr />
 

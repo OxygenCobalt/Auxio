@@ -18,7 +18,10 @@
  
 package org.oxycblt.musikr.playlist.db
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import androidx.core.database.getStringOrNull
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
@@ -28,6 +31,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.SQLiteConnection
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import org.oxycblt.musikr.Music
 
 /**
@@ -37,7 +44,7 @@ import org.oxycblt.musikr.Music
  */
 @Database(
     entities = [PlaylistInfo::class, PlaylistSong::class, PlaylistSongCrossRef::class],
-    version = 30,
+    version = 75,
     exportSchema = false,
 )
 @TypeConverters(Music.UID.TypeConverters::class)
@@ -50,6 +57,54 @@ internal abstract class PlaylistDatabase : RoomDatabase() {
                     context.applicationContext,
                     PlaylistDatabase::class.java,
                     "user_music.db",
+                )
+                .addMigrations(
+                    object : Migration(30, 75) {
+                        private fun washUids(db: SupportSQLiteDatabase, table: String, column: String) {
+                            val playlistUidMigration = db.query(
+                                SupportSQLiteQueryBuilder.builder(table)
+                                    .columns(arrayOf(column))
+                                    .create()
+                            ).use {
+                                val migrations = mutableListOf<Pair<String, String>>()
+                                val playlistUidIndex = it.getColumnIndexOrThrow(column)
+                                while (it.moveToNext()) {
+                                    val oldUid =
+                                        requireNotNull(it.getStringOrNull(playlistUidIndex)) { "catastrophic migration failure: $table has no UID" }
+                                    val newUid =
+                                        requireNotNull(Music.UID.fromString(oldUid)) { "catastrophic migration failure: $table has bad UID" }.toString()
+                                    migrations.add(oldUid to newUid)
+                                }
+                                migrations
+                            }
+                            for ((old, new) in playlistUidMigration) {
+                                db.update(
+                                    table,
+                                    SQLiteDatabase.CONFLICT_REPLACE,
+                                    ContentValues().apply {
+                                        put(column, old)
+                                    },
+                                    "$column = ?",
+                                    arrayOf(new)
+                                )
+                            }
+                            for ((old, new) in playlistUidMigration) {
+                                db.update(
+                                    table,
+                                    SQLiteDatabase.CONFLICT_REPLACE,
+                                    ContentValues().apply {
+                                        put(column, new)
+                                    },
+                                    "$column = ?",
+                                    arrayOf(old)
+                                )
+                            }
+                        }
+                        override fun migrate(db: SupportSQLiteDatabase) {
+                            washUids(db, "PlaylistInfo", "playlistUid")
+                            washUids(db, "PlaylistSongCrossRef", "playlistUid")
+                        }
+                    }
                 )
                 .fallbackToDestructiveMigration(true)
                 .build()
