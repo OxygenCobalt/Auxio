@@ -24,9 +24,12 @@ import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
@@ -44,6 +47,7 @@ import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ScanDirection
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.playback.ui.stepper.Direction
 import org.oxycblt.auxio.playback.ui.stepper.StepperOverlay
@@ -153,7 +157,8 @@ class PlaybackPanelFragment :
         // Set up actions
         // TODO: Add better playback button accessibility
         binding.playbackRepeat.setOnClickListener { playbackModel.toggleRepeatMode() }
-        binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
+        binding.playbackSkipPrev.setupScanAction(ScanDirection.BACKWARD, playbackModel::prev)
+
         binding.playbackPlayPause.apply {
             @SuppressLint("RestrictedApi")
             setCornerSpringForce(
@@ -164,7 +169,7 @@ class PlaybackPanelFragment :
             )
             setOnClickListener { playbackModel.togglePlaying() }
         }
-        binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
+        binding.playbackSkipNext.setupScanAction(ScanDirection.FORWARD, playbackModel::next)
         binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
         binding.playbackMore?.setOnClickListener {
             playbackModel.song.value?.let {
@@ -218,6 +223,7 @@ class PlaybackPanelFragment :
     //    }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
+        playbackModel.stopScan()
         equalizerLauncher = null
         binding.playbackRepeat.clearPendingIcon()
         binding.playbackSong.isSelected = false
@@ -226,6 +232,75 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.setOnMenuItemClickListener(null)
         userAwarePagerCallback?.release()
         binding.playbackPager?.adapter = null
+    }
+
+    private fun View.setupScanAction(direction: ScanDirection, click: () -> Unit) {
+        var scanning = false
+        var cancelled = false
+        val touchSlop = ViewConfiguration.get(context).scaledTouchSlop.toFloat()
+        val beginScan = Runnable {
+            scanning = true
+            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            playbackModel.startScan(direction)
+        }
+
+        setOnClickListener { click() }
+        setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    scanning = false
+                    cancelled = false
+                    view.isPressed = true
+                    view.postDelayed(beginScan, ViewConfiguration.getLongPressTimeout().toLong())
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (
+                        event.x !in -touchSlop..view.width + touchSlop ||
+                            event.y !in -touchSlop..view.height + touchSlop
+                    ) {
+                        view.removeCallbacks(beginScan)
+                        if (scanning) {
+                            playbackModel.stopScan()
+                            scanning = false
+                        }
+                        cancelled = true
+                        view.isPressed = false
+                    }
+                }
+                MotionEvent.ACTION_UP -> {
+                    view.removeCallbacks(beginScan)
+                    view.isPressed = false
+                    if (scanning) {
+                        playbackModel.stopScan()
+                        scanning = false
+                    } else if (!cancelled) {
+                        view.performClick()
+                    }
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    view.removeCallbacks(beginScan)
+                    view.isPressed = false
+                    if (scanning) {
+                        playbackModel.stopScan()
+                        scanning = false
+                    }
+                }
+            }
+            true
+        }
+        addOnAttachStateChangeListener(
+            object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(view: View) = Unit
+
+                override fun onViewDetachedFromWindow(view: View) {
+                    view.removeCallbacks(beginScan)
+                    if (scanning) {
+                        playbackModel.stopScan()
+                        scanning = false
+                    }
+                }
+            }
+        )
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {

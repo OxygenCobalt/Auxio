@@ -59,6 +59,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.ScanDirection
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
 import org.oxycblt.musikr.MusicParent
@@ -76,12 +77,22 @@ class ExoPlaybackStateHolder(
     private val replayGainProcessor: ReplayGainAudioProcessor,
     private val musicRepository: MusicRepository,
     private val imageSettings: ImageSettings,
+    private val reverseAudioEngineFactory: ReverseAudioEngine.Factory,
 ) :
     PlaybackStateHolder,
     Player.Listener,
     MusicRepository.UpdateListener,
     PlaybackSettings.Listener,
     ImageSettings.Listener {
+    private data class ScanState(
+        val direction: ScanDirection,
+        val wasPlaying: Boolean,
+        val pauseAtEndOfMediaItems: Boolean,
+    )
+
+    private var scanState: ScanState? = null
+    private var reverseEngine: ReverseAudioEngine? = null
+
     private val saveJob = Job()
     private val saveScope = CoroutineScope(Dispatchers.IO + saveJob)
     private val restoreScope = CoroutineScope(Dispatchers.IO + saveJob)
@@ -101,6 +112,8 @@ class ExoPlaybackStateHolder(
     }
 
     fun release() {
+        stopScan(false)
+        closeAudioEffectControlSession()
         saveJob.cancel()
         playbackManager.unregisterStateHolder(this)
         musicRepository.removeUpdateListener(this)
@@ -117,9 +130,26 @@ class ExoPlaybackStateHolder(
     override val progression: Progression
         get() {
             val mediaItem = player.currentMediaItem ?: return Progression.nil()
-            val duration = mediaItem.mediaMetadata.extras?.getLong("durationMs") ?: Long.MAX_VALUE
-            val clampedPosition = player.currentPosition.coerceAtLeast(0).coerceAtMost(duration)
-            return Progression.from(player.playWhenReady, player.isPlaying, clampedPosition)
+            val durationMs = mediaItem.song?.durationMs ?: Long.MAX_VALUE
+            val reverseEngine = reverseEngine
+            if (reverseEngine != null) {
+                return Progression.from(
+                    isPlaying = true,
+                    isAdvancing = reverseEngine.isPlaying,
+                    positionMs = reverseEngine.currentPositionMs,
+                    rate = ScanDirection.BACKWARD.rate,
+                    durationMs = durationMs,
+                )
+            }
+
+            val scanState = scanState
+            return Progression.from(
+                isPlaying = player.playWhenReady || scanState?.direction == ScanDirection.FORWARD,
+                isAdvancing = player.isPlaying,
+                positionMs = player.currentPosition.coerceIn(0, durationMs),
+                rate = player.playbackParameters.speed,
+                durationMs = durationMs,
+            )
         }
 
     override val repeatMode
@@ -233,6 +263,86 @@ class ExoPlaybackStateHolder(
         // Ack handled w/ExoPlayer events
     }
 
+    override fun startScan(direction: ScanDirection) {
+        if (scanState != null || player.currentMediaItem == null) {
+            return
+        }
+
+        val wasPlaying = player.playWhenReady
+        scanState = ScanState(direction, wasPlaying, player.pauseAtEndOfMediaItems)
+
+        when (direction) {
+            ScanDirection.FORWARD -> {
+                player.setPlaybackSpeed(direction.rate)
+                player.pauseAtEndOfMediaItems = true
+                player.play()
+                playbackManager.ack(this, StateAck.ProgressionChanged)
+            }
+
+            ScanDirection.BACKWARD -> {
+                val positionMs = player.currentPosition
+                if (positionMs <= 0) {
+                    scanState = null
+                    return
+                }
+
+                reverseEngine =
+                    reverseAudioEngineFactory.create(
+                        uri = requireNotNull(player.currentMediaItem?.localConfiguration?.uri),
+                        startPositionMs = positionMs,
+                        speed = -direction.rate,
+                        audioSessionId = player.audioSessionId,
+                        amplification = replayGainProcessor.amplification,
+                    )
+                player.pause()
+                openAudioEffectControlSession()
+                reverseEngine?.start(
+                    onPlaybackChanged = { playbackManager.ack(this, StateAck.ProgressionChanged) },
+                    onEnded = { stopScan() },
+                    onError = { error ->
+                        L.e(error, "Unable to play reverse audio")
+                        stopScan(error !is ReverseAudioFocusLostException)
+                    },
+                )
+
+                playbackManager.ack(this, StateAck.ProgressionChanged)
+            }
+        }
+    }
+
+    override fun stopScan() {
+        stopScan(true)
+    }
+
+    private fun stopScan(resumePlayback: Boolean) {
+        val activeScan = scanState ?: return
+        scanState = null
+
+        when (activeScan.direction) {
+            ScanDirection.FORWARD -> {
+                player.setPlaybackSpeed(1f)
+            }
+
+            ScanDirection.BACKWARD -> {
+                val activeReverseEngine = reverseEngine
+                reverseEngine = null
+
+                val positionMs = activeReverseEngine?.currentPositionMs ?: player.currentPosition
+                activeReverseEngine?.release()
+                player.seekTo(positionMs)
+            }
+        }
+
+        player.pauseAtEndOfMediaItems = activeScan.pauseAtEndOfMediaItems
+        player.setPlaybackSpeed(1f)
+        player.playWhenReady = resumePlayback && activeScan.wasPlaying
+        if (!player.playWhenReady) {
+            closeAudioEffectControlSession()
+        }
+        playbackManager.ack(this, StateAck.ProgressionChanged)
+        deferSave()
+    }
+
     override fun repeatMode(repeatMode: RepeatMode) {
         player.repeatMode =
             when (repeatMode) {
@@ -246,6 +356,8 @@ class ExoPlaybackStateHolder(
     }
 
     override fun newPlayback(command: PlaybackCommand) {
+        stopScan()
+
         parent = command.parent
         player.shuffleModeEnabled = command.shuffled
         player.setMediaItems(command.queue.map { it.buildMediaItem() })
@@ -405,6 +517,8 @@ class ExoPlaybackStateHolder(
         repeatMode: RepeatMode,
         ack: StateAck.NewPlayback?,
     ) {
+        stopScan()
+
         var sendNewPlaybackEvent = false
         var shouldSeek = false
         if (this.parent != parent) {
@@ -471,18 +585,9 @@ class ExoPlaybackStateHolder(
             // Mark that we have started playing so that the notification can now be posted.
             L.d("Player has started playing")
             sessionOngoing = true
-            if (!openAudioEffectSession) {
-                // Convention to start an audioeffect session on play/pause rather than
-                // start/stop
-                L.d("Opening audio effect session")
-                broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-                openAudioEffectSession = true
-            }
-        } else if (openAudioEffectSession) {
-            // Make sure to close the audio session when we stop playback.
-            L.d("Closing audio effect session")
-            broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
-            openAudioEffectSession = false
+            openAudioEffectControlSession()
+        } else if (reverseEngine == null) {
+            closeAudioEffectControlSession()
         }
     }
 
@@ -490,6 +595,13 @@ class ExoPlaybackStateHolder(
         super.onPlaybackStateChanged(playbackState)
 
         if (playbackState == Player.STATE_ENDED && player.repeatMode == Player.REPEAT_MODE_OFF) {
+            if (scanState?.direction == ScanDirection.FORWARD) {
+                player.pause()
+                val durationMs = player.currentMediaItem?.song?.durationMs ?: return
+                player.seekTo((durationMs - 1).coerceAtLeast(0))
+                playbackManager.ack(this, StateAck.ProgressionChanged)
+                return
+            }
             goto(0)
             player.pause()
         }
@@ -497,6 +609,7 @@ class ExoPlaybackStateHolder(
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         super.onMediaItemTransition(mediaItem, reason)
+        stopScan()
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
             playbackManager.ack(this, StateAck.IndexMoved)
@@ -522,6 +635,8 @@ class ExoPlaybackStateHolder(
     }
 
     override fun onPlayerError(error: PlaybackException) {
+        stopScan()
+
         // TODO: Replace with no skipping and a notification instead
         // If there's any issue, just go to the next song.
         L.e("Player error occurred")
@@ -538,6 +653,23 @@ class ExoPlaybackStateHolder(
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
                 .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
         )
+    }
+
+    private fun openAudioEffectControlSession() {
+        if (!openAudioEffectSession) {
+            // Convention to start an audioeffect session on play/pause rather than start/stop.
+            L.d("Opening audio effect session")
+            broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+            openAudioEffectSession = true
+        }
+    }
+
+    private fun closeAudioEffectControlSession() {
+        if (openAudioEffectSession) {
+            L.d("Closing audio effect session")
+            broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
+            openAudioEffectSession = false
+        }
     }
 
     // --- MUSICREPOSITORY METHODS ---
@@ -653,6 +785,7 @@ class ExoPlaybackStateHolder(
         private val replayGainProcessor: ReplayGainAudioProcessor,
         private val musicRepository: MusicRepository,
         private val imageSettings: ImageSettings,
+        private val reverseAudioEngineFactory: ReverseAudioEngine.Factory,
     ) {
         fun create(): ExoPlaybackStateHolder {
             // Since Auxio is a music player, only specify an audio renderer to save
@@ -697,6 +830,7 @@ class ExoPlaybackStateHolder(
                 replayGainProcessor,
                 musicRepository,
                 imageSettings,
+                reverseAudioEngineFactory,
             )
         }
     }

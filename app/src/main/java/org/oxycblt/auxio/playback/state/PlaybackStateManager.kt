@@ -233,6 +233,12 @@ interface PlaybackStateManager {
      */
     fun seekTo(positionMs: Long)
 
+    /** Begin scanning within the currently playing [Song]. */
+    fun startScan(direction: ScanDirection)
+
+    /** Stop scanning and resume normal playback. */
+    fun stopScan()
+
     fun endSession()
 
     /**
@@ -449,6 +455,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun play(command: PlaybackCommand) {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Playing $command")
         // Played something, so we are initialized now
         isInitialized = true
@@ -460,6 +467,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun next() {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Going to next song")
         stateHolder.next()
     }
@@ -467,6 +475,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun prev() {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Going to previous song")
         stateHolder.prev()
     }
@@ -474,6 +483,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun goto(index: Int) {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Going to index $index")
         stateHolder.goto(index)
     }
@@ -518,6 +528,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun removeQueueItem(at: Int) {
         val stateHolder = stateHolder ?: return
+        if (at == index) {
+            stateHolder.stopScan()
+        }
         L.d("Removing item at $at")
         stateHolder.remove(at, StateAck.Remove(at))
     }
@@ -556,6 +569,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun playing(isPlaying: Boolean) {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Updating playing state to $isPlaying")
         stateHolder.playing(isPlaying)
     }
@@ -563,6 +577,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun repeatMode(repeatMode: RepeatMode) {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Updating repeat mode to $repeatMode")
         stateHolder.repeatMode(repeatMode)
     }
@@ -570,13 +585,29 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun seekTo(positionMs: Long) {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Seeking to ${positionMs}ms")
         stateHolder.seekTo(positionMs)
     }
 
     @Synchronized
+    override fun startScan(direction: ScanDirection) {
+        val stateHolder = stateHolder ?: return
+        L.d("Starting $direction scan")
+        stateHolder.startScan(direction)
+    }
+
+    @Synchronized
+    override fun stopScan() {
+        val stateHolder = stateHolder ?: return
+        L.d("Stopping scan")
+        stateHolder.stopScan()
+    }
+
+    @Synchronized
     override fun endSession() {
         val stateHolder = stateHolder ?: return
+        stateHolder.stopScan()
         L.d("Ending session")
         stateHolder.endSession()
     }
