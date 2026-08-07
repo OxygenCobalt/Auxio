@@ -63,6 +63,21 @@ interface MutableCache : Cache {
     suspend fun write(cachedFile: CachedFile)
 
     /**
+     * Write a batch of [CachedFile]s to the cache.
+     *
+     * Prefer this over multiple [write] calls when writing many entries at once, as implementations
+     * can use bulk-insert strategies to reduce transaction overhead.
+     *
+     * The default implementation falls back to calling [write] for each item individually. Override
+     * for a more efficient implementation.
+     *
+     * @param cachedFiles the [CachedFile]s to write to the cache
+     */
+    suspend fun writeAll(cachedFiles: List<CachedFile>) {
+        cachedFiles.forEach { write(it) }
+    }
+
+    /**
      * Cleanup the cache by removing all [CachedFile]s that are not in the provided [excluding]
      * list.
      *
