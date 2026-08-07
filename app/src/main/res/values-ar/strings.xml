@@ -226,7 +226,7 @@
     <string name="lng_search_library">ابحث في مكتبتك…</string>
     <string name="set_theme_night">داكن</string>
     <string name="set_black_mode_desc">استخدم سمة داكنة بلون أسود نقي</string>
-    <string name="set_ui">المظهر</string>
+    <string name="set_ui">المظهر والأحساس</string>
     <string name="set_ui_desc">غيّر سمة وألوان التطبيق</string>
     <string name="set_theme">السمة</string>
     <string name="set_theme_day">فاتح</string>
@@ -358,4 +358,5 @@
     <string name="set_task_exit_desc">أوقف التشغيل عند الإزالة من الحديثة، حتى في حالة التشغيل</string>
     <string name="err_share_too_large">هذا كبير جدًا للمشاركة</string>
     <string name="err_share_failed">غير قادر على مشاركة هذا</string>
+    <string name="lng_play_next">الصوتية التالي</string>
 </resources>
