@@ -40,6 +40,14 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
     private var mapping: Map<Uri, CachedFileData>? = null
     private val mappingLock = Mutex()
 
+    /**
+     * Drop the in-memory copy of the cache table. It is only useful while a load is in progress,
+     * and holding it longer duplicates the entire library's metadata in memory.
+     */
+    suspend fun release() {
+        mappingLock.withLock { mapping = null }
+    }
+
     override suspend fun read(file: File): CacheResult {
         val currentMapping =
             mappingLock.withLock {
@@ -154,6 +162,7 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
 
     override suspend fun cleanup(excluding: List<CachedFile>) {
         writeDao.deleteExcludingUris(excluding.mapTo(mutableSetOf()) { it.file.uri.toString() })
+        inner.release()
     }
 
     companion object {

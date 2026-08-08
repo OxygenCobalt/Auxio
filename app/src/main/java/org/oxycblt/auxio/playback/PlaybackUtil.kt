@@ -60,6 +60,21 @@ fun Long.dsToSecs() = floorDiv(10)
  */
 fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
 
+private var popupDurationLocale: Locale? = null
+private var popupDurationFormat: MeasureFormat? = null
+
+/** The [MeasureFormat] used by [formatDurationMsPopup], memoized against the current locale. */
+private fun popupDurationFormat(): MeasureFormat {
+    val locale = Locale.getDefault()
+    var format = popupDurationFormat
+    if (format == null || popupDurationLocale != locale) {
+        format = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.NARROW)
+        popupDurationFormat = format
+        popupDurationLocale = locale
+    }
+    return format
+}
+
 /**
  * Format a millisecond duration into a compact, locale-aware bucket string suitable for fast-scroll
  * popups. Durations are bucketed into the most significant time unit:
@@ -70,7 +85,7 @@ fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(is
 fun Long.formatDurationMsPopup(): String {
     val totalMinutes = floorDiv(60_000)
     val totalHours = totalMinutes / 60
-    val fmt = MeasureFormat.getInstance(Locale.getDefault(), MeasureFormat.FormatWidth.NARROW)
+    val fmt = popupDurationFormat()
     return when {
         totalMinutes < 1 -> "<" + fmt.format(Measure(1, MeasureUnit.MINUTE))
         totalHours < 1 -> fmt.format(Measure(totalMinutes, MeasureUnit.MINUTE))
