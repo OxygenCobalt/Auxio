@@ -53,11 +53,13 @@ abstract class CoverCompositionFetcher(
     private val size: Size,
 ) : Fetcher {
     final override suspend fun fetch(): FetchResult? {
+        val squareSize =
+            min(size.width.pxOrElse { 512 }, size.height.pxOrElse { 512 }).coerceAtLeast(1)
         val bitmaps =
             data.covers.covers
                 .asFlow()
-                .mapNotNull { cover -> cover.open() }
-                .mapNotNull { stream -> BitmapFactory.decodeStream(stream).also { stream.close() } }
+                .mapNotNull { cover -> cover.open()?.use { it.readBytes() } }
+                .mapNotNull { bytes -> decodeSampled(bytes, squareSize) }
                 .take(4)
                 .toList()
         if (bitmaps.size < 4) {
@@ -69,8 +71,6 @@ abstract class CoverCompositionFetcher(
             )
         }
 
-        val squareSize =
-            min(size.width.pxOrElse { 512 }, size.height.pxOrElse { 512 }).coerceAtLeast(1)
         val random = Random(data.seed)
         for (i in 0..10) {
             // cycle random a few times
@@ -95,6 +95,30 @@ abstract class CoverCompositionFetcher(
      * @param size The size of the square bitmap you should create.
      */
     protected abstract fun compose(bitmaps: List<Bitmap>, size: Int, random: Random): Bitmap
+
+    private fun decodeSampled(bytes: ByteArray, target: Int): Bitmap? {
+        val options =
+            BitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, this)
+                inSampleSize = calculateInSampleSize(outWidth, outHeight, target)
+                inJustDecodeBounds = false
+            }
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+    }
+
+    /**
+     * The largest power-of-two downscale keeping the cover at or above [target] pixels. Four
+     * full-resolution covers held at once is enough to exhaust the heap.
+     */
+    private fun calculateInSampleSize(width: Int, height: Int, target: Int): Int {
+        if (width <= 0 || height <= 0) return 1
+        var inSampleSize = 1
+        while (min(width, height) / (inSampleSize * 2) >= target) {
+            inSampleSize *= 2
+        }
+        return inSampleSize
+    }
 
     protected fun drawBitmapCover(canvas: Canvas, bitmap: Bitmap, dest: RectF, paint: Paint) {
         val bitmapRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
