@@ -379,9 +379,20 @@
         <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.UncheckableIconButton</item>
     </style>
 
+    <!--
+        These buttons are never checked, but Material's icon button color selectors still
+        reference the checked/unchecked attributes. Leaving them undefined does not fall back
+        gracefully: inflating the ColorStateList throws, and ResourcesCompat catches it and logs
+        a full stack trace, on the main thread, every single time one of these is laid out.
+        Define the whole set, pointing the checked states at the same colors as the base.
+    -->
     <style name="ThemeOverlay.Auxio.UncheckableIconButton" parent="">
         <item name="colorContainer">@android:color/transparent</item>
+        <item name="colorContainerChecked">@android:color/transparent</item>
+        <item name="colorContainerUnchecked">@android:color/transparent</item>
         <item name="colorOnContainer">?attr/colorOnSurfaceVariant</item>
+        <item name="colorOnContainerChecked">?attr/colorOnSurfaceVariant</item>
+        <item name="colorOnContainerUnchecked">?attr/colorOnSurfaceVariant</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Small" parent="Widget.Auxio.Button.Icon.Base">
