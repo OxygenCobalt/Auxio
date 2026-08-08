@@ -310,4 +310,11 @@
     <string name="lbl_sort_mode">並べ替える</string>
     <string name="lbl_path_style_absolute">絶対的</string>
     <string name="lbl_path_style_relative">相対的</string>
+    <string name="lng_play_next">この曲は次に再生されます</string>
+    <string name="lng_file_picker">選択したフォルダから音楽を読み込みます。処理速度は遅くなりますが、より確実に動作します。標準ファイルマネージャーアプリが必要です。</string>
+    <string name="lng_system_database">Androidが自動検出した音楽を読み込みます。高速ですが、確実性はやや低くなります。cover.jpgなどのファイルシステム依存機能は利用できません。</string>
+    <string name="lng_grant_storage_anyway">外部ストレージへのアクセス権限を許可すると、一部の端末で発生する問題を解決できる場合があります。</string>
+    <string name="lng_grant_storage_required">このオプションを利用するには、外部ストレージへのアクセス権限を許可してください。</string>
+    <string name="lng_include_folders">選択したフォルダー以外に保存されている音楽は読み込まれません。</string>
+    <string name="lng_exclude_folders">選択したフォルダー内の音楽は読み込まれません。</string>
 </resources>

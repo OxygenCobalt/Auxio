@@ -77,7 +77,7 @@
     <string name="lbl_author_name">Alexander Capehart tarafından geliştirildi</string>
     <string name="set_black_mode">Siyah tema</string>
     <string name="lbl_library_counts">Kitaplık istatistikleri</string>
-    <string name="set_black_mode_desc">Kapkara koyu tema kullan</string>
+    <string name="set_black_mode_desc">Saf siyah koyu tema kullan</string>
     <string name="set_display">Görüntü</string>
     <string name="set_lib_tabs">Kitaplık sekmeleri</string>
     <string name="set_lib_tabs_desc">Kitaplık sekmelerinin görünürlüğünü ve sırasını değiştirin</string>
@@ -198,7 +198,7 @@
     <string name="set_cover_mode">Albüm kapakları</string>
     <string name="set_cover_mode_off">Kapalı</string>
     <string name="set_cover_mode_balanced">Dengeli</string>
-    <string name="fmt_selected">%d Seçili</string>
+    <string name="fmt_selected">%d seçili</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d sanatçı</item>
         <item quantity="other">%d sanatçı</item>
@@ -276,7 +276,7 @@
     <string name="def_album_count">Albüm yok</string>
     <string name="lbl_export_playlist">Çalma listesini dışa aktar</string>
     <string name="lbl_demos">Denemeler</string>
-    <string name="lbl_replaygain_album">ReplayGain Albüm Ayarlaması</string>
+    <string name="lbl_replaygain_album">ReplayGain albüm ayarlaması</string>
     <string name="lbl_path_style">Dosya yolu biçimi</string>
     <string name="lbl_path_style_relative">Yakın</string>
     <string name="lbl_path_style_absolute">Kesin</string>
@@ -295,7 +295,7 @@
     <string name="lng_empty_albums">Albümleriniz burada gösterilecek.</string>
     <string name="lng_empty_playlists">Çalma listeleriniz burada gösterilecek.</string>
     <string name="lng_empty_genres">Türleriniz burada gösterilecek.</string>
-    <string name="lbl_replaygain_track">ReplayGain Parça Ayarlaması</string>
+    <string name="lbl_replaygain_track">ReplayGain parça ayarlaması</string>
     <string name="lbl_author">Yazar</string>
     <string name="lbl_donate">Bağış yap</string>
     <string name="lbl_import_playlist">Çalma listesini içeri aktar</string>
@@ -348,4 +348,11 @@
         <item quantity="one">%d saniye</item>
         <item quantity="other">%d saniye</item>
     </plurals>
+    <string name="err_share_too_large">Bu paylaşmak için çok büyük</string>
+    <string name="set_task_exit_desc">Oynatılıyor olsa bile, son uygulamalardan kaldırıldığında oynatmayı durdur</string>
+    <string name="set_saf_multithread">Çoklu İş Parçacıklı Dosya Gezintisi</string>
+    <string name="set_saf_multithread_desc">Daha hızlıdır, ancak bazı cihazlarda hata verebilir</string>
+    <string name="err_share_failed">Bu paylaşılamıyor</string>
+    <string name="set_task_exit">Kapatıldığında her zaman çık</string>
+    <string name="fmt_lib_total_size">Toplam boyut: %s</string>
 </resources>

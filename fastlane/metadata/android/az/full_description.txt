@@ -1,24 +1,24 @@
-Auxio local musiqi pleyeridir və digər musiqi pleyerlərində olan bir çox lazımsız xüsusiyyət olmadan sürətli və etibarlı istifadəçi interfeysi və təcrübəsi təmin edir. Müasir media pleyer kitabxanalarına əsaslanan Auxio, köhnəlmiş Android funksionallığından istifadə edən digər tətbiqlərə nisbətən üstün kitabxana dəstəyi və dinləmə keyfiyyəti təqdim edir. Qısaca, <b>Musiqi ifa edir.</b>
+Auxio, digər musiqi pleyerlərində mövcud olan bir çox faydasız xüsusiyyət olmadan sürətli və etibarlı UI/UX-yə malik yerli bir musiqi pleyeridir. Müasir media oxutma kitabxanaları əsasında qurulmuş Auxio, köhnəlmiş Android funksiyalarından istifadə edən digər tətbiqlərlə müqayisədə üstün kitabxana dəstəyinə və dinləmə keyfiyyətinə malikdir. Qısacası, <b>Musiqi səsləndirir.</b>
 
 <b>Xüsusiyyətlər</b>
 
-- Media3 ExoPlayer əsasında səsləndirmə
-- Son Material Design qaydalarına uyğun sürətli istifadəçi interfeysi
-- Asan istifadəni ön plana çıxaran, lakin kənar halları çox düşünməyən istifadəçi təcrübəsi
+- Media3 ExoPlayer-ə əsaslanan oxutma
+- Ən son Material Dizayn qaydalarından əldə edilən Snappy UI
+- İstifadə rahatlığını kənar reyestrlərdən üstün tutan rəyli UX
 - Fərdiləşdirilə bilən davranış
-- Disk nömrələri, çoxsaylı ifaçılar, buraxılış növləri, dəqiq/original tarixlər, sort teqləri və daha çox şey üçün dəstək
-- İfaçılar və albom ifaçılarını birləşdirən inkişaf etmiş ifaçı sistemi
-- SD kartdan xəbəri olan qovluq idarəsi
-- Etibarlı pleylist funksionallığı
-- Səsləndirmə vəziyyətinin saxlanması
+- Disk nömrələri, çoxsaylı sənətçilər, buraxılış növləri, dəqiq/orijinal tarixlər, çeşidləmə etiketləri və daha çoxu üçün dəstək
+- Sənətçiləri və albom sənətçilərini birləşdirən qabaqcıl sənətçi sistemi
+- SD Kartdan xəbərdar qovluq idarəetməsi
+- Etibarlı pleylist funksiyası
+- Oxutma vəziyyətinin davamlılığı
 - Android Auto dəstəyi
-- Avtomatik fasiləsiz səsləndirmə
+- Avtomatik fasiləsiz oxutma
 - Tam ReplayGain dəstəyi (MP3, FLAC, OGG, OPUS və MP4 fayllarında)
-- Xarici ekvalayzer dəstəyi (məs. Wavelet)
-- Kənardan kənara dizayn
-- Əlavə edilmiş albom qapaqları dəstəyi
-- Axtarış funksionallığı
-- Qulaqcıq ilə avtomatik oynatma
-- Ölçüyə uyğunlaşan stilizə edilmiş vidjetlər
-- Tamamilə şəxsi və oflayn
-- Dairəvi albom qapaqlarını yığışdırmaq (əgər istəsəniz)
+- Xarici ekvalayzer dəstəyi (məsələn, Wavelet)
+- Kənardan kənara
+- Daxili üz qabığı dəstəyi
+- Axtarış funksiyası
+- Qulaqlıq avtomatik oxutma
+- Ölçülərinə avtomatik uyğunlaşan şık vidjetlər
+- Tamamilə gizli və oflayn
+- Dairəvi albom üz qabıqları yoxdur (əgər istəyirsinizsə)

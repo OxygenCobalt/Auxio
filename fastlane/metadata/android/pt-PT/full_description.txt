@@ -6,16 +6,19 @@ Auxio é um leitor de música local com uma UI/UX rápida e fiável sem as muita
 - Snappy UI derivada das mais recentes diretrizes de Material Design
 - UX opinativa que prioriza a facilidade de uso sobre casos de borda
 - Comportamento personalizável
-- Suporte para números de disco, vários artistas, tipos de lançamento,
-datas precisas/originais, tags de classificação e muito mais
+- Suporte para números de disco, vários artistas, tipos de lançamento, datas precisas/originais, tags de classificação e muito mais
 - Sistema avançado de artistas que unifica artistas e artistas de álbuns
 - Gerenciamento de pastas com reconhecimento de cartão SD
 - Funcionalidade de playlisting confiável
 - Persistência do estado de reprodução
+- Suporte do Android Auto
+- Suporte de reprodução sem intervalos de pausa
 - Suporte completo ReplayGain (em arquivos MP3, FLAC, OGG, OPUS e MP4)
 - Suporte de equalizador externo (ex. Wavelet)
 - De ponta a ponta
 - Suporte de capas embutidas
 - Funcionalidade de pesquisa
 - Reprodução automática de auscultadores
-- Elegante
+- Widgets estilosos que adaptam-se automaticamente ao seu tamanho
+- Completamente privado e offline
+- Sem capas de álbuns arredondadas (se os quiser assim)

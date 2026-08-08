@@ -346,7 +346,11 @@
     <string name="fmt_lib_total_size">Tamanho total: %s</string>
     <plurals name="fmt_seconds">
         <item quantity="one">%d segundos</item>
-        <item quantity="many"></item>
-        <item quantity="other"></item>
+        <item quantity="many"/>
+        <item quantity="other"/>
     </plurals>
+    <string name="set_saf_multithread">Exploração de ficheiros multithread</string>
+    <string name="set_saf_multithread_desc">Mais rápido, mas tem falhas em alguns dispositivos</string>
+    <string name="err_share_too_large">É grande demais para partilhar</string>
+    <string name="err_share_failed">Não foi possível partilhar isto</string>
 </resources>

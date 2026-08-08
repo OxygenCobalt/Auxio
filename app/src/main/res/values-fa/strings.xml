@@ -338,4 +338,11 @@
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
+    <string name="set_task_exit">همیشه با بسته شدن خارج شود</string>
+    <string name="set_task_exit_desc">با حذف شدن از فهرست اخیر، پخش متوقف شود حتی اگر در حال پخش باشد</string>
+    <string name="set_saf_multithread">پویش همزمان فایل‌ها</string>
+    <string name="set_saf_multithread_desc">سریع‌تر، اما در برخی دستگاه‌ها کار نمی‌کند</string>
+    <string name="err_share_too_large">این فایل برای ارسال خیلی بزرگ است</string>
+    <string name="err_share_failed">ارسال فایل ناموفق بود</string>
+    <string name="fmt_lib_total_size">مجموع اندازه: %s</string>
 </resources>
