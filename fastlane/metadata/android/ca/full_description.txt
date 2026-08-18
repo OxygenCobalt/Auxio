@@ -1,24 +1,24 @@
-Auxio es un reproductor de música local amb una interfície d'usuari ràpida i fiable, sense les nombroses funciones inútils d'altres reproductors. Creat amb llibreries modernes de reproducció multimèdia, Auxio ofereix un suport de biblioteques i una qualitat d’escolta superiors respecte a altres aplicacions que fan servir funcionalitats d’Android antigues. En resum, <b>reprodueix música.</b>
+L'Auxio és un reproductor de música local amb una interfície d'usuari ràpida i fiable, sense les nombroses funcions inútils d'altres reproductors. Creat amb biblioteques modernes de reproducció multimèdia, l'Auxio ofereix una gestió de la fonoteca i una qualitat d'escolta superiors a les d'altres aplicacions que fan servir funcionalitats obsoletes d'Android. En resum, <b>reprodueix música.</b>
 
-<b>Features</b>
+<b>Funcionalitats</b>
 
-- Reproducció basada en Media3 ExoPlayer
+- Reproducció basada en el Media3 ExoPlayer
 - Interfície ràpida inspirada en les últimes directrius de Material Design
-- Experiència d’ús opinada que prioritza la facilitat d’ús per sobre dels casos excepcionals
+- Experiència d'usuari amb criteri propi, que prioritza la facilitat d'ús per sobre dels casos excepcionals
 - Comportament personalitzable
-- Suport per a números de disc, múltiples artistes, tipus de publicació, dates precises/originals, etiquetes per ordenar, i més
-- Sistema avançat d’artistes que unifica artistes i artistes d’àlbum
+- Compatible amb números de disc, diversos artistes, tipus de publicació, dates precises/originals, etiquetes per a ordenar i més
+- Sistema avançat d'artistes que unifica els artistes i els artistes d'àlbum
 - Gestió de carpetes compatible amb targetes SD
-- Funcionalitat de llistes de reproducció fiable
-- Persistència de l’estat de reproducció
-- Compatibilitat amb Android Auto
-- Reproducció sense pauses automàtica
-- Suport complet de ReplayGain (en fitxers MP3, FLAC, OGG, OPUS i MP4)
-- Compatibilitat amb equalitzadors externs (p. ex. Wavelet)
-- De vora a vora
-- Suport per a portades incrustades
+- Funcionalitat fiable de llistes de reproducció
+- Persistència de l'estat de reproducció
+- Compatible amb l'Android Auto
+- Reproducció contínua automàtica
+- Compatible amb ReplayGain (en fitxers MP3, FLAC, OGG, OPUS i MP4)
+- Compatible amb equalitzadors externs (com ara el Wavelet)
+- Interfície de vora a vora
+- Compatible amb portades incrustades
 - Funcionalitat de cerca
 - Reproducció automàtica amb auriculars
-- Ginys elegants que s’adapten automàticament a la seva mida
+- Ginys elegants que s'adapten automàticament a la seva mida
 - Totalment privat i fora de línia
-- Sense portades d’àlbum arrodonides (si les vols)
+- Sense portades d'àlbum arrodonides (si les voleu)
