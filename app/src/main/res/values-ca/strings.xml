@@ -41,7 +41,7 @@
     <string name="lbl_genres">Gèneres</string>
     <string name="lbl_playlist">Llista de reproducció</string>
     <string name="lbl_playlists">Llistes de reproducció</string>
-    <string name="lbl_new_playlist">Nova llista de reproducció</string>
+    <string name="lbl_new_playlist">Llista de reproducció nova</string>
     <string name="lbl_empty_playlist">Llista de reproducció buida</string>
     <string name="lbl_imported_playlist">Llista de reproducció importada</string>
     <string name="lbl_import">Importa</string>
@@ -109,8 +109,8 @@
     <string name="lbl_library_counts">Estadístiques de la fonoteca</string>
     <string name="lbl_selection">Selecció</string>
     <string name="lbl_error_info">Informació sobre l\'error</string>
-    <string name="lbl_copied">Copiat</string>
-    <string name="lbl_report">Informeu d\'un error</string>
+    <string name="lbl_copied">S\'ha copiat</string>
+    <string name="lbl_report">Informa de l\'error</string>
     <string name="lbl_author">Autor</string>
     <string name="lbl_author_name">Alexander Capehart</string>
     <string name="lbl_feedback">Comentaris</string>
@@ -118,7 +118,7 @@
     <string name="lbl_email">Envia un correu electrònic</string>
     <string name="lbl_donate">Fes una donació</string>
     <string name="lbl_supporters">Mecenes</string>
-    <string name="lng_widget">Veure i controlar la reproducció musical</string>
+    <string name="lng_widget">Visualitzeu i controleu la reproducció de música</string>
     <string name="lng_indexing">S\'està carregant la fonoteca…</string>
     <string name="lng_observing">S\'estan supervisant els canvis de la fonoteca…</string>
     <string name="lng_queue_added">Afegit a la cua</string>
