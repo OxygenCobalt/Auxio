@@ -12,7 +12,7 @@ L'Auxio és un reproductor de música local amb una interfície d'usuari ràpida
 - Funcionalitat fiable de llistes de reproducció
 - Persistència de l'estat de reproducció
 - Compatible amb l'Android Auto
-- Reproducció contínua automàtica
+- Reproducció sense pauses automàtica
 - Compatible amb ReplayGain (en fitxers MP3, FLAC, OGG, OPUS i MP4)
 - Compatible amb equalitzadors externs (com ara el Wavelet)
 - Interfície de vora a vora
