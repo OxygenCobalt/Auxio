@@ -16,9 +16,9 @@ L'Auxio és un reproductor de música local amb una interfície d'usuari ràpida
 - Compatible amb ReplayGain (en fitxers MP3, FLAC, OGG, OPUS i MP4)
 - Compatible amb equalitzadors externs (com ara el Wavelet)
 - Interfície de vora a vora
-- Compatible amb portades incrustades
+- Compatible amb caràtules incrustades
 - Funcionalitat de cerca
 - Reproducció automàtica amb auriculars
 - Ginys elegants que s'adapten automàticament a la seva mida
 - Totalment privat i fora de línia
-- Sense portades d'àlbum arrodonides (si les voleu)
+- Sense caràtules d'àlbum arrodonides (si les voleu)
