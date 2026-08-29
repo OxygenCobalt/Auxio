@@ -88,6 +88,17 @@ class ExoPlaybackStateHolder(
     private var currentSaveJob: Job? = null
     private var openAudioEffectSession = false
 
+    // The queue is owned here rather than by ExoPlayer, since a MediaItem per queue entry does
+    // not scale to library-sized queues. The representation mirrors RawQueue.
+    private val heap = mutableListOf<Song>()
+    private val mapping = mutableListOf<Int>()
+    private var heapIndex = -1
+    private var repeatModeState = RepeatMode.NONE
+
+    // The player's playlist as resolved queue positions, a small contiguous run around the
+    // current song. Wraps circularly under RepeatMode.ALL.
+    private val window = ArrayDeque<Int>()
+
     var sessionOngoing = false
         private set
 
@@ -123,31 +134,12 @@ class ExoPlaybackStateHolder(
         }
 
     override val repeatMode
-        get() =
-            when (val repeatMode = player.repeatMode) {
-                Player.REPEAT_MODE_OFF -> RepeatMode.NONE
-                Player.REPEAT_MODE_ONE -> RepeatMode.TRACK
-                Player.REPEAT_MODE_ALL -> RepeatMode.ALL
-                else -> throw IllegalStateException("Unknown repeat mode: $repeatMode")
-            }
+        get() = repeatModeState
 
     override val audioSessionId: Int
         get() = player.audioSessionId
 
-    override fun resolveQueue(): RawQueue {
-        val library =
-            musicRepository.library
-                // No library, cannot do anything.
-                ?: return RawQueue(emptyList(), emptyList(), 0)
-        val heap = (0 until player.mediaItemCount).map { player.getMediaItemAt(it) }
-        val shuffledMapping =
-            if (player.shuffleModeEnabled) {
-                player.unscrambleQueueIndices()
-            } else {
-                emptyList()
-            }
-        return RawQueue(heap.mapNotNull { it.song }, shuffledMapping, player.currentMediaItemIndex)
-    }
+    override fun resolveQueue() = RawQueue(heap.toList(), mapping.toList(), heapIndex)
 
     override fun handleDeferred(action: DeferredPlayback): Boolean {
         val library =
@@ -234,30 +226,36 @@ class ExoPlaybackStateHolder(
     }
 
     override fun repeatMode(repeatMode: RepeatMode) {
-        player.repeatMode =
-            when (repeatMode) {
-                RepeatMode.NONE -> Player.REPEAT_MODE_OFF
-                RepeatMode.ALL -> Player.REPEAT_MODE_ALL
-                RepeatMode.TRACK -> Player.REPEAT_MODE_ONE
-            }
+        repeatModeState = repeatMode
+        syncPlayerRepeatMode()
         updatePauseOnRepeat()
+        // The repeat mode decides whether the window wraps, so it may need to be reshaped.
+        slideWindow()
         playbackManager.ack(this, StateAck.RepeatModeChanged)
         deferSave()
     }
 
     override fun newPlayback(command: PlaybackCommand) {
         parent = command.parent
-        player.shuffleModeEnabled = command.shuffled
-        player.setMediaItems(command.queue.map { it.buildMediaItem() })
-        val startIndex =
-            command.song
-                ?.let { command.queue.indexOf(it) }
-                .also { check(it != -1) { "Start song not in queue" } }
-        if (command.shuffled) {
-            player.setShuffleOrder(BetterShuffleOrder(command.queue.size, startIndex ?: -1))
+        heap.clear()
+        heap.addAll(command.queue)
+        mapping.clear()
+        val startHeapIndex =
+            command.song?.let { song ->
+                command.queue.indexOf(song).also { check(it != -1) { "Start song not in queue" } }
+            }
+        if (command.shuffled && heap.isNotEmpty()) {
+            mapping.addAll(shuffledMapping(anchor = startHeapIndex))
         }
-        val target = startIndex ?: player.currentTimeline.getFirstWindowIndex(command.shuffled)
-        player.seekTo(target, C.TIME_UNSET)
+        heapIndex =
+            when {
+                heap.isEmpty() -> -1
+                startHeapIndex != null -> startHeapIndex
+                isShuffled -> mapping[0]
+                else -> 0
+            }
+        syncPlayerRepeatMode()
+        hardResetWindow()
         player.prepare()
         player.play()
         playbackManager.ack(this, StateAck.NewPlayback)
@@ -265,13 +263,15 @@ class ExoPlaybackStateHolder(
     }
 
     override fun shuffled(shuffled: Boolean) {
-        player.setShuffleModeEnabled(shuffled)
-        if (player.shuffleModeEnabled) {
-            // Have to manually refresh the shuffle seed and anchor it to the new current songs
-            player.setShuffleOrder(
-                BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex)
-            )
+        if (heap.isEmpty()) {
+            return
         }
+        mapping.clear()
+        if (shuffled) {
+            mapping.addAll(shuffledMapping(anchor = heapIndex))
+        }
+        syncPlayerRepeatMode()
+        refreshWindow()
         playbackManager.ack(this, StateAck.QueueReordered)
         deferSave()
     }
@@ -280,16 +280,14 @@ class ExoPlaybackStateHolder(
         // Replicate the old pseudo-circular queue behavior when no repeat option is implemented.
         // Basically, you can't skip back and wrap around the queue, but you can skip forward and
         // wrap around the queue, albeit playback will be paused.
-        if (player.repeatMode == Player.REPEAT_MODE_ALL || player.hasNextMediaItem()) {
+        if (repeatModeState == RepeatMode.ALL || player.hasNextMediaItem()) {
             player.seekToNext()
+            syncIndexFromPlayer()
             if (!playbackSettings.rememberPause) {
                 player.play()
             }
         } else {
-            player.seekTo(
-                player.currentTimeline.getFirstWindowIndex(player.shuffleModeEnabled),
-                C.TIME_UNSET,
-            )
+            gotoImpl(0)
             // TODO: Dislike the UX implications of this, I feel should I bite the bullet
             //  and switch to dynamic skip enable/disable?
             if (!playbackSettings.rememberPause) {
@@ -308,6 +306,7 @@ class ExoPlaybackStateHolder(
         } else {
             player.seekTo(0)
         }
+        syncIndexFromPlayer()
         if (!playbackSettings.rememberPause) {
             player.play()
         }
@@ -316,13 +315,10 @@ class ExoPlaybackStateHolder(
     }
 
     override fun goto(index: Int) {
-        val indices = player.unscrambleQueueIndices()
-        if (indices.isEmpty()) {
+        if (heap.isEmpty()) {
             return
         }
-
-        val trueIndex = indices[index]
-        player.seekTo(trueIndex, C.TIME_UNSET) // Handles remaining custom logic
+        gotoImpl(index)
         if (!playbackSettings.rememberPause) {
             player.play()
         }
@@ -331,66 +327,90 @@ class ExoPlaybackStateHolder(
     }
 
     override fun playNext(songs: List<Song>, ack: StateAck.PlayNext) {
-        val currTimeline = player.currentTimeline
-        val nextIndex =
-            if (currTimeline.isEmpty) {
-                C.INDEX_UNSET
-            } else {
-                currTimeline.getNextWindowIndex(
-                    player.currentMediaItemIndex,
-                    Player.REPEAT_MODE_OFF,
-                    player.shuffleModeEnabled,
-                )
-            }
-
-        if (nextIndex == C.INDEX_UNSET) {
-            player.addMediaItems(songs.map { it.buildMediaItem() })
-        } else {
-            player.addMediaItems(nextIndex, songs.map { it.buildMediaItem() })
+        if (heap.isEmpty()) {
+            return
         }
+        val insertAt = heapIndex + 1
+        heap.addAll(insertAt, songs)
+        if (isShuffled) {
+            for (i in mapping.indices) {
+                if (mapping[i] >= insertAt) {
+                    mapping[i] += songs.size
+                }
+            }
+            mapping.addAll(resolvedIndex() + 1, List(songs.size) { insertAt + it })
+        }
+        refreshWindow()
         playbackManager.ack(this, ack)
         deferSave()
     }
 
     override fun addToQueue(songs: List<Song>, ack: StateAck.AddToQueue) {
-        player.addMediaItems(songs.map { it.buildMediaItem() })
+        if (heap.isEmpty()) {
+            return
+        }
+        val base = heap.size
+        heap.addAll(songs)
+        if (isShuffled) {
+            mapping.addAll(List(songs.size) { base + it })
+        }
+        refreshWindow()
         playbackManager.ack(this, ack)
         deferSave()
     }
 
     override fun move(from: Int, to: Int, ack: StateAck.Move) {
-        val indices = player.unscrambleQueueIndices()
-        if (indices.isEmpty()) {
+        if (heap.isEmpty()) {
             return
         }
-
-        val trueFrom = indices[from]
-        val trueTo = indices[to]
-        // ExoPlayer does not actually update it's ShuffleOrder when moving items. Retain a
-        // semblance of "normalcy" by doing a weird no-op swap that actually moves the item.
-        when {
-            trueFrom > trueTo -> {
-                player.moveMediaItem(trueFrom, trueTo)
-                player.moveMediaItem(trueTo + 1, trueFrom)
-            }
-            trueTo > trueFrom -> {
-                player.moveMediaItem(trueFrom, trueTo)
-                player.moveMediaItem(trueTo - 1, trueFrom)
-            }
+        if (isShuffled) {
+            mapping.add(to, mapping.removeAt(from))
+        } else {
+            heap.add(to, heap.removeAt(from))
+            heapIndex =
+                when {
+                    heapIndex == from -> to
+                    from < heapIndex && to >= heapIndex -> heapIndex - 1
+                    from > heapIndex && to <= heapIndex -> heapIndex + 1
+                    else -> heapIndex
+                }
         }
+        refreshWindow()
         playbackManager.ack(this, ack)
         deferSave()
     }
 
     override fun remove(at: Int, ack: StateAck.Remove) {
-        val indices = player.unscrambleQueueIndices()
-        if (indices.isEmpty()) {
+        if (heap.isEmpty()) {
             return
         }
-
-        val trueIndex = indices[at]
-        val songWillChange = player.currentMediaItemIndex == trueIndex
-        player.removeMediaItem(trueIndex)
+        val removedHeapIndex = heapIndexAt(at)
+        val songWillChange = removedHeapIndex == heapIndex
+        heap.removeAt(removedHeapIndex)
+        if (isShuffled) {
+            mapping.removeAt(at)
+            for (i in mapping.indices) {
+                if (mapping[i] > removedHeapIndex) {
+                    mapping[i] -= 1
+                }
+            }
+        }
+        if (removedHeapIndex < heapIndex) {
+            heapIndex -= 1
+        }
+        when {
+            heap.isEmpty() -> {
+                heapIndex = -1
+                window.clear()
+                player.clearMediaItems()
+            }
+            songWillChange -> {
+                // Playback moves to the song now occupying the removed song's position.
+                heapIndex = heapIndexAt(at.coerceAtMost(heap.size - 1))
+                hardResetWindow()
+            }
+            else -> refreshWindow()
+        }
         if (songWillChange && !playbackSettings.rememberPause) {
             player.play()
         }
@@ -412,14 +432,14 @@ class ExoPlaybackStateHolder(
             sendNewPlaybackEvent = true
         }
         if (rawQueue != resolveQueue()) {
-            player.setMediaItems(rawQueue.heap.map { it.buildMediaItem() })
-            if (rawQueue.isShuffled) {
-                player.shuffleModeEnabled = true
-                player.setShuffleOrder(BetterShuffleOrder(rawQueue.shuffledMapping.toIntArray()))
-            } else {
-                player.shuffleModeEnabled = false
-            }
-            player.seekTo(rawQueue.heapIndex, C.TIME_UNSET)
+            heap.clear()
+            heap.addAll(rawQueue.heap)
+            mapping.clear()
+            mapping.addAll(rawQueue.shuffledMapping)
+            heapIndex = rawQueue.heapIndex
+            repeatModeState = repeatMode
+            syncPlayerRepeatMode()
+            hardResetWindow()
             player.prepare()
             player.pause()
             sendNewPlaybackEvent = true
@@ -457,9 +477,188 @@ class ExoPlaybackStateHolder(
     }
 
     override fun reset(ack: StateAck.NewPlayback) {
+        heap.clear()
+        mapping.clear()
+        heapIndex = -1
+        window.clear()
         player.setMediaItems(listOf())
         playbackManager.ack(this, ack)
         deferSave()
+    }
+
+    // --- QUEUE WINDOW MANAGEMENT ---
+
+    private val isShuffled
+        get() = mapping.isNotEmpty()
+
+    private fun resolvedIndex(): Int = if (isShuffled) mapping.indexOf(heapIndex) else heapIndex
+
+    private fun heapIndexAt(resolved: Int): Int = if (isShuffled) mapping[resolved] else resolved
+
+    private fun songAt(resolved: Int): Song = heap[heapIndexAt(resolved)]
+
+    /** Create a new random play order over the heap, with [anchor] first if given. */
+    private fun shuffledMapping(anchor: Int?): List<Int> {
+        val indices = MutableList(heap.size) { it }
+        indices.shuffle()
+        if (anchor != null) {
+            val at = indices.indexOf(anchor)
+            indices[at] = indices[0]
+            indices[0] = anchor
+        }
+        return indices
+    }
+
+    /**
+     * The resolved positions the player should currently hold: the whole queue when it's small,
+     * otherwise a fixed-size run centered on [center]. Under [RepeatMode.ALL] the run wraps around
+     * the queue edges so the player can always advance (and skip back) across them.
+     */
+    private fun computeWindowPositions(center: Int): List<Int> {
+        val size = heap.size
+        if (size == 0 || center < 0) {
+            return emptyList()
+        }
+        if (size <= WINDOW_MAX_SIZE) {
+            return (0 until size).toList()
+        }
+        return if (repeatModeState == RepeatMode.ALL) {
+            (center - WINDOW_RADIUS..center + WINDOW_RADIUS).map { ((it % size) + size) % size }
+        } else {
+            val start = (center - WINDOW_RADIUS).coerceAtLeast(0)
+            val end = (center + WINDOW_RADIUS).coerceAtMost(size - 1)
+            (start..end).toList()
+        }
+    }
+
+    /**
+     * When the whole queue fits in the window the player behaves exactly as it did before windowing
+     * and can use its native repeat handling. Otherwise repeat-all is emulated by wrapping the
+     * window, so the player itself must not repeat.
+     */
+    private fun syncPlayerRepeatMode() {
+        player.repeatMode =
+            when (repeatModeState) {
+                RepeatMode.TRACK -> Player.REPEAT_MODE_ONE
+                RepeatMode.ALL ->
+                    if (heap.size <= WINDOW_MAX_SIZE) {
+                        Player.REPEAT_MODE_ALL
+                    } else {
+                        Player.REPEAT_MODE_OFF
+                    }
+                RepeatMode.NONE -> Player.REPEAT_MODE_OFF
+            }
+    }
+
+    /** Replace the playlist outright, (re)starting the current song. */
+    private fun hardResetWindow() {
+        val desired = computeWindowPositions(resolvedIndex())
+        window.clear()
+        window.addAll(desired)
+        if (desired.isEmpty()) {
+            player.clearMediaItems()
+            return
+        }
+        player.setMediaItems(desired.map { songAt(it).buildMediaItem() })
+        player.seekTo(desired.indexOf(resolvedIndex()), C.TIME_UNSET)
+    }
+
+    /** Rebuild the playlist around the currently-playing item without interrupting it. */
+    private fun refreshWindow() {
+        val current = resolvedIndex()
+        val desired = computeWindowPositions(current)
+        if (desired.isEmpty()) {
+            window.clear()
+            player.clearMediaItems()
+            return
+        }
+        val playing = player.currentMediaItem?.song
+        if (playing == null || playing != heap.getOrNull(heapIndex)) {
+            hardResetWindow()
+            return
+        }
+        val cur = player.currentMediaItemIndex
+        if (cur + 1 < player.mediaItemCount) {
+            player.removeMediaItems(cur + 1, player.mediaItemCount)
+        }
+        if (cur > 0) {
+            player.removeMediaItems(0, cur)
+        }
+        val split = desired.indexOf(current)
+        if (split > 0) {
+            player.addMediaItems(0, desired.subList(0, split).map { songAt(it).buildMediaItem() })
+        }
+        player.addMediaItems(
+            desired.subList(split + 1, desired.size).map { songAt(it).buildMediaItem() }
+        )
+        window.clear()
+        window.addAll(desired)
+    }
+
+    /**
+     * Slide the window towards the current position after an index move, keeping untouched items in
+     * place so the player's preload of the next song survives. Falls back to a rebuild if the
+     * window somehow diverged.
+     */
+    private fun slideWindow() {
+        val current = resolvedIndex()
+        val desired = computeWindowPositions(current)
+        if (desired == window) {
+            return
+        }
+        if (desired.isEmpty()) {
+            window.clear()
+            player.clearMediaItems()
+            return
+        }
+        val desiredSet = desired.toHashSet()
+        // Never removes the current item, since the window is always computed around it.
+        while (window.isNotEmpty() && window.first() !in desiredSet) {
+            player.removeMediaItem(0)
+            window.removeFirst()
+        }
+        while (window.isNotEmpty() && window.last() !in desiredSet) {
+            player.removeMediaItem(window.size - 1)
+            window.removeLast()
+        }
+        if (window.isEmpty()) {
+            hardResetWindow()
+            return
+        }
+        val i0 = desired.indexOf(window.first())
+        val i1 = desired.indexOf(window.last())
+        if (i0 == -1 || i1 == -1) {
+            hardResetWindow()
+            return
+        }
+        if (i0 > 0) {
+            val pre = desired.subList(0, i0)
+            player.addMediaItems(0, pre.map { songAt(it).buildMediaItem() })
+            pre.asReversed().forEach { window.addFirst(it) }
+        }
+        if (i1 < desired.size - 1) {
+            val post = desired.subList(i1 + 1, desired.size)
+            player.addMediaItems(post.map { songAt(it).buildMediaItem() })
+            window.addAll(post)
+        }
+    }
+
+    /** Adopt the player's current item after the player moved on its own. */
+    private fun syncIndexFromPlayer() {
+        val resolved = window.getOrNull(player.currentMediaItemIndex) ?: return
+        heapIndex = heapIndexAt(resolved)
+        slideWindow()
+    }
+
+    private fun gotoImpl(resolved: Int) {
+        heapIndex = heapIndexAt(resolved)
+        val at = window.indexOf(resolved)
+        if (at != -1) {
+            player.seekTo(at, C.TIME_UNSET)
+            slideWindow()
+        } else {
+            hardResetWindow()
+        }
     }
 
     // --- PLAYER OVERRIDES ---
@@ -489,7 +688,7 @@ class ExoPlaybackStateHolder(
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
 
-        if (playbackState == Player.STATE_ENDED && player.repeatMode == Player.REPEAT_MODE_OFF) {
+        if (playbackState == Player.STATE_ENDED && repeatModeState == RepeatMode.NONE) {
             goto(0)
             player.pause()
         }
@@ -499,6 +698,7 @@ class ExoPlaybackStateHolder(
         super.onMediaItemTransition(mediaItem, reason)
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+            syncIndexFromPlayer()
             playbackManager.ack(this, StateAck.IndexMoved)
             deferSave()
         }
@@ -559,7 +759,7 @@ class ExoPlaybackStateHolder(
 
     private fun updatePauseOnRepeat() {
         player.pauseAtEndOfMediaItems =
-            player.repeatMode == Player.REPEAT_MODE_ONE && playbackSettings.pauseOnRepeat
+            repeatModeState == RepeatMode.TRACK && playbackSettings.pauseOnRepeat
     }
 
     private fun save(cb: () -> Unit) {
@@ -595,51 +795,6 @@ class ExoPlaybackStateHolder(
 
     private val MediaItem.song: Song?
         get() = this.localConfiguration?.tag as? Song?
-
-    private fun Player.unscrambleQueueIndices(): List<Int> {
-        val timeline = currentTimeline
-        if (timeline.isEmpty) {
-            return emptyList()
-        }
-        val queue = mutableListOf<Int>()
-
-        // Add the active queue item.
-        val currentMediaItemIndex = currentMediaItemIndex
-        queue.add(currentMediaItemIndex)
-
-        // Fill queue alternating with next and/or previous queue items.
-        var firstMediaItemIndex = currentMediaItemIndex
-        var lastMediaItemIndex = currentMediaItemIndex
-        val shuffleModeEnabled = shuffleModeEnabled
-        while ((firstMediaItemIndex != C.INDEX_UNSET || lastMediaItemIndex != C.INDEX_UNSET)) {
-            // Begin with next to have a longer tail than head if an even sized queue needs to be
-            // trimmed.
-            if (lastMediaItemIndex != C.INDEX_UNSET) {
-                lastMediaItemIndex =
-                    timeline.getNextWindowIndex(
-                        lastMediaItemIndex,
-                        Player.REPEAT_MODE_OFF,
-                        shuffleModeEnabled,
-                    )
-                if (lastMediaItemIndex != C.INDEX_UNSET) {
-                    queue.add(lastMediaItemIndex)
-                }
-            }
-            if (firstMediaItemIndex != C.INDEX_UNSET) {
-                firstMediaItemIndex =
-                    timeline.getPreviousWindowIndex(
-                        firstMediaItemIndex,
-                        Player.REPEAT_MODE_OFF,
-                        shuffleModeEnabled,
-                    )
-                if (firstMediaItemIndex != C.INDEX_UNSET) {
-                    queue.add(0, firstMediaItemIndex)
-                }
-            }
-        }
-
-        return queue
-    }
 
     class Factory
     @Inject
@@ -703,5 +858,14 @@ class ExoPlaybackStateHolder(
 
     private companion object {
         const val SAVE_BUFFER = 5000L
+
+        /**
+         * How many songs to keep in the player on either side of the current one. Only needs to be
+         * big enough that a burst of rapid skips can't outrun the window before it slides.
+         */
+        const val WINDOW_RADIUS = 25
+
+        /** Queues at or below this size skip windowing entirely and behave exactly as before. */
+        const val WINDOW_MAX_SIZE = WINDOW_RADIUS * 2 + 1
     }
 }

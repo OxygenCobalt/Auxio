@@ -23,7 +23,6 @@ import android.graphics.Bitmap
 import android.os.Build
 import coil3.request.ImageRequest
 import coil3.request.transformations
-import coil3.size.Size
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
@@ -120,7 +119,10 @@ private constructor(
                         }
                     }
 
-                    return builder.size(Size.ORIGINAL).transformations(transformations)
+                    // Bounded, not ORIGINAL: this bitmap is marshalled into a RemoteViews and
+                    // drawn at a couple hundred pixels, and update() runs on nearly every
+                    // playback event.
+                    return builder.size(COVER_MAX_PX, COVER_MAX_PX).transformations(transformations)
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {
@@ -187,4 +189,8 @@ private constructor(
         val repeatMode: RepeatMode,
         val isShuffled: Boolean,
     )
+
+    private companion object {
+        const val COVER_MAX_PX = 512
+    }
 }

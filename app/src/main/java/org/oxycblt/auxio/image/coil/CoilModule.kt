@@ -28,6 +28,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -60,5 +61,17 @@ class CoilModule {
             .transitionFactory(ErrorCrossfadeTransitionFactory())
             // Not downloading anything, so no disk-caching
             .diskCachePolicy(CachePolicy.DISABLED)
+            // Coil defaults these to Dispatchers.IO (64 threads), which lets fast scrolling
+            // saturate every core with cover decodes and starve the UI thread. One shared
+            // limiter caps total concurrent cover work.
+            .fetcherCoroutineContext(coverDispatcher)
+            .decoderCoroutineContext(coverDispatcher)
             .build()
+
+    private companion object {
+        val coverDispatcher =
+            Dispatchers.IO.limitedParallelism(
+                (Runtime.getRuntime().availableProcessors() / 2).coerceIn(2, 4)
+            )
+    }
 }

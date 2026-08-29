@@ -50,6 +50,8 @@ import androidx.core.widget.TextViewCompat
 import androidx.dynamicanimation.animation.FloatValueHolder
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.R as MR
 import com.google.android.material.motion.MotionUtils
@@ -276,7 +278,34 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
     var popupProvider: PopupProvider? = null
+        set(value) {
+            field = value
+            invalidatePopupData()
+        }
+
     var listener: Listener? = null
+
+    // Deriving popup text is not free and onPreDraw runs on every draw pass, so memoize it
+    // against the position it was derived from.
+    private var popupDataPos = NO_POSITION
+    private var popupDataText: String? = null
+
+    private val popupDataObserver =
+        object : AdapterDataObserver() {
+            override fun onChanged() = invalidatePopupData()
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) =
+                invalidatePopupData()
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) =
+                invalidatePopupData()
+
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) =
+                invalidatePopupData()
+
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) =
+                invalidatePopupData()
+        }
 
     init {
         overlay.add(thumbView)
@@ -347,17 +376,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         val provider = popupProvider
         val hasPopupProvider = firstAdapterPos != NO_POSITION && provider != null
-        val popupData =
-            if (hasPopupProvider) {
-                provider.getPopupData(firstAdapterPos)
-            } else {
-                null
-            }
         val popupText: String
         if (hasPopupProvider) {
             popupView.isInvisible = false
-            // Get the popup text. If there is none, we default to "?".
-            popupText = popupData?.text ?: "?"
+            if (firstAdapterPos != popupDataPos) {
+                popupDataPos = firstAdapterPos
+                // Get the popup text. If there is none, we default to "?".
+                popupDataText = provider.getPopupData(firstAdapterPos)?.text ?: "?"
+            }
+            popupText = popupDataText ?: "?"
         } else {
             // No valid position or provider, do not show the popup.
             popupView.isInvisible = true
@@ -418,6 +445,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 )
 
         popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
+    }
+
+    override fun setAdapter(adapter: Adapter<*>?) {
+        this.adapter?.unregisterAdapterDataObserver(popupDataObserver)
+        super.setAdapter(adapter)
+        adapter?.registerAdapterDataObserver(popupDataObserver)
+        invalidatePopupData()
+    }
+
+    private fun invalidatePopupData() {
+        popupDataPos = NO_POSITION
+        popupDataText = null
     }
 
     override fun onScrolled(dx: Int, dy: Int) {
@@ -531,7 +570,47 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             return
         }
         val dy = newOffsetY - previousOffsetY
+        // scrollBy lays out every row it travels past, which on a large list can be thousands of
+        // rows in one touch event. Past a couple of screenfuls, jump instead of walking.
+        if (abs(dy) > height * MAX_SCROLL_BY_SCREENS && jumpToOffset(newOffsetY)) {
+            return
+        }
         scrollBy(0, max(dy.roundToInt(), -computeVerticalScrollOffset()))
+    }
+
+    /**
+     * Jump directly to the row nearest [offsetY], estimated off the average laid-out row height.
+     * Returns false if there is nothing laid out to estimate from.
+     */
+    private fun jumpToOffset(offsetY: Float): Boolean {
+        val layoutManager = layoutManager as? LinearLayoutManager ?: return false
+        val rowHeight = averageRowHeight()
+        if (rowHeight <= 0) {
+            return false
+        }
+        val itemCount = adapter?.itemCount ?: return false
+        if (itemCount == 0) {
+            return false
+        }
+        val spanCount = (layoutManager as? GridLayoutManager)?.spanCount ?: 1
+        val row = (offsetY / rowHeight).toInt()
+        val position = (row * spanCount).coerceIn(0, itemCount - 1)
+        val positionOffset = -(offsetY.toInt() % rowHeight)
+        stopScroll()
+        layoutManager.scrollToPositionWithOffset(position, positionOffset)
+        return true
+    }
+
+    private fun averageRowHeight(): Int {
+        val childCount = childCount
+        if (childCount == 0) {
+            return 0
+        }
+        var total = 0
+        for (i in 0 until childCount) {
+            total += getChildAt(i).height
+        }
+        return total / childCount
     }
 
     // --- SCROLLBAR APPEARANCE ---
@@ -759,6 +838,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         const val POPUP_SHAPE_HIDDEN_SCALE = 0.62f
         const val POPUP_TEXT_HIDDEN_SCALE = 0.78f
         const val POPUP_TEXT_SINGLE_LINE_COUNT = 1
+
+        /**
+         * How many screenfuls of content a fast-scroll drag may cover with an incremental scroll
+         * before it jumps instead. Bounds the worst-case number of rows laid out inside a single
+         * touch event.
+         */
+        const val MAX_SCROLL_BY_SCREENS = 2
     }
 
     private data class PopupTextAutoScaleKey(val exemplar: String?, val popupSize: Int)

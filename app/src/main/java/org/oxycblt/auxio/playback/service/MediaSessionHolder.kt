@@ -35,6 +35,8 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import javax.inject.Inject
+import kotlin.math.max
+import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
@@ -99,6 +101,10 @@ private constructor(
     val notification: ForegroundServiceNotification
         get() = _notification
 
+    // Bounds of the queue window currently published, as absolute queue indices.
+    private var queueWindowStart = 0
+    private var queueWindowEnd = 0
+
     fun attach() {
         playbackManager.addListener(this)
         imageSettings.registerListener(this)
@@ -130,11 +136,19 @@ private constructor(
 
     override fun onIndexMoved(index: Int) {
         updateMediaMetadata(playbackManager.currentSong, playbackManager.parent)
+        // The published queue window has to follow playback as the index walks out of it.
+        val queue = playbackManager.queue
+        if (
+            max(0, index - QUEUE_WINDOW_RADIUS) != queueWindowStart ||
+                min(queue.size, index + QUEUE_WINDOW_RADIUS + 1) != queueWindowEnd
+        ) {
+            updateQueue(queue, index)
+        }
         invalidateSessionState()
     }
 
     override fun onQueueChanged(queue: List<Song>, index: Int, change: QueueChange) {
-        updateQueue(queue)
+        updateQueue(queue, index)
         when (change.type) {
             // Nothing special to do with mapping changes.
             QueueChange.Type.MAPPING -> {}
@@ -147,7 +161,7 @@ private constructor(
     }
 
     override fun onQueueReordered(queue: List<Song>, index: Int, isShuffled: Boolean) {
-        updateQueue(queue)
+        updateQueue(queue, index)
         invalidateSessionState()
         mediaSession.setShuffleMode(
             if (isShuffled) {
@@ -166,7 +180,7 @@ private constructor(
         isShuffled: Boolean,
     ) {
         updateMediaMetadata(playbackManager.currentSong, parent)
-        updateQueue(queue)
+        updateQueue(queue, index)
         invalidateSessionState()
     }
 
@@ -309,19 +323,25 @@ private constructor(
      *
      * @param queue The current queue to upload.
      */
-    private fun updateQueue(queue: List<Song>) {
+    private fun updateQueue(queue: List<Song>, index: Int) {
+        // setQueue parcels the whole list to the system, which for a library-sized queue blocks
+        // the main thread for seconds and risks TransactionTooLargeException. Publish a window
+        // around the current song instead.
+        val start = max(0, index - QUEUE_WINDOW_RADIUS)
+        val end = min(queue.size, index + QUEUE_WINDOW_RADIUS + 1)
         val queueItems =
-            queue.mapIndexed { i, song ->
+            (start until end).map { i ->
                 val description =
-                    song.toMediaDescription(
+                    queue[i].toMediaDescription(
                         context,
                         { putInt(MediaSessionInterface.KEY_QUEUE_POS, i) },
                     )
-                // Store the item index so we can then use the analogous index in the
-                // playback state.
+                // Ids stay absolute so skip-to-item still addresses the right song.
                 MediaSessionCompat.QueueItem(description, i.toLong())
             }
-        L.d("Uploading ${queueItems.size} songs to MediaSession queue")
+        queueWindowStart = start
+        queueWindowEnd = end
+        L.d("Uploading songs $start..$end of ${queue.size} to MediaSession queue")
         mediaSession.setQueue(queueItems)
     }
 
@@ -382,6 +402,13 @@ private constructor(
 
     companion object {
         private val emptyMetadata = MediaMetadataCompat.Builder().build()
+
+        /**
+         * How many items on either side of the current song to publish to the media session. Large
+         * enough that a head unit's queue view never runs dry, small enough that building and
+         * parceling it stays off the critical path.
+         */
+        private const val QUEUE_WINDOW_RADIUS = 100
     }
 }
 
