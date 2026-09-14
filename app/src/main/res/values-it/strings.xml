@@ -349,4 +349,9 @@
         <item quantity="other">%d secondi</item>
     </plurals>
     <string name="set_task_exit">Esci sempre alla chiusura</string>
+    <string name="set_task_exit_desc">Interrompi la riproduzione quando l\'app viene rimossa dalle recenti</string>
+    <string name="set_saf_multithread">Esplorazione File Multithread</string>
+    <string name="set_saf_multithread_desc">Può essere più veloce, ma potrebbe essere peggio con alcuni dispositivi o cartelle di app terze</string>
+    <string name="err_share_too_large">Questo elemento è troppo grande per essere condiviso</string>
+    <string name="err_share_failed">Impossibile condividere questo elemento</string>
 </resources>
