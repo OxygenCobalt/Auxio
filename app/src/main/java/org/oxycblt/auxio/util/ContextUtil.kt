@@ -25,6 +25,8 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
@@ -36,6 +38,7 @@ import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.postDelayed
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
@@ -201,6 +204,22 @@ fun Context.newMainPendingIntent(): PendingIntent =
         Intent(this, MainActivity::class.java).setAction(Intent.ACTION_MAIN),
         PendingIntent.FLAG_IMMUTABLE,
     )
+
+/**
+ * Focus this [View] and pop the soft keyboard for it, mirroring the search
+ * screen behavior so dialog inputs never need a manual tap.
+ */
+fun View.showKeyboard() {
+    requestFocus()
+    postDelayed(200) {
+        // Re-assert focus: anything stealing it in between (enter animation,
+        // window focus gain) would otherwise leave showSoftInput targetless.
+        if (!isFocused) requestFocus()
+        context
+            .getSystemServiceCompat(InputMethodManager::class)
+            .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    }
+}
 
 /**
  * Create a [PendingIntent] that will broadcast the specified command when launched.

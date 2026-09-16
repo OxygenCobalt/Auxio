@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.decision
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.showKeyboard
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import timber.log.Timber as L
 
@@ -95,6 +97,19 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
 
         collectImmediately(pickerModel.currentPendingNewPlaylist, ::updatePendingPlaylist)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // The dialog opens its own window, which has no focus yet when the
+        // field is focused. Ask the window itself to show input on focus.
+        dialog?.window?.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+        )
+        // Focus must happen here, not in onBindingCreated: the view is only
+        // attached to the dialog window after setView, and focusing a
+        // detached view silently does nothing.
+        requireBinding().playlistName.showKeyboard()
     }
 
     private fun updatePendingPlaylist(pendingNewPlaylist: PendingNewPlaylist?) {
