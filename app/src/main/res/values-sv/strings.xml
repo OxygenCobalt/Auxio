@@ -256,7 +256,7 @@
     <string name="cdc_flac">Fri förlustfri ljudkodek (FLAC)</string>
     <string name="clr_pink">Rosa</string>
     <string name="fmt_indexing">Laddar ditt musikbibliotek… (%1$d/%2$d)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">Et-tecken (&amp;)</string>
     <string name="set_replay_gain">Volymnormalisering</string>
     <string name="set_replay_gain_mode_track">Föredra spår</string>
     <string name="set_replay_gain_mode_album">Föredra album</string>
@@ -299,7 +299,7 @@
     <string name="def_album">Okänt album</string>
     <string name="cdc_unknown">Okänt</string>
     <string name="lbl_email">Skicka ett mejl</string>
-    <string name="lbl_feedback">Feedback</string>
+    <string name="lbl_feedback">Återkoppling</string>
     <string name="lng_empty_albums">Dina album kommer visas här.</string>
     <string name="lng_empty_songs">Dina låtar kommer visas här.</string>
     <string name="lng_empty_artists">Dina artister kommer visas här.</string>
