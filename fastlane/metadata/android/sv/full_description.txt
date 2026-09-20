@@ -1,1 +1,24 @@
-Auxio är en lokal musikspelare med en snabb och pålitlig UI/UX utan de många oanvändbara egenskaperna hos andra musikspelare.
+Auxio är en lokal musikspelare med ett snabbt och pålitligt gränssnitt (UI/UX), utan alla de onödiga funktioner som ofta finns i andra musikspelare. Auxio är byggd med moderna bibliotek för medieuppspelning och erbjuder överlägset stöd för musikbibliotek samt bättre ljudkvalitet jämfört med appar som förlitar sig på föråldrad Android-teknik. Kort sagt: <b>Den spelar musik.</b>
+
+<b>Funktioner</b>
+
+- Uppspelning baserad på Media3 ExoPlayer
+- Responsivt gränssnitt (UI) utformat enligt de senaste riktlinjerna för Material Design
+- Genomtänkt användarupplevelse (UX) som prioriterar användarvänlighet framför ovanliga specialfall
+- Anpassningsbart beteende
+- Stöd för skivnummer, flera artister, utgåvatyper, exakta datum/ursprungsdatum, sorteringstaggar med mera
+- Avancerat artistsystem som slår samman artister och albumartister
+- Mapphantering med stöd för SD-kort
+- Pålitlig hantering av spellistor
+- Uppspelningsstatus sparas automatiskt
+- Stöd för Android Auto
+- Automatisk uppspelning utan pauser mellan låtar (gapless playback)
+- Fullt stöd för ReplayGain (för MP3-, FLAC-, OGG-, OPUS- och MP4-filer)
+- Stöd för externa equalizer-appar (t.ex. Wavelet)
+- Design som sträcker sig ända ut till skärmkanterna (edge-to-edge)
+- Stöd för inbäddade skivomslag
+- Sökfunktion
+- Automatisk uppspelning vid anslutning av headset
+- Snygga widgets som automatiskt anpassar sig efter storlek
+- Helt privat och fungerar offline
+- Inga rundade hörn på skivomslag (om du inte vill ha det)
