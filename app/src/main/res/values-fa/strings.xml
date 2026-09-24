@@ -317,6 +317,7 @@
     <string name="fmt_selected">%d انتخاب شده</string>
     <string name="fmt_editing">در حال ویرایش %s</string>
     <string name="fmt_disc_no">دیسک %d</string>
+    <string name="fmt_disc_no_subtitle">%2$s – دیسک %1$d</string>
     <string name="fmt_def_playlist">فهرست پخش %d</string>
     <string name="fmt_indexing">در حال بارگیری کتابخانه موسیقی شما... (%1$d/%2$d)</string>
     <string name="fmt_deletion_info">حذف %s؟ این عملیات غیرقابل بازگشت است.</string>

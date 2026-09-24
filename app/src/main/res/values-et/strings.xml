@@ -163,6 +163,7 @@
     <string name="fmt_selected">%d on valitud</string>
     <string name="fmt_editing">Muudame esitusloendit %s</string>
     <string name="fmt_disc_no">%d. plaat</string>
+    <string name="fmt_disc_no_subtitle">%1$d. plaat – %2$s</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Laadime sinu muusikakogu… (%1$d/%2$d)</string>

@@ -134,6 +134,7 @@
     <string name="desc_tab_handle">Perkelti šią kortelę</string>
     <string name="err_index_failed">Muzikos įkėlimas nepavyko.</string>
     <string name="fmt_disc_no">%d diskas</string>
+    <string name="fmt_disc_no_subtitle">%1$d diskas – %2$s</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_lib_total_duration">Bendra trukmė: %s</string>

@@ -112,6 +112,7 @@
     <string name="fmt_selected">%d Wedi\'u dewis</string>
     <string name="fmt_editing">Yn golygu %s</string>
     <string name="fmt_disc_no">Disg %d</string>
+    <string name="fmt_disc_no_subtitle">Disg %1$d – %2$s</string>
     <string name="fmt_def_playlist">Rhestr chwarae %d</string>
     <string name="lbl_mixes">Cymysgiadau DJ</string>
     <string name="lbl_mix">Cymysgiad DJ</string>

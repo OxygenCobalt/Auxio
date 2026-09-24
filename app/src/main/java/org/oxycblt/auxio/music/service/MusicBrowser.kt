@@ -227,7 +227,11 @@ private constructor(
                     section.items.map { it.toMediaItem(context, header(section.stringRes)) }
                 is DetailSection.Discs ->
                     section.discs.flatMap { (disc, songs) ->
-                        val discString = disc.resolve(context)
+                        val discString =
+                            disc?.name?.let {
+                                context.getString(R.string.fmt_disc_no_subtitle, disc.number, it)
+                            } ?: disc.resolve(context)
+
                         songs.map {
                             it.toMediaItem(context, header(discString), child(detail.parent))
                         }

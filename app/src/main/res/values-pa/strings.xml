@@ -204,6 +204,7 @@
         <item quantity="other">%d ਕਲਾਕਾਰ</item>
     </plurals>
     <string name="fmt_disc_no">ਡਿਸਕ %d</string>
+    <string name="fmt_disc_no_subtitle">ਡਿਸਕ %1$d – %2$s</string>
     <string name="clr_blue">ਨੀਲਾ</string>
     <string name="fmt_def_playlist">ਪਲੇਅ-ਲਿਸਟ %d</string>
     <string name="cdc_mp3">MPEG-1 ਆਡੀਓ</string>

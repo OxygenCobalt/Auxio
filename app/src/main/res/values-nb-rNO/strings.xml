@@ -199,6 +199,7 @@
     <string name="set_pre_amp_warning">Advarsel: Endring av forforsterkning til høy positiv verdi kan resultere i forvrengning ved høyt lydtrykk på noen spor.</string>
     <string name="set_playback">Avspilling</string>
     <string name="fmt_disc_no">Plate %d</string>
+    <string name="fmt_disc_no_subtitle">Plate %1$d – %2$s</string>
     <string name="set_display">Skjerm</string>
     <string name="set_lib_tabs">Bibliotekfaner</string>
     <string name="set_lib_tabs_desc">Endre synlighet og rekkefølgen på bibliotekfaner</string>

@@ -246,6 +246,7 @@
     <string name="clr_deep_purple">Mörklila</string>
     <string name="clr_indigo">Indigo</string>
     <string name="fmt_disc_no">Skiva %d</string>
+    <string name="fmt_disc_no_subtitle">Skiva %1$d – %2$s</string>
     <string name="desc_skip_next">Hoppa till nästa låt</string>
     <string name="desc_skip_prev">Hoppa till sista låt</string>
     <string name="desc_change_repeat">Ändra upprepningsläge</string>

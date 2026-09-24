@@ -222,6 +222,7 @@
     <string name="err_no_app">N-a fost găsită nicio aplicație care poate face asta</string>
     <string name="fmt_editing">Se editează %s</string>
     <string name="fmt_disc_no">Discul %d</string>
+    <string name="fmt_disc_no_subtitle">Discul %1$d – %2$s</string>
     <string name="fmt_def_playlist">Playlist %d</string>
     <string name="fmt_lib_genre_count">Genuri încărcate: %d</string>
     <string name="set_playback">Redare</string>

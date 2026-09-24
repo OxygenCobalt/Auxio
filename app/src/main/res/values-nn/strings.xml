@@ -204,6 +204,7 @@
     <string name="clr_cyan">Cyanblå</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="fmt_disc_no">Plate %d</string>
+    <string name="fmt_disc_no_subtitle">Plate %1$d – %2$s</string>
     <string name="fmt_def_playlist">Speleliste %d</string>
     <string name="fmt_indexing">Lader inn musikksamlinga di… (%1$d/%2$d)</string>
     <string name="fmt_deletion_info">Taka %s bort for godt? Dette kan ikkje angrast.</string>

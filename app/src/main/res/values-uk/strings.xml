@@ -223,6 +223,7 @@
     <string name="clr_brown">Коричневий</string>
     <string name="clr_grey">Сірий</string>
     <string name="fmt_disc_no">Диск %d</string>
+    <string name="fmt_disc_no_subtitle">Диск %1$d – %2$s</string>
     <string name="err_index_failed">Не вдалося завантажити музику</string>
     <string name="desc_music_location_delete">Видалити папку</string>
     <string name="cdc_aac">Розширене кодування звуку (AAC)</string>

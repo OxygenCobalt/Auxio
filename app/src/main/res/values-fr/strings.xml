@@ -222,6 +222,7 @@
     <string name="desc_clear_search">Effacer la requête de recherche</string>
     <string name="desc_playlist_image">Image de la playlist pour %s</string>
     <string name="fmt_disc_no">Disque %d</string>
+    <string name="fmt_disc_no_subtitle">Disque %1$d – %2$s</string>
     <string name="fmt_indexing">Chargement de votre bibliothèque musicale… (%1$d/%2$d)</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artiste</item>
