@@ -354,7 +354,7 @@
     <string name="set_task_exit">Vždy ukončit při zavření</string>
     <string name="set_task_exit_desc">Zastavit přehrávání při odstranění z nedávných, i když hraje hudba</string>
     <string name="set_saf_multithread">Vícevláknové vyhledávání souborů</string>
-    <string name="set_saf_multithread_desc">Rychlejší, ale na některých zařízeních může selhat</string>
+    <string name="set_saf_multithread_desc">Může být rychlejší, ale může se chovat hůře na některých zařízeních nebo se složkami aplikací třetích stran</string>
     <string name="err_share_too_large">Toto je příliš velké na sdílení</string>
     <string name="err_share_failed">Toto nelze sdílet</string>
 </resources>

@@ -351,7 +351,7 @@
     <string name="err_share_too_large">Bu paylaşmak için çok büyük</string>
     <string name="set_task_exit_desc">Oynatılıyor olsa bile, son uygulamalardan kaldırıldığında oynatmayı durdur</string>
     <string name="set_saf_multithread">Çoklu İş Parçacıklı Dosya Gezintisi</string>
-    <string name="set_saf_multithread_desc">Daha hızlıdır, ancak bazı cihazlarda hata verebilir</string>
+    <string name="set_saf_multithread_desc">Daha hızlı olabilir, ancak bazı aygıtlarda veya üçüncü taraf uygulama klasörlerinde daha kötü davranabilir</string>
     <string name="err_share_failed">Bu paylaşılamıyor</string>
     <string name="set_task_exit">Kapatıldığında her zaman çık</string>
     <string name="fmt_lib_total_size">Toplam boyut: %s</string>
