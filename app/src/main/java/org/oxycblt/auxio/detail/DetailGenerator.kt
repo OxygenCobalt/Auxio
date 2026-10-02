@@ -24,6 +24,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.musikr.Album
 import org.oxycblt.musikr.Artist
@@ -62,19 +63,24 @@ interface DetailGenerator {
 
 class DetailGeneratorFactoryImpl
 @Inject
-constructor(private val listSettings: ListSettings, private val musicRepository: MusicRepository) :
-    DetailGenerator.Factory {
+constructor(
+    private val listSettings: ListSettings,
+    private val musicSettings: MusicSettings,
+    private val musicRepository: MusicRepository
+) : DetailGenerator.Factory {
     override fun create(invalidator: DetailGenerator.Invalidator): DetailGenerator =
-        DetailGeneratorImpl(invalidator, listSettings, musicRepository)
+        DetailGeneratorImpl(invalidator, listSettings, musicSettings, musicRepository)
 }
 
 private class DetailGeneratorImpl(
     private val invalidator: DetailGenerator.Invalidator,
     private val listSettings: ListSettings,
+    private val musicSettings: MusicSettings,
     private val musicRepository: MusicRepository,
-) : DetailGenerator, MusicRepository.UpdateListener, ListSettings.Listener {
+) : DetailGenerator, MusicRepository.UpdateListener, ListSettings.Listener, MusicSettings.Listener {
     override fun attach() {
         listSettings.registerListener(this)
+        musicSettings.registerListener(this)
         musicRepository.addUpdateListener(this)
     }
 
@@ -106,6 +112,7 @@ private class DetailGeneratorImpl(
 
     override fun release() {
         listSettings.unregisterListener(this)
+        musicSettings.unregisterListener(this)
         musicRepository.removeUpdateListener(this)
     }
 
@@ -161,9 +168,13 @@ private class DetailGeneratorImpl(
                 artist.implicitAlbums.toMutableList()
         }
 
+        val artistAlbumSort = Sort(
+            Sort.Mode.ByDate,
+            if (musicSettings.chronologicalSort) Sort.Direction.ASCENDING else Sort.Direction.DESCENDING,
+        )
         val sections =
             grouping.mapTo(mutableListOf<DetailSection>()) { (category, albums) ->
-                DetailSection.Albums(category, ARTIST_ALBUM_SORT.albums(albums))
+                DetailSection.Albums(category, artistAlbumSort.albums(albums))
             }
         if (artist.songs.isNotEmpty()) {
             val songs = DetailSection.Songs(listSettings.artistSongSort.songs(artist.songs))
@@ -189,7 +200,6 @@ private class DetailGeneratorImpl(
     }
 
     private companion object {
-        val ARTIST_ALBUM_SORT = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
         val GENRE_ARTIST_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
     }
 }

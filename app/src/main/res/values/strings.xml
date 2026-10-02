@@ -283,6 +283,8 @@
     <string name="set_separators_warning">Warning: Using this setting may result in some tags being incorrectly interpreted as having multiple values. You can resolve this by prefixing unwanted separator characters with a backslash (\\).</string>
     <string name="set_intelligent_sorting">Intelligent sorting</string>
     <string name="set_intelligent_sorting_desc">Correctly sort names that begin with numbers or words like \"the\" (works best with english-language music)</string>
+    <string name="set_chronological_sort">Chronological sorting</string>
+    <string name="set_chronological_sort_desc">Sort albums chronologically by release date</string>
     <string name="set_hide_collaborators">Hide collaborators</string>
     <string name="set_hide_collaborators_desc">Only show artists that are directly credited on an album (works best on well-tagged libraries)</string>
     <string name="set_images">Images</string>
