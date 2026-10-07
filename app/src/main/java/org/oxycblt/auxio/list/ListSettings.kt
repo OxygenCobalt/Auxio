@@ -140,6 +140,9 @@ class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Cont
             }
         }
 
+    private val chronologicalSort: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_chronological_sort), true)
+
     override var artistSongSort: Sort
         get() =
             Sort.fromIntCode(
@@ -147,7 +150,10 @@ class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Cont
                     getString(R.string.set_key_artist_songs_sort),
                     Int.MIN_VALUE,
                 )
-            ) ?: Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
+            ) ?: Sort(
+                Sort.Mode.ByDate,
+                if (chronologicalSort) Sort.Direction.ASCENDING else Sort.Direction.DESCENDING,
+            )
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_artist_songs_sort), value.intCode)
@@ -176,7 +182,8 @@ class ListSettingsImpl @Inject constructor(@ApplicationContext val context: Cont
             getString(R.string.set_key_albums_sort) -> listener.onAlbumSortChanged()
             getString(R.string.set_key_album_songs_sort) -> listener.onAlbumSongSortChanged()
             getString(R.string.set_key_artists_sort) -> listener.onArtistSortChanged()
-            getString(R.string.set_key_artist_songs_sort) -> listener.onArtistSongSortChanged()
+            getString(R.string.set_key_artist_songs_sort),
+            getString(R.string.set_key_chronological_sort) -> listener.onArtistSongSortChanged()
             getString(R.string.set_key_genres_sort) -> listener.onGenreSortChanged()
             getString(R.string.set_key_genre_songs_sort) -> listener.onGenreSongSortChanged()
             getString(R.string.set_key_playlists_sort) -> listener.onPlaylistSortChanged()

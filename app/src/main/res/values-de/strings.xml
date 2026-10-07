@@ -237,6 +237,8 @@
     <string name="lbl_playlists">Wiedergabelisten</string>
     <string name="set_intelligent_sorting">Intelligente Sortierung</string>
     <string name="set_intelligent_sorting_desc">Korrekte Sortierung von Namen, die mit Nummern oder Wörtern wie „the“ beginnen (funktioniert am besten mit englischsprachiger Musik)</string>
+    <string name="set_chronological_sort">Chronologische Sortierung</string>
+    <string name="set_chronological_sort_desc">Alben chronologisch nach Erscheinungsdatum sortieren</string>
     <string name="lbl_new_playlist">Neue Wiedergabeliste</string>
     <string name="lng_playlist_added">Zur Wiedergabeliste hinzugefügt</string>
     <string name="lbl_playlist_add">Zur Wiedergabeliste hinzufügen</string>

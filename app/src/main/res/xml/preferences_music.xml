@@ -22,6 +22,12 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="@string/set_key_chronological_sort"
+            app:summary="@string/set_chronological_sort_desc"
+            app:title="@string/set_chronological_sort" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="@string/set_key_hide_collaborators"
             app:summary="@string/set_hide_collaborators_desc"
             app:title="@string/set_hide_collaborators" />
