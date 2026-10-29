@@ -1,0 +1,13 @@
+---
+# Bug/perf-focused subset: skip readability-*/modernize-*/misc-* style checks that mostly
+# fight this codebase's existing conventions (short loop vars, braceless one-line ifs, etc.)
+# rather than catching real issues.
+Checks: >
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  cert-*,
+  performance-*,
+  portability-*
+WarningsAsErrors: '*'
+HeaderFilterRegex: ''

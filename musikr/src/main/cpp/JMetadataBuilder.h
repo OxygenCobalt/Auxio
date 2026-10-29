@@ -35,7 +35,7 @@ class JMetadataBuilder {
 public:
     JMetadataBuilder(JNIEnv *env);
 
-    void setMimeType(TagLib::String type);
+    void setMimeType(const TagLib::String &type);
     void setId3v1(TagLib::ID3v1::Tag &tag);
     void setId3v2(TagLib::ID3v2::Tag &tag);
     void setXiph(TagLib::Ogg::XiphComment &tag);

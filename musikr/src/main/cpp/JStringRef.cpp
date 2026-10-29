@@ -22,7 +22,7 @@
 JStringRef::JStringRef(JNIEnv *env, jstring jString) : env(env), string(jString) {
 }
 
-JStringRef::JStringRef(JNIEnv *env, const TagLib::String string) {
+JStringRef::JStringRef(JNIEnv *env, const TagLib::String &string) {
     this->env = env;
     this->string = env->NewStringUTF(string.toCString(true));
 }

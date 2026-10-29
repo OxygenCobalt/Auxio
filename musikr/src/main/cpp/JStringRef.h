@@ -26,7 +26,7 @@ class JStringRef {
 public:
     JStringRef(JNIEnv *env, jstring jString);
 
-    JStringRef(JNIEnv *env, TagLib::String string);
+    JStringRef(JNIEnv *env, const TagLib::String &string);
 
     ~JStringRef();
 

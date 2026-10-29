@@ -90,11 +90,11 @@ void JInputStream::writeBlock(const TagLib::ByteVector &data) {
 }
 
 void JInputStream::insert(const TagLib::ByteVector &data,
-        TagLib::offset_t start, size_t replace) {
+        TagLib::offset_t start, size_t replace) {  // NOLINT(bugprone-easily-swappable-parameters)
     throw std::runtime_error("Not implemented");
 }
 
-void JInputStream::removeBlock(TagLib::offset_t start, size_t length) {
+void JInputStream::removeBlock(TagLib::offset_t start, size_t length) {  // NOLINT(bugprone-easily-swappable-parameters)
     throw std::runtime_error("Not implemented");
 }
 

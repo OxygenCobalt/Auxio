@@ -49,13 +49,13 @@ JTagMap::JTagMap(JNIEnv *env) : env(env) {
             "(Ljava/lang/Object;)Z");
 }
 
-void JTagMap::add_id(const TagLib::String id, const TagLib::String value) {
+void JTagMap::add_id(const TagLib::String &id, const TagLib::String &value) {  // NOLINT(bugprone-easily-swappable-parameters)
     JStringRef jId { env, id };
     JStringRef jValue { env, value };
     env->CallVoidMethod(**jTagMap, jTagMapAddIdSingleMethod, *jId, *jValue);
 }
 
-void JTagMap::add_id(const TagLib::String id, const TagLib::StringList values) {
+void JTagMap::add_id(const TagLib::String &id, const TagLib::StringList &values) {
     JStringRef jId { env, id };
     JObjectRef jValues { env, env->NewObject(**jArrayListClass,
             jArrayListInitMethod) };
@@ -66,16 +66,16 @@ void JTagMap::add_id(const TagLib::String id, const TagLib::StringList values) {
     env->CallVoidMethod(**jTagMap, jTagMapAddIdListMethod, *jId, *jValues);
 }
 
-void JTagMap::add_custom(const TagLib::String description,
-        const TagLib::String value) {
+void JTagMap::add_custom(const TagLib::String &description,  // NOLINT(bugprone-easily-swappable-parameters)
+        const TagLib::String &value) {
     JStringRef jDescription { env, description };
     JStringRef jValue { env, value };
     env->CallVoidMethod(**jTagMap, jTagMapAddCustomSingleMethod, *jDescription,
             *jValue);
 }
 
-void JTagMap::add_custom(const TagLib::String description,
-        const TagLib::StringList values) {
+void JTagMap::add_custom(const TagLib::String &description,
+        const TagLib::StringList &values) {
     JStringRef jDescription { env, description };
     JObjectRef jValues { env, env->NewObject(**jArrayListClass,
             jArrayListInitMethod) };
@@ -87,8 +87,8 @@ void JTagMap::add_custom(const TagLib::String description,
             *jValues);
 }
 
-void JTagMap::add_combined(const TagLib::String id,
-        const TagLib::String description, const TagLib::String value) {
+void JTagMap::add_combined(const TagLib::String &id,  // NOLINT(bugprone-easily-swappable-parameters)
+        const TagLib::String &description, const TagLib::String &value) {
     JStringRef jId { env, id };
     JStringRef jDescription { env, description };
     JStringRef jValue { env, value };
@@ -96,8 +96,8 @@ void JTagMap::add_combined(const TagLib::String id,
             *jDescription, *jValue);
 }
 
-void JTagMap::add_combined(const TagLib::String id,
-        const TagLib::String description, const TagLib::StringList values) {
+void JTagMap::add_combined(const TagLib::String &id,  // NOLINT(bugprone-easily-swappable-parameters)
+        const TagLib::String &description, const TagLib::StringList &values) {
     JStringRef jId { env, id };
     JStringRef jDescription { env, description };
     JObjectRef jValues { env, env->NewObject(**jArrayListClass,

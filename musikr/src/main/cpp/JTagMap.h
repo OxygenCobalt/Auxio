@@ -34,16 +34,16 @@ public:
     JTagMap(const JTagMap&) = delete;
     JTagMap& operator=(const JTagMap&) = delete;
 
-    void add_id(TagLib::String id, TagLib::String value);
-    void add_id(TagLib::String id, TagLib::StringList values);
+    void add_id(const TagLib::String &id, const TagLib::String &value);
+    void add_id(const TagLib::String &id, const TagLib::StringList &values);
 
-    void add_custom(TagLib::String description, TagLib::String value);
-    void add_custom(TagLib::String description, TagLib::StringList values);
+    void add_custom(const TagLib::String &description, const TagLib::String &value);
+    void add_custom(const TagLib::String &description, const TagLib::StringList &values);
 
-    void add_combined(TagLib::String id, TagLib::String description,
-            TagLib::String value);
-    void add_combined(TagLib::String id, TagLib::String description,
-            TagLib::StringList values);
+    void add_combined(const TagLib::String &id, const TagLib::String &description,
+            const TagLib::String &value);
+    void add_combined(const TagLib::String &id, const TagLib::String &description,
+            const TagLib::StringList &values);
 
     std::unique_ptr<JObjectRef> getObject();
 
