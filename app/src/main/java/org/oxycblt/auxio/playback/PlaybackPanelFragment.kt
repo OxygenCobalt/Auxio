@@ -105,6 +105,7 @@ class PlaybackPanelFragment :
     private val coverPagerAdapter = CoverPagerAdapter(this)
     private val lyricsOverlayAdapter = LyricsAdapter()
     private var lyricsOverlayLayoutManager: LyricsScrollLayoutManager? = null
+    private var lyricsOverlayTapListener: RecyclerView.SimpleOnItemTouchListener? = null
     private var lyrics: Lyrics? = null
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -199,7 +200,7 @@ class PlaybackPanelFragment :
             // within its scrollable content -- its own touch handling can swallow the gesture
             // before performClick() would trigger. A GestureDetector-based OnItemTouchListener
             // that doesn't intercept is the reliable way to catch a plain tap anywhere in it.
-            addOnItemTouchListener(
+            val tapListener =
                 object : RecyclerView.SimpleOnItemTouchListener() {
                     private val detector =
                         GestureDetector(
@@ -215,7 +216,9 @@ class PlaybackPanelFragment :
                         detector.onTouchEvent(e)
                         return false
                     }
-                })
+                }
+            lyricsOverlayTapListener = tapListener
+            addOnItemTouchListener(tapListener)
         }
 
         // Set up fast seek overlay
@@ -317,6 +320,8 @@ class PlaybackPanelFragment :
         userAwarePagerCallback?.release()
         binding.playbackPager?.adapter = null
         binding.lyricsOverlay.setOnClickListener(null)
+        lyricsOverlayTapListener?.let { binding.lyricsOverlayRecycler.removeOnItemTouchListener(it) }
+        lyricsOverlayTapListener = null
         binding.lyricsOverlayRecycler.adapter = null
         lyricsOverlayLayoutManager = null
     }
@@ -505,8 +510,9 @@ class PlaybackPanelFragment :
         // Unsynced lyrics have no auto-scroll to reach lines past the visible area, so they stay
         // user-scrollable; synced lyrics are driven entirely by updateLyricsOverlayPosition.
         lyricsOverlayLayoutManager?.scrollEnabled = parsed?.synced != true
-        lyricsOverlayAdapter.submitLines(parsed?.lines.orEmpty(), parsed?.synced == true)
-        updateLyricsOverlayPosition(playbackModel.positionDs.value)
+        lyricsOverlayAdapter.submitLines(parsed?.lines.orEmpty(), parsed?.synced == true) {
+            updateLyricsOverlayPosition(playbackModel.positionDs.value)
+        }
     }
 
     private fun updateLyricsOverlayPosition(positionDs: Long) {
@@ -515,8 +521,13 @@ class PlaybackPanelFragment :
         val lyrics = lyrics ?: return
         if (!lyrics.synced) return
         val index = currentLyricsLineIndex(lyrics.lines, positionDs.dsToMs())
+        // Only the adapter's own equality check (line == currentLine) guards setCurrentLine
+        // itself -- without also checking it here, every ~100ms position tick re-triggered a
+        // full scrollToPositionWithOffset layout pass even when the current line hadn't actually
+        // changed since the last tick.
+        val changed = index != lyricsOverlayAdapter.currentLine
         lyricsOverlayAdapter.setCurrentLine(index)
-        if (index >= 0) {
+        if (changed && index >= 0) {
             // Keep the current line pinned near the top rather than centered, so more of the
             // upcoming lines are visible below it.
             val recycler = binding.lyricsOverlayRecycler

@@ -54,7 +54,10 @@ data class Lyrics(val lines: List<LyricsLine>) {
 object LrcParser {
     private val TIMESTAMP_PREFIX = Regex("""^\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?]""")
     private val WORD_TAG = Regex("""<\d{1,3}:\d{1,2}(?:[.:]\d{1,3})?>""")
-    private val METADATA_TAG = Regex("""^\[[a-zA-Z#][^\[\]]*]\s*$""")
+    // Requires a "key:" before the value -- without it, this also matched plain bracketed
+    // section headers some lyrics sources use (e.g. "[Chorus]", "[Verse 1]"), silently dropping
+    // them as if they were an LRC metadata tag like "[ar:Some Artist]".
+    private val METADATA_TAG = Regex("""^\[[a-zA-Z#][a-zA-Z0-9#]*:[^\[\]]*]\s*$""")
 
     /**
      * Parse [raw] lyrics text into a [Lyrics] instance.

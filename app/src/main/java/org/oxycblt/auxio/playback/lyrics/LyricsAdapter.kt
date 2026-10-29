@@ -58,7 +58,7 @@ class LyricsAdapter :
         payload: List<Any>,
     ) {
         if (payload.isEmpty()) {
-            holder.bind(getItem(position), isCurrent(position), synced)
+            onBindViewHolder(holder, position)
         } else {
             holder.setCurrent(isCurrent(position), synced)
         }
@@ -71,11 +71,17 @@ class LyricsAdapter :
      *
      * @param lines The new lines to display.
      * @param synced Whether [lines] carry synced timestamps.
+     * @param onSubmitted Called once [lines] has actually been diffed in and applied -- a caller
+     *   about to immediately call [setCurrentLine] for the new content (e.g. right after a song
+     *   change) should wait for this rather than calling it synchronously right after this
+     *   function returns: the diff behind [UpdateInstructions.Diff] runs asynchronously, so a
+     *   synchronous [setCurrentLine] call could otherwise highlight the right index against the
+     *   still-old, not-yet-replaced list for one frame.
      */
-    fun submitLines(lines: List<LyricsLine>, synced: Boolean) {
+    fun submitLines(lines: List<LyricsLine>, synced: Boolean, onSubmitted: (() -> Unit)? = null) {
         this.synced = synced
         currentLine = -1
-        update(lines, UpdateInstructions.Diff)
+        update(lines, UpdateInstructions.Diff, onSubmitted)
     }
 
     /**
