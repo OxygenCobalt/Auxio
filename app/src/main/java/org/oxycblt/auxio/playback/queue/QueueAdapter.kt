@@ -80,7 +80,7 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
      * @param index The position of the currently playing item in the queue.
      * @param isPlaying Whether playback is ongoing or paused.
      */
-    fun setPosition(index: Int, isPlaying: Boolean) {
+    fun setPosition(index: Int, isPlaying: Boolean, incremental: Boolean) {
         L.d("Updating index")
         val lastIndex = currentIndex
         currentIndex = index
@@ -91,13 +91,28 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
         // TODO: Don't update when the index has not moved.
         if (currentIndex < lastIndex) {
             L.d("Moved backwards, must update items above last index")
-            notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
-        } else {
+            val since = if (incremental) currentIndex else 0
+            notifyItemRangeChanged(
+                since,
+                lastIndex - since + 1,
+                PAYLOAD_UPDATE_POSITION
+            )
+        } else if (currentIndex > lastIndex) {
             L.d("Moved forwards, update items after index")
-            notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
+                val since = if (incremental) lastIndex else 0
+                notifyItemRangeChanged(
+                    since,
+                    currentIndex - since + 1,
+                    PAYLOAD_UPDATE_POSITION
+                )
         }
 
+        val lastIsPlaying = this.isPlaying
         this.isPlaying = isPlaying
+        if (this.isPlaying != lastIsPlaying) {
+            L.d("Changed play state")
+            notifyItemChanged(currentIndex)
+        }
     }
 
     private companion object {

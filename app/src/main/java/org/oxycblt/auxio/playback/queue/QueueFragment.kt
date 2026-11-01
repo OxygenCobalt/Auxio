@@ -30,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditClickListListener
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -111,8 +112,9 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
     private fun updateQueue(queue: List<Song>, index: Int, isPlaying: Boolean) {
         val binding = requireBinding()
 
-        queueAdapter.update(queue, queueModel.queueInstructions.consume())
-        queueAdapter.setPosition(index, isPlaying)
+        val instructions = queueModel.queueInstructions.consume()
+        queueAdapter.update(queue, instructions)
+        queueAdapter.setPosition(index, isPlaying, instructions == null)
 
         // If requested, scroll to a new item (occurs when the index moves)
         val scrollTo = queueModel.scrollTo.consume()
