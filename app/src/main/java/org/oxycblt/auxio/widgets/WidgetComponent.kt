@@ -76,6 +76,13 @@ private constructor(
 
     /** Update [WidgetProvider] with the current playback state. */
     fun update() {
+        if (!widgetProvider.hasInstances(context)) {
+            // A widget added during playback requests a fresh update through onUpdate.
+            // Until then, avoid loading artwork and constructing all RemoteViews variants.
+            bitmapProvider.release()
+            return
+        }
+
         val song = playbackManager.currentSong
         if (song == null) {
             L.d("No song, resetting widget")
@@ -124,7 +131,14 @@ private constructor(
                 }
 
                 override fun onCompleted(bitmap: Bitmap?) {
-                    val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
+                    val state =
+                        PlaybackState(
+                            song,
+                            prepareWidgetBitmap(bitmap),
+                            isPlaying,
+                            repeatMode,
+                            isShuffled,
+                        )
                     L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }

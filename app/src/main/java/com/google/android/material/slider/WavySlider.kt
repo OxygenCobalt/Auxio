@@ -561,6 +561,10 @@ constructor(
                     invalidate()
                 }
                 addEndListener { _, canceled, value, _ ->
+                    // A finished spring must no longer keep the phase ticker running.
+                    if (waveTransitionAnimation === this) {
+                        waveTransitionAnimation = null
+                    }
                     currentAmplitudeFraction = value
                     updateActiveTrackSuppression()
                     ensurePhaseTickerState()

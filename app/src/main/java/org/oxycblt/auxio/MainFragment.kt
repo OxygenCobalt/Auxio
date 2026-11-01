@@ -96,6 +96,7 @@ class MainFragment :
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
     private var normalCornerSize = 0f
+    private var lastCornerSize = Float.NaN
     private var maxScaleXDistance = 0f
     private var sheetRising: Boolean? = null
     @Inject lateinit var uiSettings: UISettings
@@ -182,6 +183,8 @@ class MainFragment :
         }
 
         normalCornerSize = playbackSheetBehavior.sheetBackgroundDrawable.topLeftCornerResolvedSize
+        // The new drawables must be initialized even if the previous view had the same corners.
+        lastCornerSize = Float.NaN
         maxScaleXDistance =
             context.getDimen(MR.dimen.m3_back_progress_bottom_container_max_scale_x_distance)
 
@@ -304,9 +307,20 @@ class MainFragment :
         val playbackLastStretchRatio = min(playbackEdgeRatio * playbackBackRatio, 1f)
         binding.mainSheetScrim.alpha = playbackLastStretchRatio
 
-        playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(
-            normalCornerSize * (1 - playbackLastStretchRatio)
-        )
+        val sheetCornerSize = normalCornerSize * (1 - playbackLastStretchRatio)
+        // MaterialShapeDrawable rebuilds its shape and invalidates even for an unchanged size.
+        // Keep reading sheet and back-gesture progress every frame, but only apply new shapes.
+        if (sheetCornerSize != lastCornerSize) {
+            playbackSheetBehavior.sheetBackgroundDrawable.setCornerSize(sheetCornerSize)
+            if (queueSheetBehavior == null) {
+                (binding.queueSheet.background as MaterialShapeDrawable).shapeAppearanceModel =
+                    ShapeAppearanceModel.builder()
+                        .setTopLeftCornerSize(normalCornerSize)
+                        .setTopRightCornerSize(sheetCornerSize)
+                        .build()
+            }
+            lastCornerSize = sheetCornerSize
+        }
         binding.exploreNavHost.isInvisible = playbackLastStretchRatio == 1f
         binding.playbackSheet.translationZ = (1 - playbackLastStretchRatio) * elevationNormal
 
@@ -342,11 +356,6 @@ class MainFragment :
             // No queue sheet, fade normally based on the playback sheet
             binding.playbackBarFragment.alpha = playbackOutRatio
             binding.playbackPanelFragment.alpha = playbackInRatio
-            (binding.queueSheet.background as MaterialShapeDrawable).shapeAppearanceModel =
-                ShapeAppearanceModel.builder()
-                    .setTopLeftCornerSize(normalCornerSize)
-                    .setTopRightCornerSize(normalCornerSize * (1 - playbackLastStretchRatio))
-                    .build()
         }
         // Fade out the playback bar as the panel expands.
         binding.playbackBarFragment.apply {

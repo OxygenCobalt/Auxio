@@ -23,7 +23,9 @@ import android.util.AttributeSet
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
+import org.oxycblt.auxio.playback.dsToSecs
 import org.oxycblt.auxio.playback.formatDurationDs
+import org.oxycblt.auxio.playback.formatDurationSecs
 import org.oxycblt.auxio.util.inflater
 import timber.log.Timber as L
 
@@ -40,6 +42,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     Slider.OnSliderTouchListener,
     Slider.OnChangeListener {
     private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
+    private var displayedPositionSecs: Long? = null
 
     init {
         binding.seekBarSlider.addOnSliderTouchListener(this)
@@ -71,7 +74,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 binding.seekBarSlider.value = from.toFloat()
                 // We would want to keep this in the listener, but the listener only fires when
                 // a value changes completely, and sometimes that does not happen with this view.
-                binding.seekBarPosition.text = from.formatDurationDs(true)
+                updatePositionLabel(from)
             }
         }
 
@@ -112,7 +115,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-        binding.seekBarPosition.text = value.toLong().formatDurationDs(true)
+        updatePositionLabel(value.toLong())
+    }
+
+    private fun updatePositionLabel(positionDs: Long) {
+        val seconds = positionDs.dsToSecs()
+        if (displayedPositionSecs == seconds) {
+            return
+        }
+        // The slider changes every decisecond, but its label only displays whole seconds.
+        // Reassigning even identical text requests layout because the label wraps its content.
+        binding.seekBarPosition.text = seconds.formatDurationSecs(true)
+        displayedPositionSecs = seconds
     }
 
     /** A listener for SeekBar interactions. */
