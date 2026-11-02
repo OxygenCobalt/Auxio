@@ -16,6 +16,7 @@
         app:subtitleCentered="true"
         app:titleTextAppearance="?attr/textAppearanceLabelLargeEmphasized"
         app:subtitleTextAppearance="?attr/textAppearanceBodySmall"
+        app:navigationContentDescription="@string/desc_collapse_player"
         app:navigationIcon="@drawable/ic_down_24"
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
@@ -81,6 +82,7 @@
         app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/lbl_more"
         app:icon="@drawable/ic_more_24"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
         app:layout_constraintBottom_toBottomOf="@+id/playback_info_container"
