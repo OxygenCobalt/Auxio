@@ -76,12 +76,18 @@ private class DocumentPathFactoryImpl(
                 val contentUri = ContentUris.withAppendedId(prefix, numericId)
 
                 val path =
-                    context.contentResolverSafe.useQuery(
-                        contentUri,
-                        mediaStorePathInterpreterFactory.projection,
-                    ) {
-                        it.moveToFirst()
-                        mediaStorePathInterpreterFactory.wrap(it).extract()
+                    try {
+                        context.contentResolverSafe.useQuery(
+                            contentUri,
+                            mediaStorePathInterpreterFactory.projection,
+                        ) {
+                            it.moveToFirst()
+                            mediaStorePathInterpreterFactory.wrap(it).extract()
+                        }
+                    } catch (e: Exception) {
+                        // Newer versions of the downloads provider reject some of these
+                        // prefixes outright (ex. public_downloads), just try the next one.
+                        null
                     }
 
                 if (path != null) {
