@@ -18,6 +18,7 @@
  
 package org.oxycblt.auxio.music.decision
 
+import android.content.ActivityNotFoundException
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.result.ActivityResultLauncher
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.playlist.ExportConfig
@@ -116,10 +118,14 @@ class ExportPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistExp
                         .resolve(requireContext())
                         .replace(SAFE_FILE_NAME_REGEX, "_") + ".m3u"
 
-                requireNotNull(createDocumentLauncher) {
-                        "Create document launcher was not available"
-                    }
-                    .launch(fileName)
+                try {
+                    requireNotNull(createDocumentLauncher) {
+                            "Create document launcher was not available"
+                        }
+                        .launch(fileName)
+                } catch (e: ActivityNotFoundException) {
+                    requireContext().showToast(R.string.err_no_app)
+                }
             }
     }
 
