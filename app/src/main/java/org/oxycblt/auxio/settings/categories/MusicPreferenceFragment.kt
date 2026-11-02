@@ -73,5 +73,13 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
                 true
             }
         }
+        if (preference.key == getString(R.string.set_key_chronological_sort)) {
+            L.d("Configuring chronological sort setting")
+            preference.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
+                L.d("Chronological sort setting changed, reloading music")
+                musicModel.refresh()
+                true
+            }
+        }
     }
 }
