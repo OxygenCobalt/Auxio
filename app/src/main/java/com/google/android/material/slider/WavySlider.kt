@@ -29,6 +29,7 @@ import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.PointF
 import android.graphics.RectF
+import android.provider.Settings
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.Px
@@ -214,7 +215,7 @@ constructor(
     /**
      * Configure whether the wave effect is on or off.
      *
-     * This will animate the wave in.
+     * This will animate the wave in. If system animations are disabled, the wave will stay off.
      *
      * @param enabled Whether to enable the wave or not.
      */
@@ -222,8 +223,8 @@ constructor(
         waveTransitionAnimation?.cancel()
         waveTransitionAnimation = null
 
-        waveEnabled = enabled
-        if (enabled) {
+        waveEnabled = enabled && areSystemAnimationsEnabled()
+        if (waveEnabled) {
             // Enabled, start moving / transition to 1f amplitude
             waveSpeed = configuredSpeedPx
             resetPhaseClock()
@@ -579,6 +580,14 @@ constructor(
         updateActiveTrackSuppression()
         springAnimation.animateToFinalPosition(clampedTarget)
     }
+
+    private fun areSystemAnimationsEnabled() =
+        // Mirror the system's own wavy progress, which goes flat with "Remove animations" on.
+        Settings.Global.getFloat(
+            context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE,
+            1f,
+        ) != 0f
 
     private fun ensurePhaseTickerState() {
         if (shouldTickPhase() || waveTransitionAnimation != null) {
