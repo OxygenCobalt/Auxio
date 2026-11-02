@@ -105,13 +105,19 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
                 currentIndex - since + 1,
                 PAYLOAD_UPDATE_POSITION,
             )
+        } else if (!incremental) {
+            notifyItemRangeChanged(
+                0,
+                currentIndex + 1,
+                PAYLOAD_UPDATE_POSITION,
+            )
         }
 
         val lastIsPlaying = this.isPlaying
         this.isPlaying = isPlaying
         if (this.isPlaying != lastIsPlaying) {
             L.d("Changed play state")
-            notifyItemChanged(currentIndex)
+            notifyItemChanged(currentIndex, PAYLOAD_UPDATE_POSITION)
         }
     }
 
