@@ -24,6 +24,7 @@ import org.oxycblt.musikr.tag.format.parseId3GenreNames
 import org.oxycblt.musikr.tag.format.parseSlashPositionField
 import org.oxycblt.musikr.tag.format.parseXiphPositionField
 import org.oxycblt.musikr.util.correctWhitespace
+import org.oxycblt.musikr.util.decodePercentEncoding
 import org.oxycblt.musikr.util.splitEscaped
 
 class TagUtilTest {
@@ -76,6 +77,28 @@ class TagUtilTest {
             listOf("tcp phagocyte"),
             listOf("      ", "", "  tcp phagocyte").correctWhitespace(),
         )
+    }
+
+    @Test
+    fun decodePercentEncoding_correct() {
+        assertEquals(
+            "party/Mike Posner - I Took A Pill In Ibiza (SeeB Remix).mp3",
+            "party/Mike%20Posner%20-%20I%20Took%20A%20Pill%20In%20Ibiza%20%28SeeB%20Remix%29.mp3"
+                .decodePercentEncoding(),
+        )
+        assertEquals("#1 Hits/a+b.mp3", "%231%20Hits/a+b.mp3".decodePercentEncoding())
+    }
+
+    @Test
+    fun decodePercentEncoding_unicode() {
+        assertEquals("鏡音リン/Café.flac", "鏡音リン/Caf%C3%A9.flac".decodePercentEncoding())
+    }
+
+    @Test
+    fun decodePercentEncoding_nothingToDecode() {
+        assertEquals(null, "Music/Song.mp3".decodePercentEncoding())
+        assertEquals(null, "100% Hits/50%.mp3".decodePercentEncoding())
+        assertEquals(null, "Music/%zz%2".decodePercentEncoding())
     }
 
     @Test
