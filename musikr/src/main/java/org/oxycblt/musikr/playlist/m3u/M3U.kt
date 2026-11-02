@@ -34,6 +34,7 @@ import org.oxycblt.musikr.playlist.ImportedPlaylist
 import org.oxycblt.musikr.playlist.PossiblePaths
 import org.oxycblt.musikr.tag.Name
 import org.oxycblt.musikr.util.correctWhitespace
+import org.oxycblt.musikr.util.decodePercentEncoding
 import org.oxycblt.musikr.util.unlikelyToBeNull
 
 /**
@@ -114,8 +115,13 @@ private class M3UImpl(private val volumeManager: VolumeManager) : M3U() {
 
             // There is basically no formal specification of file paths in M3U, and it differs
             // based on the programs that generated it. I more or less have to consider any possible
-            // interpretation as valid.
-            val interpretations = interpretPath(unlikelyToBeNull(path))
+            // interpretation as valid. Some programs (ex. VLC) will also percent-encode paths,
+            // so consider the decoded form too. The raw form goes first since % is a valid
+            // filename character.
+            val rawPath = unlikelyToBeNull(path)
+            val interpretations =
+                interpretPath(rawPath) +
+                    (rawPath.decodePercentEncoding()?.let(::interpretPath) ?: listOf())
             val possibilities = interpretations.flatMap {
                 expandInterpretation(it, workingDirectory, volumes)
             }

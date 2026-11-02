@@ -18,6 +18,8 @@
  
 package org.oxycblt.musikr.util
 
+import java.io.ByteArrayOutputStream
+
 /**
  * Split a [String] by the given selector, automatically handling escaped characters that satisfy
  * the selector.
@@ -72,6 +74,38 @@ internal inline fun String.splitEscaped(selector: (Char) -> Boolean): List<Strin
  *   empty.
  */
 internal fun String.correctWhitespace() = trim().ifBlank { null }
+
+/**
+ * Decode percent-encoded (ex. %20) sequences in a [String], interpreting the decoded bytes as
+ * UTF-8. Malformed sequences are left as-is.
+ *
+ * @return The decoded string, or null if there were no percent-encoded sequences to decode.
+ */
+internal fun String.decodePercentEncoding(): String? {
+    val input = toByteArray(Charsets.UTF_8)
+    val output = ByteArrayOutputStream(input.size)
+    var decoded = false
+    var i = 0
+
+    while (i < input.size) {
+        if (input[i] == '%'.code.toByte() && i + 2 < input.size) {
+            // Non-ASCII bytes are negative and will never be read as hex digits.
+            val high = Character.digit(input[i + 1].toInt(), 16)
+            val low = Character.digit(input[i + 2].toInt(), 16)
+            if (high != -1 && low != -1) {
+                output.write(high * 16 + low)
+                decoded = true
+                i += 3
+                continue
+            }
+        }
+
+        output.write(input[i].toInt())
+        i++
+    }
+
+    return if (decoded) output.toString(Charsets.UTF_8.name()) else null
+}
 
 /**
  * Fix trailing whitespace or blank contents within a list of [String]s.
