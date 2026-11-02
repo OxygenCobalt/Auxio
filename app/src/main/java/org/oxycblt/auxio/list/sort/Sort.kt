@@ -228,9 +228,12 @@ data class Sort(val mode: Mode, val direction: Direction) {
                 songs.sortBy { it.track }
                 songs.sortBy { it.disc }
                 songs.sortByDescending { it.album.name }
+                // Sort by each song's own date so albums spanning several dates get split up.
+                // Songs that share a date will still stay clustered by album from the prior sorts.
                 when (direction) {
-                    Direction.ASCENDING -> songs.sortBy { it.album.dates }
-                    Direction.DESCENDING -> songs.sortByDescending { it.album.dates }
+                    Direction.ASCENDING -> songs.sortBy { it.date ?: it.album.dates?.min }
+                    Direction.DESCENDING ->
+                        songs.sortByDescending { it.date ?: it.album.dates?.min }
                 }
             }
 
