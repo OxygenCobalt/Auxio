@@ -320,6 +320,7 @@
     <string name="fmt_selected">%d dipilih</string>
     <string name="fmt_editing">Mengedit %s</string>
     <string name="fmt_disc_no">Cakera %d</string>
+    <string name="fmt_disc_no_subtitle">Cakera %1$d – %2$s</string>
     <string name="fmt_def_playlist">Senarai main %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>

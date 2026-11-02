@@ -248,6 +248,7 @@
     <string name="set_reindex_desc">A zenei könyvtár újratöltése, lehetőség szerint a gyorstárazott címkék használatával</string>
     <string name="fmt_selected">%d kiválasztott</string>
     <string name="fmt_disc_no">%d lemez</string>
+    <string name="fmt_disc_no_subtitle">%1$d lemez – %2$s</string>
     <string name="fmt_def_playlist">%d playlista</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_indexing">Zenei könyvtár betöltése… (%1$d/%2$d)</string>
