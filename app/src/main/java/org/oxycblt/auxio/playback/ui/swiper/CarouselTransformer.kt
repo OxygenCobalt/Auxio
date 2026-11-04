@@ -41,7 +41,9 @@ class CarouselTransformer : ViewPager2.PageTransformer {
         // like since it means we cant arrange them in the carousel
         // so we use translationX to fix them to the same pos so we can remask them however
         // we want to create our effect
-        page.translationX = -position * width
+        // Keep fully offscreen pages at their layout positions. Pinning them too makes
+        // LinearLayoutManager's transformed-bounds check prevent them from being recycled.
+        page.translationX = if (position < -1f || position > 1f) 0f else -position * width
 
         page.alpha = 1f
 
@@ -126,7 +128,17 @@ class CarouselTransformer : ViewPager2.PageTransformer {
                 }
             }
 
-        maskable.setMaskRectF(rect)
+        // Material rebuilds its shape path even for the same mask. Compare its live value
+        // without mutating it: the getter aliases the clipping delegate's rectangle.
+        val currentMask = maskable.maskRectF
+        if (
+            currentMask.left != rect.left ||
+                currentMask.top != rect.top ||
+                currentMask.right != rect.right ||
+                currentMask.bottom != rect.bottom
+        ) {
+            maskable.setMaskRectF(rect)
+        }
 
         // internal page parallax
         // this does assume the cover item setup but thats fine

@@ -122,6 +122,9 @@ class TagParserTest {
                     mapOf(
                         "TXXX:MUSICBRAINZ RELEASE TRACK ID" to listOf("track-id-123"),
                         "TXXX:MUSICBRAINZ ALBUM ID" to listOf("album-id-456"),
+                        // Artist MBIDs are only used alongside artist names, otherwise we fall
+                        // back to composer tags entirely.
+                        "TPE1" to listOf("Artist"),
                         "TXXX:MUSICBRAINZ ARTIST ID" to listOf("artist-id-789"),
                         "TXXX:MUSICBRAINZ ALBUM ARTIST ID" to listOf("album-artist-id-012"),
                     )
@@ -131,10 +134,7 @@ class TagParserTest {
 
         assertEquals("track-id-123", tags.musicBrainzId)
         assertEquals("album-id-456", tags.albumMusicBrainzId)
-        // No artist name tag is set, so TagParser falls back to composer fields entirely for
-        // artistMusicBrainzIds (see its "don't hybridize sort tags or MBIDs between artist/
-        // composer" comment) -- the artist MBID above is discarded, not carried through.
-        assertEquals(emptyList<String>(), tags.artistMusicBrainzIds)
+        assertEquals(listOf("artist-id-789"), tags.artistMusicBrainzIds)
         assertEquals(listOf("album-artist-id-012"), tags.albumArtistMusicBrainzIds)
     }
 

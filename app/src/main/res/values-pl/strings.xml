@@ -84,6 +84,7 @@
     <string name="lbl_format">Format</string>
     <string name="clr_cyan">Niebieskozielony</string>
     <string name="fmt_disc_no">Płyta %d</string>
+    <string name="fmt_disc_no_subtitle">Płyta %1$d – %2$s</string>
     <string name="lbl_date_added">Data dodania</string>
     <string name="desc_album_cover">Okładka albumu %s</string>
     <string name="desc_auxio_icon">Ikona Auxio</string>

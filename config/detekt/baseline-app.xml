@@ -3,7 +3,9 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>ComplexCondition:AccentGridLayoutManager.kt$AccentGridLayoutManager$width > 0 &amp;&amp; height > 0 &amp;&amp; (lastWidth != width || lastHeight != height)</ID>
+    <ID>ComplexCondition:CarouselTransformer.kt$CarouselTransformer$currentMask.left != rect.left || currentMask.top != rect.top || currentMask.right != rect.right || currentMask.bottom != rect.bottom</ID>
     <ID>ComplexCondition:UsbPipelineFragment.kt$UsbPipelineFragment$stats != null &amp;&amp; previous != null &amp;&amp; stats.atMs > previous.atMs &amp;&amp; stats.urbsSubmitted >= previous.urbsSubmitted</ID>
+    <ID>CyclomaticComplexMethod:CarouselTransformer.kt$CarouselTransformer$override fun transformPage(page: View, position: Float)</ID>
     <ID>CyclomaticComplexMethod:DetailGenerator.kt$DetailGeneratorImpl$override fun artist(uid: Music.UID): Detail&lt;Artist>?</ID>
     <ID>CyclomaticComplexMethod:FastScrollRecyclerView.kt$FastScrollRecyclerView$private fun onItemTouch(event: MotionEvent): Boolean</ID>
     <ID>CyclomaticComplexMethod:GalleryComposeFetcher.kt$GalleryComposeFetcher$override fun compose(bitmaps: List&lt;Bitmap>, size: Int, random: Random): Bitmap</ID>
@@ -209,13 +211,7 @@
     <ID>MatchingDeclarationName:MediaItemTranslation.kt$MediaSessionUID</ID>
     <ID>MatchingDeclarationName:UsbSettings.kt$UsbSettingsImpl : ImplUsbDacPreferences</ID>
     <ID>MaxLineLength:CopyleftNoticeTree.kt$CopyleftNoticeTree$"You can fork this project and even add ads, but it still needs to be kept open-source with the same license!"</ID>
-    <ID>MaxLineLength:UsbCapabilitiesFragment.kt$UsbCapabilitiesFragment$val altsNote = if (iface.alternateSettingCount > 1) " (${iface.alternateSettingCount} alternate settings)" else ""</ID>
     <ID>MaxLineLength:UsbPipelineFragment.kt$UsbPipelineFragment$"${capabilities.deviceName} -- ${controlState.activeFormat.bitResolution}-bit @ ${controlState.sampleRateHz}Hz"</ID>
-    <ID>MaxLineLength:UsbPipelineFragment.kt$UsbPipelineFragment$collectImmediately(usbAudioManager.playbackRoute, usbAudioManager.controlState, usbAudioManager.pipelineStats, ::update)</ID>
-    <ID>MaxLineLength:UsbPipelineFragment.kt$UsbPipelineFragment$if</ID>
-    <ID>MaxLineLength:UsbPipelineFragment.kt$UsbPipelineFragment$is UsbAudioManager.PlaybackRoute.Direct -> "${route.bitDepth ?: "?"}-bit / ${route.sampleRateHz}Hz / ${route.channels}ch"</ID>
-    <ID>MaxLineLength:UsbPipelineFragment.kt$UsbPipelineFragment$is UsbAudioManager.PlaybackRoute.Fallback -> "${route.bitDepth ?: "?"}-bit / ${route.sampleRateHz}Hz / ${route.channels}ch"</ID>
-    <ID>MaxLineLength:UsbPipelineFragment.kt$UsbPipelineFragment$is UsbAudioManager.PlaybackRoute.Fallback -> "Fallback -- through Android's shared HAL mixer (format above not honored)"</ID>
     <ID>NestedBlockDepth:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$override fun handleDeferred(action: DeferredPlayback): Boolean</ID>
     <ID>ReturnCount:AlbumListFragment.kt$AlbumListFragment$override fun getPopupData(pos: Int): FastScrollRecyclerView.PopupProvider.PopupData?</ID>
     <ID>ReturnCount:BottomSheetContentBehavior.kt$BottomSheetContentBehavior$override fun onDependentViewChanged( parent: CoordinatorLayout, child: V, dependency: View, ): Boolean</ID>

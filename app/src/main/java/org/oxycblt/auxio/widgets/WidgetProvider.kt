@@ -32,11 +32,9 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.playback.service.PlaybackActions
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.UISettingsImpl
-import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import timber.log.Timber as L
 
 /**
@@ -46,6 +44,14 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetProvider : AppWidgetProvider() {
+    /**
+     * Query current hosts instead of caching presence, so adding a widget takes effect immediately.
+     */
+    fun hasInstances(context: Context): Boolean =
+        AppWidgetManager.getInstance(context)
+            .getAppWidgetIds(ComponentName(context, this::class.java))
+            .isNotEmpty()
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -88,21 +94,23 @@ class WidgetProvider : AppWidgetProvider() {
         }
 
         val awm = AppWidgetManager.getInstance(context)
+        val pendingIntents = WidgetPendingIntents(context)
 
         // Create and configure each possible layout for the widget. These dimensions seem
         // arbitrary, but they are actually the minimum dimensions required to fit all of
         // the widget elements, plus some leeway for text sizing.
-        val defaultLayout = newThinDockedLayout(context, uiSettings, state)
+        val defaultLayout = newThinDockedLayout(context, uiSettings, state, pendingIntents)
         val views =
             mapOf(
-                SizeF(180f, 48f) to newThinStickLayout(context, state),
-                SizeF(304f, 48f) to newWideStickLayout(context, state),
-                SizeF(180f, 80f) to newThinWaferLayout(context, uiSettings, state),
-                SizeF(304f, 80f) to newWideWaferLayout(context, uiSettings, state),
+                SizeF(180f, 48f) to newThinStickLayout(context, state, pendingIntents),
+                SizeF(304f, 48f) to newWideStickLayout(context, state, pendingIntents),
+                SizeF(180f, 80f) to newThinWaferLayout(context, uiSettings, state, pendingIntents),
+                SizeF(304f, 80f) to newWideWaferLayout(context, uiSettings, state, pendingIntents),
                 SizeF(180f, 152f) to defaultLayout,
-                SizeF(304f, 152f) to newWideDockedLayout(context, uiSettings, state),
-                SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state),
-                SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state),
+                SizeF(304f, 152f) to
+                    newWideDockedLayout(context, uiSettings, state, pendingIntents),
+                SizeF(180f, 272f) to newThinPaneLayout(context, uiSettings, state, pendingIntents),
+                SizeF(304f, 272f) to newWidePaneLayout(context, uiSettings, state, pendingIntents),
             )
 
         // This is the order in which we will disable cover art layouts if they exceed the
@@ -186,73 +194,89 @@ class WidgetProvider : AppWidgetProvider() {
             .setupBackground(uiSettings)
             .setupBackground(uiSettings)
 
-    private fun newThinStickLayout(context: Context, state: WidgetComponent.PlaybackState) =
-        newRemoteViews(context, R.layout.widget_stick_thin).setupTimelineControls(context, state)
+    private fun newThinStickLayout(
+        context: Context,
+        state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
+    ) =
+        newRemoteViews(context, R.layout.widget_stick_thin, pendingIntents.main)
+            .setupTimelineControls(pendingIntents, state)
 
-    private fun newWideStickLayout(context: Context, state: WidgetComponent.PlaybackState) =
-        newRemoteViews(context, R.layout.widget_stick_wide).setupFullControls(context, state)
+    private fun newWideStickLayout(
+        context: Context,
+        state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
+    ) =
+        newRemoteViews(context, R.layout.widget_stick_wide, pendingIntents.main)
+            .setupFullControls(pendingIntents, state)
 
     private fun newThinWaferLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
     ) =
-        newRemoteViews(context, R.layout.widget_wafer_thin)
+        newRemoteViews(context, R.layout.widget_wafer_thin, pendingIntents.main)
             .setupBackground(uiSettings)
             .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
             .setupFillingCover(uiSettings)
-            .setupTimelineControls(context, state)
+            .setupTimelineControls(pendingIntents, state)
 
     private fun newWideWaferLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
     ) =
-        newRemoteViews(context, R.layout.widget_wafer_wide)
+        newRemoteViews(context, R.layout.widget_wafer_wide, pendingIntents.main)
             .setupBackground(uiSettings)
             .setupCover(context, state.takeIf { canDisplayWaferCover(uiSettings) })
             .setupFillingCover(uiSettings)
-            .setupFullControls(context, state)
+            .setupFullControls(pendingIntents, state)
 
     private fun newThinDockedLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
     ) =
-        newRemoteViews(context, R.layout.widget_docked_thin)
+        newRemoteViews(context, R.layout.widget_docked_thin, pendingIntents.main)
             .setupBar(uiSettings)
             .setupCover(context, state)
-            .setupTimelineControls(context, state)
+            .setupTimelineControls(pendingIntents, state)
 
     private fun newWideDockedLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
     ) =
-        newRemoteViews(context, R.layout.widget_docked_wide)
+        newRemoteViews(context, R.layout.widget_docked_wide, pendingIntents.main)
             .setupBar(uiSettings)
             .setupCover(context, state)
-            .setupFullControls(context, state)
+            .setupFullControls(pendingIntents, state)
 
     private fun newThinPaneLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
     ) =
-        newRemoteViews(context, R.layout.widget_pane_thin)
+        newRemoteViews(context, R.layout.widget_pane_thin, pendingIntents.main)
             .setupBackground(uiSettings)
             .setupPlaybackState(context, state)
-            .setupTimelineControls(context, state)
+            .setupTimelineControls(pendingIntents, state)
 
     private fun newWidePaneLayout(
         context: Context,
         uiSettings: UISettings,
         state: WidgetComponent.PlaybackState,
+        pendingIntents: WidgetPendingIntents,
     ) =
-        newRemoteViews(context, R.layout.widget_pane_wide)
+        newRemoteViews(context, R.layout.widget_pane_wide, pendingIntents.main)
             .setupBackground(uiSettings)
             .setupPlaybackState(context, state)
-            .setupFullControls(context, state)
+            .setupFullControls(pendingIntents, state)
 
     /**
      * Set up the control bar in a [RemoteViews] layout that contains one. This is a kind of
@@ -360,18 +384,18 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Set up the play/pause button in a [RemoteViews] layout that contains one.
      *
-     * @param context [Context] required to set up the view.
+     * @param pendingIntents Shared control actions for this widget update.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
     private fun RemoteViews.setupBasicControls(
-        context: Context,
+        pendingIntents: WidgetPendingIntents,
         state: WidgetComponent.PlaybackState,
     ): RemoteViews {
         // Hook the play/pause button to the play/pause broadcast that will be recognized
         // by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_play_pause,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_PLAY_PAUSE),
+            pendingIntents.playPause,
         )
 
         // Set up the play/pause button appearance. Like the Android 13 media controls, use
@@ -398,26 +422,26 @@ class WidgetProvider : AppWidgetProvider() {
      * Set up the play/pause and skip previous/next button in a [RemoteViews] layout that contains
      * them.
      *
-     * @param context [Context] required to set up the view.
+     * @param pendingIntents Shared control actions for this widget update.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
     private fun RemoteViews.setupTimelineControls(
-        context: Context,
+        pendingIntents: WidgetPendingIntents,
         state: WidgetComponent.PlaybackState,
     ): RemoteViews {
         // Timeline controls contain the basic controls, set those up
-        setupBasicControls(context, state)
+        setupBasicControls(pendingIntents, state)
         // Timeline elements should always be left-to-right.
         setLayoutDirection(R.id.widget_controls, View.LAYOUT_DIRECTION_LTR)
         // Hook the skip buttons to the respective broadcasts that can be recognized
         // by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_skip_prev,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_SKIP_PREV),
+            pendingIntents.skipPrevious,
         )
         setOnClickPendingIntent(
             R.id.widget_skip_next,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_SKIP_NEXT),
+            pendingIntents.skipNext,
         )
         return this
     }
@@ -426,25 +450,25 @@ class WidgetProvider : AppWidgetProvider() {
      * Set up the play/pause, skip previous/next, and repeat/shuffle buttons in a [RemoteViews] that
      * contains them.
      *
-     * @param context [Context] required to set up the view.
+     * @param pendingIntents Shared control actions for this widget update.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
     private fun RemoteViews.setupFullControls(
-        context: Context,
+        pendingIntents: WidgetPendingIntents,
         state: WidgetComponent.PlaybackState,
     ): RemoteViews {
         // Full controls contain timeline controls, make are set those.
-        setupTimelineControls(context, state)
+        setupTimelineControls(pendingIntents, state)
 
         // Hook the repeat/shuffle buttons to the respective broadcasts that can
         // be recognized by PlaybackService.
         setOnClickPendingIntent(
             R.id.widget_repeat,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_INC_REPEAT_MODE),
+            pendingIntents.repeat,
         )
         setOnClickPendingIntent(
             R.id.widget_shuffle,
-            context.newBroadcastPendingIntent(PlaybackActions.ACTION_INVERT_SHUFFLE),
+            pendingIntents.shuffle,
         )
 
         // Set up the repeat/shuffle buttons. When working with RemoteViews, we will
