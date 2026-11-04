@@ -26,11 +26,11 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
+import org.ostrichbat2k.usbdac.UsbAudioManager
 import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.UISettings
-import org.ostrichbat2k.usbdac.UsbAudioManager
 import org.oxycblt.auxio.util.CopyleftNoticeTree
 import timber.log.Timber
 
@@ -57,7 +57,8 @@ class Auxio : Application() {
             // USB layer's own deliberate blocking I/O -- that all runs on dedicated background
             // threads already, which StrictMode's thread policy doesn't watch.
             StrictMode.setThreadPolicy(
-                StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build())
+                StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build()
+            )
             StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build())
         }
         @Suppress("KotlinConstantConditions")

@@ -81,17 +81,17 @@ constructor(
         field = MutableEvent<SongMessage>()
 
     /**
-     * A system delete-confirmation prompt awaiting a host [android.app.Activity] able to launch
-     * it and report back the result -- see [DeviceFileDeleter] for why this can't just be
-     * performed outright from here.
+     * A system delete-confirmation prompt awaiting a host [android.app.Activity] able to launch it
+     * and report back the result -- see [DeviceFileDeleter] for why this can't just be performed
+     * outright from here.
      */
     val deleteRequest: Event<IntentSender>
         field = MutableEvent<IntentSender>()
 
     /**
      * A pending deletion awaiting the user's own in-app confirmation -- unlike [deleteRequest],
-     * this always needs to happen regardless of [org.oxycblt.auxio.music.locations.LocationMode]:
-     * a SAF-mode delete goes straight through on the write grant this app already holds on that
+     * this always needs to happen regardless of [org.oxycblt.auxio.music.locations.LocationMode]: a
+     * SAF-mode delete goes straight through on the write grant this app already holds on that
      * folder (see [DeviceFileDeleter]), with no system prompt of its own at all, so without this
      * there would be no confirmation step whatsoever before an irreversible delete for the mode
      * every one of this app's real-world location setups actually uses.
@@ -375,9 +375,9 @@ constructor(
     }
 
     /**
-     * Requests permanently deleting the underlying audio files behind [songs] from device
-     * storage. Always goes through [deleteConfirmation] first -- see its own doc comment for why
-     * this can't be skipped even on a path that's also going to show its own system prompt.
+     * Requests permanently deleting the underlying audio files behind [songs] from device storage.
+     * Always goes through [deleteConfirmation] first -- see its own doc comment for why this can't
+     * be skipped even on a path that's also going to show its own system prompt.
      *
      * @param songs The [Song]s to delete.
      */
@@ -400,7 +400,8 @@ constructor(
         L.d("Deleting ${songs.size} songs")
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = DeviceFileDeleter.delete(context.contentResolver, songs)) {
-                is DeviceFileDeleter.Result.NeedsConfirmation -> deleteRequest.put(result.intentSender)
+                is DeviceFileDeleter.Result.NeedsConfirmation ->
+                    deleteRequest.put(result.intentSender)
                 is DeviceFileDeleter.Result.Done -> finishDelete(result.success)
             }
         }

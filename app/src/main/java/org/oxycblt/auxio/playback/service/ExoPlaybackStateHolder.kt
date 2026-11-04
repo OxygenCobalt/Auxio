@@ -53,6 +53,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.ostrichbat2k.usbdac.UsbAudioManager
+import org.ostrichbat2k.usbdac.UsbDacPreferences
+import org.ostrichbat2k.usbdac.streaming.RoutingAudioSink
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -67,9 +70,6 @@ import org.oxycblt.auxio.playback.state.RawQueue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.ShuffleMode
 import org.oxycblt.auxio.playback.state.StateAck
-import org.ostrichbat2k.usbdac.streaming.RoutingAudioSink
-import org.ostrichbat2k.usbdac.UsbAudioManager
-import org.ostrichbat2k.usbdac.UsbDacPreferences
 import org.oxycblt.musikr.MusicParent
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
@@ -135,16 +135,16 @@ class ExoPlaybackStateHolder(
      * own status row -- ever prompting the user that anything changed.
      *
      * A plain [Player.seekTo] to the current position is *not* enough to force this, despite being
-     * the usual trick for flushing a renderer -- confirmed, reproduced: it repositions the
-     * timeline (a real BUFFERING/READY blip shows up) but [RoutingAudioSink.configure] never gets
-     * called again, because Media3 only re-invokes it around a genuine stream/period change or
-     * decoder output format change, neither of which an intra-period seek to an unchanged format
-     * causes. What's actually required -- and confirmed working -- is a full [Player.stop] +
-     * [Player.prepare], which fully disables and re-enables the renderer for this item, forcing a
-     * fresh [RoutingAudioSink.configure] call same as a cold start of the track would. This is a
-     * bigger interruption than a quick flush (a brief rebuffer/reload of the current item, not
-     * just a short discontinuity) -- the user explicitly chose this over leaving the upgrade for
-     * the next track, aware of that tradeoff.
+     * the usual trick for flushing a renderer -- confirmed, reproduced: it repositions the timeline
+     * (a real BUFFERING/READY blip shows up) but [RoutingAudioSink.configure] never gets called
+     * again, because Media3 only re-invokes it around a genuine stream/period change or decoder
+     * output format change, neither of which an intra-period seek to an unchanged format causes.
+     * What's actually required -- and confirmed working -- is a full
+     * [Player.stop] + [Player.prepare], which fully disables and re-enables the renderer for this
+     * item, forcing a fresh [RoutingAudioSink.configure] call same as a cold start of the track
+     * would. This is a bigger interruption than a quick flush (a brief rebuffer/reload of the
+     * current item, not just a short discontinuity) -- the user explicitly chose this over leaving
+     * the upgrade for the next track, aware of that tradeoff.
      */
     private suspend fun forceReconfigureOnDacStateChange() {
         usbAudioManager.controlState
@@ -177,14 +177,16 @@ class ExoPlaybackStateHolder(
                     player.seekTo(position)
                     player.prepare()
                     awaitReady()
-                    // Not a `player.isPlaying` snapshot taken before this block started -- confirmed,
+                    // Not a `player.isPlaying` snapshot taken before this block started --
+                    // confirmed,
                     // reproduced: a replug-then-play landing while this very reconfigure is what's
                     // completing the DAC activation that press is waiting on (see playing()'s own
                     // doc comment) snapshotted false here *before* that press's own coroutine had
                     // set playWhenReady, then stomped its `true` back to `false` moments later,
                     // right after real streaming had already started -- looked like the first press
                     // did nothing. desiredPlaying is the one place that always holds the user's
-                    // latest actual intent regardless of which of this function's or playing()'s own
+                    // latest actual intent regardless of which of this function's or playing()'s
+                    // own
                     // coroutine happens to finish last.
                     player.playWhenReady = desiredPlaying
                 }
@@ -354,22 +356,22 @@ class ExoPlaybackStateHolder(
      * `runBlocking { awaitActivation() }` fallback on every one of those calls for as long as
      * activation is still running. Repeatedly stalling the render thread like that for the full
      * ~1-2s a DAC reactivation takes let [player]'s own position estimate run ahead of real time
-     * during the stall (nothing from the blocked renderer was there to correct it) -- by
-     * measured, reproduced numbers, the next [Player.getCurrentPosition] read after a stall like
-     * that came back ~6s ahead of only ~1.4s of real elapsed time. [forceReconfigureOnDacStateChange]
-     * then captured and [Player.seekTo]'d that already-corrupted value, permanently skipping
-     * however much of the track the stall's error happened to add.
+     * during the stall (nothing from the blocked renderer was there to correct it) -- by measured,
+     * reproduced numbers, the next [Player.getCurrentPosition] read after a stall like that came
+     * back ~6s ahead of only ~1.4s of real elapsed time. [forceReconfigureOnDacStateChange] then
+     * captured and [Player.seekTo]'d that already-corrupted value, permanently skipping however
+     * much of the track the stall's error happened to add.
      *
      * Awaiting activation *before* ever touching [Player.playWhenReady] -- off the render thread
-     * entirely, same [UsbAudioManager.triggerActivation]/[UsbAudioManager.awaitActivation] pair
-     * the cold-launch restore path already uses -- means [UsbAudioManager.activeSink] is already
+     * entirely, same [UsbAudioManager.triggerActivation]/[UsbAudioManager.awaitActivation] pair the
+     * cold-launch restore path already uses -- means [UsbAudioManager.activeSink] is already
      * resolved by the time the renderer asks, so [RoutingAudioSink.current]'s liveness check
-     * resolves instantly instead of blocking. [UsbAudioManager.blockPlayback] (already wired to
-     * the play/pause button's disabled/spinner state) covers the user-visible side of the wait for
-     * free -- nothing new needed there. [resolveActiveSink]'s own blocking fallback is left in
-     * place, not removed: it's still the only thing protecting a *different*, already-fixed race
-     * (a cold-launch state restore's [RoutingAudioSink.configure] call landing before that
-     * restore's own upfront [UsbAudioManager.awaitActivation] call here would have run).
+     * resolves instantly instead of blocking. [UsbAudioManager.blockPlayback] (already wired to the
+     * play/pause button's disabled/spinner state) covers the user-visible side of the wait for free
+     * -- nothing new needed there. [resolveActiveSink]'s own blocking fallback is left in place,
+     * not removed: it's still the only thing protecting a *different*, already-fixed race (a
+     * cold-launch state restore's [RoutingAudioSink.configure] call landing before that restore's
+     * own upfront [UsbAudioManager.awaitActivation] call here would have run).
      *
      * [pendingPlayJob] exists so a rapid play/pause/play doesn't let a stale await from the first
      * tap land [Player.playWhenReady] back to `true` after a later tap explicitly paused.
@@ -381,25 +383,24 @@ class ExoPlaybackStateHolder(
             player.playWhenReady = false
             return
         }
-        pendingPlayJob =
-            restoreScope.launch {
-                usbAudioManager.triggerActivation()
-                usbAudioManager.awaitActivation()
-                withContext(Dispatchers.Main) { player.playWhenReady = true }
-            }
+        pendingPlayJob = restoreScope.launch {
+            usbAudioManager.triggerActivation()
+            usbAudioManager.awaitActivation()
+            withContext(Dispatchers.Main) { player.playWhenReady = true }
+        }
     }
 
     /**
-     * [UsbDacPreferences.Listener] callback: flipping "Enable USB DAC output" or "Bit-perfect
-     * mode" mid-track has no path to re-resolve the current track's route at all -- unlike the
-     * DAC appearing/disappearing (see [forceReconfigureOnDacStateChange] and
+     * [UsbDacPreferences.Listener] callback: flipping "Enable USB DAC output" or "Bit-perfect mode"
+     * mid-track has no path to re-resolve the current track's route at all -- unlike the DAC
+     * appearing/disappearing (see [forceReconfigureOnDacStateChange] and
      * [RoutingAudioSink.current]'s self-heal), nothing here ever changes [UsbAudioManager]'s own
-     * state, so there's no signal to hook a live reroute onto. Rather than live-reroute the
-     * current track (already tried twice on the library side and reverted both times -- see
-     * libusbdac's `work-pending-fixes-and-abx` history -- including once because it left a stale,
-     * unflushed sink producing silence while the UI said "playing"), just pause: the user's next
-     * tap re-enters [playing] fresh, which already does a clean activation-await before resolving
-     * the route.
+     * state, so there's no signal to hook a live reroute onto. Rather than live-reroute the current
+     * track (already tried twice on the library side and reverted both times -- see libusbdac's
+     * `work-pending-fixes-and-abx` history -- including once because it left a stale, unflushed
+     * sink producing silence while the UI said "playing"), just pause: the user's next tap
+     * re-enters [playing] fresh, which already does a clean activation-await before resolving the
+     * route.
      */
     override fun onUsbEnabledChanged() {
         if (desiredPlaying) playbackManager.playing(false)
@@ -665,7 +666,8 @@ class ExoPlaybackStateHolder(
                 "AUDIO_FOCUS_LOSS=${Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS} " +
                 "AUDIO_BECOMING_NOISY=${Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY} " +
                 "REMOTE=${Player.PLAY_WHEN_READY_CHANGE_REASON_REMOTE} " +
-                "END_OF_MEDIA_ITEM=${Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM}]")
+                "END_OF_MEDIA_ITEM=${Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM}]"
+        )
 
         if (player.playWhenReady) {
             // Mark that we have started playing so that the notification can now be posted.
@@ -705,7 +707,8 @@ class ExoPlaybackStateHolder(
                 "[IDLE=${Player.STATE_IDLE} BUFFERING=${Player.STATE_BUFFERING} " +
                 "READY=${Player.STATE_READY} ENDED=${Player.STATE_ENDED}] " +
                 "repeatMode=${player.repeatMode} currentPosition=${player.currentPosition} " +
-                "duration=${player.duration}")
+                "duration=${player.duration}"
+        )
 
         if (playbackState == Player.STATE_ENDED && player.repeatMode == Player.REPEAT_MODE_OFF) {
             goto(0)
@@ -921,7 +924,8 @@ class ExoPlaybackStateHolder(
                                 // this flag left at its default. See DefaultAudioSink
                                 // .getFormatSupport()'s own shouldUseFloatOutput() check.
                                 .setEnableFloatOutput(true)
-                                .build()),
+                                .build(),
+                        ),
                     ),
                     MediaCodecAudioRenderer(
                         context,
@@ -934,7 +938,8 @@ class ExoPlaybackStateHolder(
                                 .setAudioProcessors(arrayOf(replayGainProcessor))
                                 // See the matching FfmpegAudioRenderer sink above for why.
                                 .setEnableFloatOutput(true)
-                                .build()),
+                                .build(),
+                        ),
                     ),
                 )
             }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.testutil
 
 import android.content.Context
@@ -30,14 +30,14 @@ import org.junit.Test
  * SharedPreferences file) around a risky test run.
  *
  * These are meant to be invoked as two SEPARATE `am instrument` calls from a shell wrapper, with
- * [backup] run before the risky run and [restore] run after in a `trap`/`finally`, specifically
- * so restore still happens even if the run crashes the app process outright and never gets a
- * chance to run its own in-process JUnit teardown. SharedPreferences are backed by a file on
- * disk that survives a process death untouched, so a fresh instrumentation process can always
- * read it back regardless of what killed the previous one.
+ * [backup] run before the risky run and [restore] run after in a `trap`/`finally`, specifically so
+ * restore still happens even if the run crashes the app process outright and never gets a chance to
+ * run its own in-process JUnit teardown. SharedPreferences are backed by a file on disk that
+ * survives a process death untouched, so a fresh instrumentation process can always read it back
+ * regardless of what killed the previous one.
  *
- * For tests that don't crash the app process on purpose, use [InProcessSettingsBackupRule]
- * instead -- it's a plain JUnit rule and avoids the overhead of two extra `am instrument` calls.
+ * For tests that don't crash the app process on purpose, use [InProcessSettingsBackupRule] instead
+ * -- it's a plain JUnit rule and avoids the overhead of two extra `am instrument` calls.
  */
 class SettingsSnapshot {
     private val context: Context
@@ -49,7 +49,8 @@ class SettingsSnapshot {
     // type tag + key + value, tab-separated, one entry per line. Deliberately not JSON -- this
     // avoids relying on org.json's implicit Int/Long/Float/Double coercion rules on the Android
     // version under test, which aren't worth being precise about for a throwaway snapshot format.
-    private fun escape(s: String) = s.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n")
+    private fun escape(s: String) =
+        s.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n")
 
     private fun unescape(s: String) =
         s.replace("\\n", "\n").replace("\\t", "\t").replace("\\\\", "\\")
@@ -101,9 +102,9 @@ class SettingsSnapshot {
                         is Float -> "FLOAT" to value.toString()
                         is String -> "STRING" to value
                         is Set<*> ->
-                            "STRINGSET" to
-                                value.joinToString("\u0001") { escape(it as String) }
-                        else -> error("Unexpected SharedPreferences value type: ${value?.javaClass}")
+                            "STRINGSET" to value.joinToString("\u0001") { escape(it as String) }
+                        else ->
+                            error("Unexpected SharedPreferences value type: ${value?.javaClass}")
                     }
                 "$tag\t${escape(key)}\t${escape(text)}"
             }
@@ -142,7 +143,8 @@ class SettingsSnapshot {
                         editor.putStringSet(
                             key,
                             if (text.isEmpty()) emptySet()
-                            else text.split("\u0001").map { unescape(it) }.toSet())
+                            else text.split("\u0001").map { unescape(it) }.toSet(),
+                        )
                     else -> error("Unknown snapshot type tag: $tag")
                 }
             }

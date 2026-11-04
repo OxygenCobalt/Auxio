@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.usb
 
 import android.content.Context
@@ -26,8 +26,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import org.ostrichbat2k.usbdac.UsbAudioManagerImpl
 import org.ostrichbat2k.usbdac.UsbAudioManager
+import org.ostrichbat2k.usbdac.UsbAudioManagerImpl
 import org.ostrichbat2k.usbdac.UsbDacPreferences
 
 @Module

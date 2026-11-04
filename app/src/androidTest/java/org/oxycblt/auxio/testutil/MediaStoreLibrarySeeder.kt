@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.testutil
 
 import android.content.Context
@@ -25,16 +25,16 @@ import org.junit.Test
 
 /**
  * Emulator-only test-setup helper: switches music indexing to MediaStore mode with no filtering,
- * bypassing the SAF folder-picker system dialog entirely (that dialog can't be driven
- * headlessly). Lets emulator runs index whatever MediaStore already sees without any manual
- * folder-selection step. Not meant for the real device, which already has a working SAF-based
- * "Music sources" location configured by hand.
+ * bypassing the SAF folder-picker system dialog entirely (that dialog can't be driven headlessly).
+ * Lets emulator runs index whatever MediaStore already sees without any manual folder-selection
+ * step. Not meant for the real device, which already has a working SAF-based "Music sources"
+ * location configured by hand.
  *
- * This only flips Auxio's own settings -- it doesn't touch MediaStore itself. Whichever fixture
- * set should be indexed (the flat USB/MTE set under `/sdcard/Music/MTE_Test/`, or a richer
- * breadth-test set under a different path) must already be pushed to the device and scanned into
- * MediaStore (adb push + a MEDIA_SCANNER_SCAN_FILE broadcast per file) before this runs, since
- * MediaStore mode indexes everything MediaStore currently knows about, regardless of path.
+ * This only flips Auxio's own settings -- it doesn't touch MediaStore itself. Whichever fixture set
+ * should be indexed (the flat USB/MTE set under `/sdcard/Music/MTE_Test/`, or a richer breadth-test
+ * set under a different path) must already be pushed to the device and scanned into MediaStore (adb
+ * push + a MEDIA_SCANNER_SCAN_FILE broadcast per file) before this runs, since MediaStore mode
+ * indexes everything MediaStore currently knows about, regardless of path.
  */
 class MediaStoreLibrarySeeder {
     private val context: Context

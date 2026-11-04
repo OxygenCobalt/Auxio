@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.testutil
 
 import androidx.preference.PreferenceManager
@@ -26,13 +26,14 @@ import org.junit.runner.Description
 /**
  * Snapshots the app's SharedPreferences before a test and restores them after, in-process via a
  * plain JUnit rule. For tests where the app process may itself die mid-run (so this rule's
- * `finished()` would never get a chance to execute), use [SettingsSnapshot] instead -- its
- * heavier two-process, file-based mechanism is built specifically to survive that.
+ * `finished()` would never get a chance to execute), use [SettingsSnapshot] instead -- its heavier
+ * two-process, file-based mechanism is built specifically to survive that.
  */
 class InProcessSettingsBackupRule : TestWatcher() {
     private val prefs by lazy {
         PreferenceManager.getDefaultSharedPreferences(
-            InstrumentationRegistry.getInstrumentation().targetContext)
+            InstrumentationRegistry.getInstrumentation().targetContext
+        )
     }
     private var snapshot: Map<String, Any?> = emptyMap()
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings.categories
 
 import android.os.Bundle
@@ -28,21 +28,21 @@ import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.BasePreferenceFragment
-import org.ostrichbat2k.usbdac.discovery.UsbAudioDevice
-import org.ostrichbat2k.usbdac.control.UsbControlState
-import org.ostrichbat2k.usbdac.protocol.UsbDeviceCapabilities
 import org.ostrichbat2k.usbdac.UsbAudioManager
 import org.ostrichbat2k.usbdac.UsbDacPreferences
+import org.ostrichbat2k.usbdac.control.UsbControlState
+import org.ostrichbat2k.usbdac.discovery.UsbAudioDevice
+import org.ostrichbat2k.usbdac.protocol.UsbDeviceCapabilities
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.navigateSafe
 
 /**
  * USB DAC status and activation log, for diagnosing direct USB audio output -- shows whatever's
- * currently attached/permitted and a running history of what [UsbAudioManager] did the last time
- * it tried to activate a session, so changes across attempts (settling delays, control-transfer
- * fixes, etc.) can be tracked from the device itself instead of pulling logcat each time.
+ * currently attached/permitted and a running history of what [UsbAudioManager] did the last time it
+ * tried to activate a session, so changes across attempts (settling delays, control-transfer fixes,
+ * etc.) can be tracked from the device itself instead of pulling logcat each time.
  */
 @AndroidEntryPoint
 class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
@@ -59,7 +59,8 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
 
     private fun updateDevice(devices: List<UsbAudioDevice>) {
         val summary =
-            devices.joinToString("\n") { "${it.displayName} (permission: ${it.hasPermission})" }
+            devices
+                .joinToString("\n") { "${it.displayName} (permission: ${it.hasPermission})" }
                 .ifEmpty { getString(R.string.set_usb_device_none) }
         findPreference<Preference>(getString(R.string.set_key_usb_device))?.summary = summary
     }
@@ -74,7 +75,8 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
                 Preference(requireContext()).apply {
                     isSelectable = false
                     title = getString(R.string.set_usb_log_empty)
-                })
+                }
+            )
             return
         }
         for (line in lines) {
@@ -82,16 +84,17 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
                 Preference(requireContext()).apply {
                     isSelectable = false
                     title = line
-                })
+                }
+            )
         }
     }
 
     /**
-     * Updates the "Capabilities" entry point's summary with a one-line preview of what's been
-     * found so far -- the full, explained breakdown lives on [UsbCapabilitiesFragment], navigated
-     * to on tap (see [onPreferenceTreeClick]). Independent of whether Auxio went on to
-     * successfully configure the device, so this still updates even if [updateControls] ends up
-     * showing no active session.
+     * Updates the "Capabilities" entry point's summary with a one-line preview of what's been found
+     * so far -- the full, explained breakdown lives on [UsbCapabilitiesFragment], navigated to on
+     * tap (see [onPreferenceTreeClick]). Independent of whether Auxio went on to successfully
+     * configure the device, so this still updates even if [updateControls] ends up showing no
+     * active session.
      */
     private fun updateCapabilities(capabilities: UsbDeviceCapabilities?) {
         val summary =
@@ -102,19 +105,18 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
 
     /**
      * Rebuilds the "Controls" category from what [state] says this device actually supports -- a
-     * device with a single format offers no format picker, one with no Mixer Unit in its
-     * topology offers no mixer-gain sliders, etc. Nothing here is specific to any one device
-     * model.
+     * device with a single format offers no format picker, one with no Mixer Unit in its topology
+     * offers no mixer-gain sliders, etc. Nothing here is specific to any one device model.
      *
      * [state] updates on every mute/volume/mixer-gain write (this screen's own, or a physical
      * volume key) and every track's format negotiation, which is often -- a full
      * [PreferenceCategory.removeAll] + rebuild on every single one of those used to tear down and
-     * recreate every control's widget just because one value changed, visibly flickering the
-     * whole category and risking disrupting a slider the user wasn't even touching (e.g.
-     * adjusting one mixer-gain channel used to rebuild every other channel's slider mid-gesture
-     * too). Now only does that full rebuild when the actual *set* of controls needs to change
-     * (see [desiredControlKeys]); an unchanged set just updates each existing widget's value in
-     * place via [updateControlValuesInPlace], which only re-renders that one row.
+     * recreate every control's widget just because one value changed, visibly flickering the whole
+     * category and risking disrupting a slider the user wasn't even touching (e.g. adjusting one
+     * mixer-gain channel used to rebuild every other channel's slider mid-gesture too). Now only
+     * does that full rebuild when the actual *set* of controls needs to change (see
+     * [desiredControlKeys]); an unchanged set just updates each existing widget's value in place
+     * via [updateControlValuesInPlace], which only re-renders that one row.
      */
     private fun updateControls(state: UsbControlState?) {
         updateBitPerfectAvailability(state)
@@ -124,14 +126,17 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
                 ?: return
 
         if (state == null) {
-            if (category.preferenceCount != 1 || category.getPreference(0).key != KEY_CONTROLS_NONE) {
+            if (
+                category.preferenceCount != 1 || category.getPreference(0).key != KEY_CONTROLS_NONE
+            ) {
                 category.removeAll()
                 category.addPreference(
                     Preference(requireContext()).apply {
                         key = KEY_CONTROLS_NONE
                         isSelectable = false
                         title = getString(R.string.set_usb_controls_none)
-                    })
+                    }
+                )
             }
             return
         }
@@ -157,7 +162,8 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
                         usbAudioManager.setPreferredBitResolution((newValue as String).toInt())
                         true
                     }
-                })
+                }
+            )
         }
 
         category.addPreference(
@@ -170,7 +176,8 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
                     usbAudioManager.setMuted(newValue as Boolean)
                     true
                 }
-            })
+            }
+        )
 
         val volumeRange = state.volumeRange
         if (volumeRange != null) {
@@ -188,12 +195,17 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
                     // reporting unity gain) before the device's own state has settled, which this
                     // exact fallback order has already caused real, reproduced bugs from
                     // elsewhere in this codebase (see MediaSessionHolder.UsbVolumeProvider).
-                    value = (usbSettings.volumeDb ?: state.volume ?: volumeRange.second).coerceIn(min, max)
+                    value =
+                        (usbSettings.volumeDb ?: state.volume ?: volumeRange.second).coerceIn(
+                            min,
+                            max,
+                        )
                     setOnPreferenceChangeListener { _, newValue ->
                         usbAudioManager.setVolume(newValue as Int)
                         true
                     }
-                })
+                }
+            )
         }
 
         val mixerRange = state.mixerGainRange
@@ -207,12 +219,17 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
                         min = mixerRange.first
                         max = mixerRange.second
                         showSeekBarValue = true
-                        value = (state.mixerGains[inCh to outCh] ?: mixerRange.second).coerceIn(min, max)
+                        value =
+                            (state.mixerGains[inCh to outCh] ?: mixerRange.second).coerceIn(
+                                min,
+                                max,
+                            )
                         setOnPreferenceChangeListener { _, newValue ->
                             usbAudioManager.setMixerGain(inCh, outCh, newValue as Int)
                             true
                         }
-                    })
+                    }
+                )
             }
         }
     }
@@ -233,29 +250,40 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
         getString(R.string.set_key_usb_mixer_gain_prefix) + "${inCh}_$outCh"
 
     /**
-     * Updates every existing control's displayed value from [state] without touching the
-     * category's children -- see [updateControls]'s doc comment for why this matters. Only
-     * called once [desiredControlKeys] has already confirmed the right set of controls exists.
+     * Updates every existing control's displayed value from [state] without touching the category's
+     * children -- see [updateControls]'s doc comment for why this matters. Only called once
+     * [desiredControlKeys] has already confirmed the right set of controls exists.
      */
     private fun updateControlValuesInPlace(category: PreferenceCategory, state: UsbControlState) {
         category.findPreference<ListPreference>(getString(R.string.set_key_usb_format))?.value =
             state.activeFormat.bitResolution.toString()
 
-        category.findPreference<SwitchPreferenceCompat>(getString(R.string.set_key_usb_mute))
+        category
+            .findPreference<SwitchPreferenceCompat>(getString(R.string.set_key_usb_mute))
             ?.isChecked = state.muted == true
 
         val volumeRange = state.volumeRange
         if (volumeRange != null) {
-            category.findPreference<SeekBarPreference>(getString(R.string.set_key_usb_volume))?.let {
-                it.value = (usbSettings.volumeDb ?: state.volume ?: volumeRange.second).coerceIn(it.min, it.max)
-            }
+            category
+                .findPreference<SeekBarPreference>(getString(R.string.set_key_usb_volume))
+                ?.let {
+                    it.value =
+                        (usbSettings.volumeDb ?: state.volume ?: volumeRange.second).coerceIn(
+                            it.min,
+                            it.max,
+                        )
+                }
         }
 
         val mixerRange = state.mixerGainRange
         if (mixerRange != null) {
             for ((inCh, outCh) in state.mixerChannels) {
                 category.findPreference<SeekBarPreference>(mixerGainKey(inCh, outCh))?.let {
-                    it.value = (state.mixerGains[inCh to outCh] ?: mixerRange.second).coerceIn(it.min, it.max)
+                    it.value =
+                        (state.mixerGains[inCh to outCh] ?: mixerRange.second).coerceIn(
+                            it.min,
+                            it.max,
+                        )
                 }
             }
         }
@@ -269,7 +297,8 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
      */
     private fun updateBitPerfectAvailability(state: UsbControlState?) {
         val preference =
-            findPreference<SwitchPreferenceCompat>(getString(R.string.set_key_usb_bit_perfect)) ?: return
+            findPreference<SwitchPreferenceCompat>(getString(R.string.set_key_usb_bit_perfect))
+                ?: return
         val capable = state?.volumeRange != null
         preference.isEnabled = capable
         preference.summary =
@@ -294,7 +323,9 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
     }
 
     private companion object {
-        /** Marker key for the "no active session" placeholder row, not a real `set_key_*` resource. */
+        /**
+         * Marker key for the "no active session" placeholder row, not a real `set_key_*` resource.
+         */
         const val KEY_CONTROLS_NONE = "usb_controls_none_marker"
     }
 }

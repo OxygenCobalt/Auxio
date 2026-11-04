@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music
 
 import android.app.RecoverableSecurityException
@@ -36,20 +36,19 @@ import timber.log.Timber as L
  * [org.oxycblt.auxio.music.locations.LocationMode.SAF] songs carry a SAF *document* URI (from
  * [org.oxycblt.musikr.fs.saf.SAF]'s own directory walk), while
  * [org.oxycblt.auxio.music.locations.LocationMode.MEDIA_STORE] songs carry a genuine MediaStore
- * item URI. These need two entirely different deletion mechanisms -- confirmed, reproduced:
- * passing a SAF document URI into [MediaStore.createDeleteRequest] crashes outright with
- * "All requested items must be referenced by specific ID", since that call only ever accepts a
- * real `content://media/...` item URI, never a document URI from another provider entirely.
+ * item URI. These need two entirely different deletion mechanisms -- confirmed, reproduced: passing
+ * a SAF document URI into [MediaStore.createDeleteRequest] crashes outright with "All requested
+ * items must be referenced by specific ID", since that call only ever accepts a real
+ * `content://media/...` item URI, never a document URI from another provider entirely.
  *
- * A SAF document URI deletes via [DocumentsContract.deleteDocument], authorized by the
- * persistable write grant already taken on its tree when the user picked that folder (see
+ * A SAF document URI deletes via [DocumentsContract.deleteDocument], authorized by the persistable
+ * write grant already taken on its tree when the user picked that folder (see
  * [org.oxycblt.musikr.fs.Location]) -- this needs no further system confirmation, since the user
- * already consented to this app managing that folder's contents. A MediaStore URI for a file
- * *not created by this app*, on the other hand, needs the system's own explicit, per-version
- * consent: a single batched confirmation dialog on Android 11+
- * ([MediaStore.createDeleteRequest]), a one-shot recovery intent carried by
- * [RecoverableSecurityException] on Android 10 specifically, or (pre-10, before scoped storage
- * existed) a direct [ContentResolver.delete] with no extra prompt at all.
+ * already consented to this app managing that folder's contents. A MediaStore URI for a file *not
+ * created by this app*, on the other hand, needs the system's own explicit, per-version consent: a
+ * single batched confirmation dialog on Android 11+ ([MediaStore.createDeleteRequest]), a one-shot
+ * recovery intent carried by [RecoverableSecurityException] on Android 10 specifically, or (pre-10,
+ * before scoped storage existed) a direct [ContentResolver.delete] with no extra prompt at all.
  */
 object DeviceFileDeleter {
     sealed interface Result {
@@ -61,8 +60,8 @@ object DeviceFileDeleter {
     }
 
     /**
-     * Attempts to delete every [Song] in [songs]. Call this off the main thread -- every path
-     * here makes at least one blocking call per song.
+     * Attempts to delete every [Song] in [songs]. Call this off the main thread -- every path here
+     * makes at least one blocking call per song.
      */
     fun delete(resolver: ContentResolver, songs: List<Song>): Result {
         val (documentSongs, mediaStoreSongs) =

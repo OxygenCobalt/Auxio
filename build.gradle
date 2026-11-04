@@ -61,15 +61,18 @@ sonar {
     }
 }
 
+// :libusbdac is excluded from both targets below, same as the detekt exclusion above --
+// it's a standalone repo with its own license and its own formatting setup, so applying
+// Auxio's NOTICE license header to its sources would be wrong.
 spotless {
     kotlin {
-        target "*/src/**/*.kt"
+        target "{app,musikr}/src/**/*.kt"
         ktfmt().kotlinlangStyle()
         licenseHeaderFile("NOTICE")
     }
 
     cpp {
-        target("*/src/**/cpp/*.cpp", "*/src/**/cpp/*.h", "*/src/**/cpp/*.hpp")
+        target("{app,musikr}/src/**/cpp/*.cpp", "{app,musikr}/src/**/cpp/*.h", "{app,musikr}/src/**/cpp/*.hpp")
         eclipseCdt().configFile("eclipse-cdt.xml")
         licenseHeaderFile("NOTICE")
     }

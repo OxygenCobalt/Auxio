@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.testutil
 
 import androidx.annotation.IdRes
@@ -30,14 +30,13 @@ import androidx.test.uiautomator.Until
 /**
  * Drives the app under test via UiAutomator instead of Espresso's `onView(...).perform(...)`.
  *
- * Espresso's `perform()`/`check()` wait for the app's main-thread Looper to go idle before
- * acting. Auxio's playback screens continuously repost position updates to the main thread
- * while something is playing (`PlaybackViewModel.positionDs`, collected in
- * `PlaybackBarFragment.kt`), so that wait never completes and every Espresso interaction hangs
- * indefinitely once playback starts -- which is most of the app, most of the time, since the
- * mini-player bar is visible app-wide. UiAutomator injects input at the system/
- * AccessibilityService level and never waits on the app's own main thread, so it works
- * regardless of what the app is doing.
+ * Espresso's `perform()`/`check()` wait for the app's main-thread Looper to go idle before acting.
+ * Auxio's playback screens continuously repost position updates to the main thread while something
+ * is playing (`PlaybackViewModel.positionDs`, collected in `PlaybackBarFragment.kt`), so that wait
+ * never completes and every Espresso interaction hangs indefinitely once playback starts -- which
+ * is most of the app, most of the time, since the mini-player bar is visible app-wide. UiAutomator
+ * injects input at the system/ AccessibilityService level and never waits on the app's own main
+ * thread, so it works regardless of what the app is doing.
  */
 class AuxioUiAutomator(private val device: UiDevice, private val targetPackage: String) {
     private val resources = InstrumentationRegistry.getInstrumentation().targetContext.resources
@@ -61,7 +60,8 @@ class AuxioUiAutomator(private val device: UiDevice, private val targetPackage: 
         device.wait(Until.findObject(resSelector(id)), timeoutMs)
             ?: error(
                 "Timed out waiting for resource-id ${resources.getResourceEntryName(id)}. " +
-                    dumpDiagnostics())
+                    dumpDiagnostics()
+            )
 
     fun waitForText(text: String, timeoutMs: Long = 10_000): UiObject2 =
         device.wait(Until.findObject(By.text(text)), timeoutMs)
@@ -73,10 +73,10 @@ class AuxioUiAutomator(private val device: UiDevice, private val targetPackage: 
 
     /**
      * A short summary of what's actually on screen, appended to timeout errors so a failure is
-     * diagnosable from the test-run log alone, without needing a live follow-up `uiautomator
-     * dump` (which can't be taken after the fact -- by the time a run finishes and its
-     * UiAutomation connection tears down, the system has often already returned to the
-     * launcher, erasing exactly the state that mattered).
+     * diagnosable from the test-run log alone, without needing a live follow-up `uiautomator dump`
+     * (which can't be taken after the fact -- by the time a run finishes and its UiAutomation
+     * connection tears down, the system has often already returned to the launcher, erasing exactly
+     * the state that mattered).
      */
     private fun dumpDiagnostics(): String {
         val topActivity =
@@ -125,9 +125,9 @@ class AuxioUiAutomator(private val device: UiDevice, private val targetPackage: 
     fun existsRes(@IdRes id: Int): Boolean = device.hasObject(resSelector(id))
 
     /**
-     * Presses Back until [targetRes] is visible, up to [maxPresses] times. Used to recover a
-     * known starting screen between tests -- launching the app only brings it to the foreground,
-     * it doesn't reset whatever screen/dialog/panel a previous test left it on.
+     * Presses Back until [targetRes] is visible, up to [maxPresses] times. Used to recover a known
+     * starting screen between tests -- launching the app only brings it to the foreground, it
+     * doesn't reset whatever screen/dialog/panel a previous test left it on.
      */
     fun pressBackUntilRes(@IdRes targetRes: Int, maxPresses: Int = 5) {
         repeat(maxPresses) {

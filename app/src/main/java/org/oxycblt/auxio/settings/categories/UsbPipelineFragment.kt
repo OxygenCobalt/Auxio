@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings.categories
 
 import android.os.Bundle
@@ -23,10 +23,10 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import org.oxycblt.auxio.databinding.FragmentUsbPipelineBinding
+import org.ostrichbat2k.usbdac.UsbAudioManager
 import org.ostrichbat2k.usbdac.control.UsbControlState
 import org.ostrichbat2k.usbdac.streaming.UsbPipelineStats
-import org.ostrichbat2k.usbdac.UsbAudioManager
+import org.oxycblt.auxio.databinding.FragmentUsbPipelineBinding
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 
@@ -35,7 +35,8 @@ import org.oxycblt.auxio.util.collectImmediately
  * format through to the USB wire -- unlike every other USB diagnostic screen here, which only
  * updates on a real state change (a track switching route, a control being read back), this one
  * re-renders continuously while something is genuinely streaming, driven by [UsbPipelineStats]'s
- * own ~160ms reporting cadence (see where it's sent from in [org.ostrichbat2k.usbdac.UsbAudioOutput]).
+ * own ~160ms reporting cadence (see where it's sent from in
+ * [org.ostrichbat2k.usbdac.UsbAudioOutput]).
  */
 @AndroidEntryPoint
 class UsbPipelineFragment : ViewBindingFragment<FragmentUsbPipelineBinding>() {
@@ -46,22 +47,36 @@ class UsbPipelineFragment : ViewBindingFragment<FragmentUsbPipelineBinding>() {
     // reports raw cumulative counters instead of an already-computed rate.
     private var previousStats: UsbPipelineStats? = null
 
-    override fun onCreateBinding(inflater: LayoutInflater) = FragmentUsbPipelineBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentUsbPipelineBinding.inflate(inflater)
 
-    override fun onBindingCreated(binding: FragmentUsbPipelineBinding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(
+        binding: FragmentUsbPipelineBinding,
+        savedInstanceState: Bundle?,
+    ) {
         super.onBindingCreated(binding, savedInstanceState)
         binding.usbPipelineToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-        collectImmediately(usbAudioManager.playbackRoute, usbAudioManager.controlState, usbAudioManager.pipelineStats, ::update)
+        collectImmediately(
+            usbAudioManager.playbackRoute,
+            usbAudioManager.controlState,
+            usbAudioManager.pipelineStats,
+            ::update,
+        )
     }
 
-    private fun update(route: UsbAudioManager.PlaybackRoute, controlState: UsbControlState?, stats: UsbPipelineStats?) {
+    private fun update(
+        route: UsbAudioManager.PlaybackRoute,
+        controlState: UsbControlState?,
+        stats: UsbPipelineStats?,
+    ) {
         val binding = requireBinding()
 
         binding.usbPipelineFile.text = fileLabel(route)
         binding.usbPipelineRoute.text = routeLabel(route)
 
         if (stats != null && stats.bufferCapacityBytes > 0) {
-            val fillPercent = (100 * stats.bufferedBytes / stats.bufferCapacityBytes).coerceIn(0, 100)
+            val fillPercent =
+                (100 * stats.bufferedBytes / stats.bufferCapacityBytes).coerceIn(0, 100)
             binding.usbPipelineBufferBar.progress = fillPercent
             val channels = usbAudioManager.capabilities.value?.topology?.channelCount ?: 0
             binding.usbPipelineBufferLabel.text =
@@ -77,8 +92,15 @@ class UsbPipelineFragment : ViewBindingFragment<FragmentUsbPipelineBinding>() {
         // instance and would otherwise read as a nonsensical negative rate) computes a rate.
         val previous = previousStats
         binding.usbPipelineUrbs.text =
-            if (stats != null && previous != null && stats.atMs > previous.atMs && stats.urbsSubmitted >= previous.urbsSubmitted) {
-                val urbsPerSec = (stats.urbsSubmitted - previous.urbsSubmitted) * 1000.0 / (stats.atMs - previous.atMs)
+            if (
+                stats != null &&
+                    previous != null &&
+                    stats.atMs > previous.atMs &&
+                    stats.urbsSubmitted >= previous.urbsSubmitted
+            ) {
+                val urbsPerSec =
+                    (stats.urbsSubmitted - previous.urbsSubmitted) * 1000.0 /
+                        (stats.atMs - previous.atMs)
                 "%.1f URBs/sec".format(urbsPerSec)
             } else {
                 "Idle -- nothing streaming right now"
@@ -95,26 +117,33 @@ class UsbPipelineFragment : ViewBindingFragment<FragmentUsbPipelineBinding>() {
             }
     }
 
-    /** The file's own declared format -- both [UsbAudioManager.PlaybackRoute.Direct] and
+    /**
+     * The file's own declared format -- both [UsbAudioManager.PlaybackRoute.Direct] and
      * [UsbAudioManager.PlaybackRoute.Fallback] carry it identically; see the latter's own doc
-     * comment for why that's true even though HAL doesn't actually honor it. */
+     * comment for why that's true even though HAL doesn't actually honor it.
+     */
     private fun fileLabel(route: UsbAudioManager.PlaybackRoute): String =
         when (route) {
-            is UsbAudioManager.PlaybackRoute.Direct -> "${route.bitDepth ?: "?"}-bit / ${route.sampleRateHz}Hz / ${route.channels}ch"
-            is UsbAudioManager.PlaybackRoute.Fallback -> "${route.bitDepth ?: "?"}-bit / ${route.sampleRateHz}Hz / ${route.channels}ch"
+            is UsbAudioManager.PlaybackRoute.Direct ->
+                "${route.bitDepth ?: "?"}-bit / ${route.sampleRateHz}Hz / ${route.channels}ch"
+            is UsbAudioManager.PlaybackRoute.Fallback ->
+                "${route.bitDepth ?: "?"}-bit / ${route.sampleRateHz}Hz / ${route.channels}ch"
             UsbAudioManager.PlaybackRoute.Switching -> "Unknown -- switching output…"
         }
 
     private fun routeLabel(route: UsbAudioManager.PlaybackRoute): String =
         when (route) {
             is UsbAudioManager.PlaybackRoute.Direct -> "Direct -- bit-perfect straight to the DAC"
-            is UsbAudioManager.PlaybackRoute.Fallback -> "Fallback -- through Android's shared HAL mixer (format above not honored)"
+            is UsbAudioManager.PlaybackRoute.Fallback ->
+                "Fallback -- through Android's shared HAL mixer (format above not honored)"
             UsbAudioManager.PlaybackRoute.Switching -> "Switching output…"
         }
 
-    /** Converts a byte count in the ring buffer to milliseconds of audio, using the device's
+    /**
+     * Converts a byte count in the ring buffer to milliseconds of audio, using the device's
      * currently active format/rate/channel count -- returns 0 rather than crashing if nothing's
-     * active, since this is purely a live diagnostic label, not a value anything else depends on. */
+     * active, since this is purely a live diagnostic label, not a value anything else depends on.
+     */
     private fun msFor(bytes: Int, controlState: UsbControlState?, channels: Int): Long {
         val format = controlState?.activeFormat ?: return 0
         val sampleRateHz = controlState.sampleRateHz

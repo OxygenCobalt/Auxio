@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.testutil.AuxioLaunch
 import org.oxycblt.auxio.testutil.AuxioUiAutomator
 import org.oxycblt.auxio.testutil.InProcessSettingsBackupRule
-import org.junit.Rule
 
 /**
  * Minimal smoke test proving the [AuxioUiAutomator] approach built for [org.oxycblt.auxio.usb]'s
  * stress suite generalizes to ordinary screens with no playback precondition -- this test never
- * starts playback, deliberately, to confirm the harness works outside the one screen it was
- * first built against.
+ * starts playback, deliberately, to confirm the harness works outside the one screen it was first
+ * built against.
  */
 class HomeBrowsingUiTest {
     @get:Rule val settingsBackup = InProcessSettingsBackupRule()
