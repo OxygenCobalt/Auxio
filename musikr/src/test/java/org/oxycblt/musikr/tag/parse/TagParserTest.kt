@@ -131,7 +131,10 @@ class TagParserTest {
 
         assertEquals("track-id-123", tags.musicBrainzId)
         assertEquals("album-id-456", tags.albumMusicBrainzId)
-        assertEquals(listOf("artist-id-789"), tags.artistMusicBrainzIds)
+        // No artist name tag is set, so TagParser falls back to composer fields entirely for
+        // artistMusicBrainzIds (see its "don't hybridize sort tags or MBIDs between artist/
+        // composer" comment) -- the artist MBID above is discarded, not carried through.
+        assertEquals(emptyList<String>(), tags.artistMusicBrainzIds)
         assertEquals(listOf("album-artist-id-012"), tags.albumArtistMusicBrainzIds)
     }
 
@@ -171,6 +174,7 @@ class TagParserTest {
         assertEquals(listOf("composer-artist-mbid"), tags.artistMusicBrainzIds)
     }
 
+    @Suppress("LongParameterList")
     private fun createTestMetadata(
         id3v2Tags: Map<String, List<String>> = emptyMap(),
         xiphTags: Map<String, List<String>> = emptyMap(),
@@ -180,8 +184,9 @@ class TagParserTest {
         bitrateKbps: Int = 320,
         sampleRateHz: Int = 44100,
         mimeType: String = "audio/mpeg",
+        bitDepth: Int = 16,
     ): Metadata {
-        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz)
+        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz, bitDepth)
         return Metadata(id3v2Tags, xiphTags, mp4Tags, cover, properties)
     }
 }
