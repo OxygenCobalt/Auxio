@@ -18,8 +18,11 @@
  
 package org.oxycblt.auxio
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.view.View
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -72,6 +75,26 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var usbAudioManager: UsbAudioManager
     @Inject lateinit var usbSettings: UsbDacPreferences
 
+    // Claims hardware/Bluetooth media-key routing for as long as this Activity is the foreground
+    // window -- Activity.setMediaController's own doc comment says exactly this ("Media key ...
+    // events which are received while the Activity is in the foreground will be forwarded to the
+    // controller"), and PhoneWindow's key dispatch (frameworks/base) special-cases this ahead of
+    // MediaSessionService's normal session-priority routing entirely, which otherwise only
+    // reconsiders which app it targets when a *new* local audio player becomes active -- not
+    // just because this app came to the foreground. Confirmed on real hardware: without this,
+    // bringing Auxio to the foreground while paused (or while another app still holds that
+    // routing) left physical media keys going to that other app. AuxioService is a
+    // MediaBrowserServiceCompat, so a MediaBrowserCompat connection is the only way to reach its
+    // live MediaSessionCompat.Token from here.
+    private lateinit var mediaBrowser: MediaBrowserCompat
+    private val mediaBrowserConnectionCallback =
+        object : MediaBrowserCompat.ConnectionCallback() {
+            override fun onConnected() {
+                MediaControllerCompat.setMediaController(
+                    this@MainActivity, MediaControllerCompat(this@MainActivity, mediaBrowser.sessionToken))
+            }
+        }
+
     // Only MainActivity (a long-lived, single Activity) can host this launcher and reliably get
     // a result back -- the menu dialog that actually requests a deletion is a bottom sheet that
     // closes itself the instant any option is clicked (see MenuDialogFragment.onClick), so by the
@@ -89,6 +112,10 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupEdgeToEdge(binding.root)
+
+        mediaBrowser =
+            MediaBrowserCompat(
+                this, ComponentName(this, AuxioService::class.java), mediaBrowserConnectionCallback, null)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -149,6 +176,20 @@ class MainActivity : AppCompatActivity() {
                 .filterNot { it.hasPermission }
                 .forEach { usbAudioManager.requestPermission(it.device) }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mediaBrowser.connect()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Give up the foreground-window media-key claim as soon as this Activity itself stops
+        // being the foreground window, rather than leaving a stale controller registered -- see
+        // mediaBrowserConnectionCallback's doc comment for why this exists at all.
+        MediaControllerCompat.setMediaController(this, null)
+        mediaBrowser.disconnect()
     }
 
     override fun onNewIntent(intent: Intent) {
