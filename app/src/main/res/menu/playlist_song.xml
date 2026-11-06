@@ -21,6 +21,10 @@
         android:icon="@drawable/ic_playlist_add_24"
         android:title="@string/lbl_playlist_add" />
     <item
+        android:id="@+id/action_playlist_remove"
+        android:icon="@drawable/ic_playlist_remove_24"
+        android:title="@string/lbl_playlist_remove" />
+    <item
         android:id="@+id/action_artist_details"
         android:icon="@drawable/ic_artist_24"
         android:title="@string/lbl_artist_details" />

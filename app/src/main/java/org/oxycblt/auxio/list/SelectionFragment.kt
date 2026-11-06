@@ -20,6 +20,7 @@ package org.oxycblt.auxio.list
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.annotation.MenuRes
 import androidx.appcompat.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.R
@@ -42,6 +43,9 @@ abstract class SelectionFragment<VB : ViewBinding> :
 
     open fun getSelectionToolbar(binding: VB): AuxioToolbar? = null
 
+    /** Menu opened from the selection toolbar overflow. */
+    @MenuRes protected open fun getSelectionMenuRes() = R.menu.selection
+
     override fun onBindingCreated(binding: VB, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
         getSelectionToolbar(binding)?.apply {
@@ -49,7 +53,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
             setNavigationOnClickListener { listModel.dropSelection() }
             setOnMenuItemClickListener(this@SelectionFragment)
             setOnOverflowMenuClick {
-                listModel.openMenu(R.menu.selection, listModel.peekSelection())
+                listModel.openMenu(getSelectionMenuRes(), listModel.peekSelection())
             }
         }
     }
