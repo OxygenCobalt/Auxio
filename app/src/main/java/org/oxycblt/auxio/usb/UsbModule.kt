@@ -19,6 +19,8 @@
 package org.oxycblt.auxio.usb
 
 import android.content.Context
+import androidx.media3.common.Format
+import androidx.media3.decoder.ffmpeg.RawSampleBitsData
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -43,6 +45,18 @@ interface UsbModule {
         fun provideUsbAudioManager(
             @ApplicationContext context: Context,
             settings: UsbDacPreferences,
-        ): UsbAudioManager = UsbAudioManagerImpl(context, settings)
+        ): UsbAudioManager =
+            UsbAudioManagerImpl(context, settings, realBitsPerSample = ::realBitsPerSample)
+
+        /**
+         * A genuine 24-bit FLAC/ALAC source and a genuinely 32-bit-precision source both decode
+         * to the same [Format.pcmEncoding] (FFmpeg's `AVSampleFormat` has no native 24-bit
+         * container) -- [RawSampleBitsData] is [FfmpegAudioRenderer][androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer]'s
+         * side-channel for telling the two apart, see its own doc comment. Without this wired in,
+         * [UsbAudioManagerImpl] can't tell the difference either, so every wide-container track
+         * -- 24-bit real content included -- always lands on the device's 32-bit alt-setting.
+         */
+        private fun realBitsPerSample(format: Format): Int? =
+            format.metadata?.getFirstEntryOfType(RawSampleBitsData::class.java)?.bitsPerRawSample
     }
 }
