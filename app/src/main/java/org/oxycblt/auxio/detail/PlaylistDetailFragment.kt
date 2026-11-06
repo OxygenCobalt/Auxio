@@ -75,8 +75,12 @@ class PlaylistDetailFragment :
 
     override fun getToolbarParent() = detailModel.currentPlaylist.value
 
+    override fun getSelectionMenuRes() = R.menu.selection_playlist
+
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
+
+        binding.detailSelectionToolbar.inflateMenu(R.menu.toolbar_selection_playlist)
 
         editNavigationListener = DialogAwareNavigationListener(detailModel::dropPlaylistEdit)
 
@@ -134,6 +138,12 @@ class PlaylistDetailFragment :
 
         if (item.itemId == R.id.action_save) {
             detailModel.savePlaylistEdit()
+            return true
+        }
+
+        if (item.itemId == R.id.action_playlist_remove) {
+            val playlist = detailModel.currentPlaylist.value ?: return true
+            musicModel.removeFromPlaylist(listModel.takeSelection(), playlist)
             return true
         }
 
