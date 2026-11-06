@@ -44,6 +44,9 @@ class UsbSettingsImpl @Inject constructor(@ApplicationContext context: Context) 
     override val abxTestMode: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_usb_abx_test), false)
 
+    override val manualReleaseControl: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_usb_manual_release_control), false)
+
     override val volumeStepPercent: Int
         get() =
             sharedPreferences
@@ -68,6 +71,7 @@ class UsbSettingsImpl @Inject constructor(@ApplicationContext context: Context) 
             getString(R.string.set_key_usb_bit_perfect) -> listener.onBitPerfectModeChanged()
             getString(R.string.set_key_usb_abx_test) -> listener.onAbxTestModeChanged()
             getString(R.string.set_key_usb_volume_step_percent) -> listener.onVolumeStepPercentChanged()
+            getString(R.string.set_key_usb_manual_release_control) -> listener.onManualReleaseControlChanged()
         }
     }
 

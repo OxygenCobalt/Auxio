@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.settings
 
 import android.os.Bundle
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -27,8 +26,6 @@ import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.util.navigateSafe
 import timber.log.Timber as L
 
@@ -39,8 +36,6 @@ import timber.log.Timber as L
  */
 @AndroidEntryPoint
 class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
-    private val musicModel: MusicViewModel by activityViewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,15 +43,6 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         returnTransition = MaterialFadeThrough()
         exitTransition = MaterialFadeThrough()
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-    }
-
-    override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
-        when (preference.key) {
-            getString(R.string.set_key_music_dirs) -> {
-                findNavController()
-                    .navigateSafe(RootPreferenceFragmentDirections.musicLocationsSettings())
-            }
-        }
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -86,8 +72,11 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
                 L.d("Navigating to USB preferences")
                 findNavController().navigateSafe(RootPreferenceFragmentDirections.usbPreferences())
             }
-            getString(R.string.set_key_reindex) -> musicModel.refresh()
-            getString(R.string.set_key_rescan) -> musicModel.rescan()
+            getString(R.string.set_key_library) -> {
+                L.d("Navigating to library preferences")
+                findNavController()
+                    .navigateSafe(RootPreferenceFragmentDirections.libraryPreferences())
+            }
             else -> return super.onPreferenceTreeClick(preference)
         }
 

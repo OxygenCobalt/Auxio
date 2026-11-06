@@ -30,6 +30,12 @@
         app:summary="@string/set_usb_abx_test_desc"
         app:title="@string/set_usb_abx_test" />
 
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="@string/set_key_usb_manual_release_control"
+        app:summary="@string/set_usb_manual_release_control_desc"
+        app:title="@string/set_usb_manual_release_control" />
+
     <Preference
         app:key="@string/set_key_usb_device"
         app:selectable="false"

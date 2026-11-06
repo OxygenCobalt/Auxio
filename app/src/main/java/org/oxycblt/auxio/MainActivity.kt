@@ -36,6 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.databinding.ActivityMainBinding
+import org.oxycblt.auxio.music.LibraryOrganizer
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
@@ -112,6 +113,13 @@ class MainActivity : AppCompatActivity() {
                         showDeleteConfirmation(songs)
                     }
                 }
+                launch {
+                    musicModel.organizePreview.flow.collect { plan ->
+                        if (plan == null) return@collect
+                        musicModel.organizePreview.consume()
+                        showOrganizePreview(plan)
+                    }
+                }
             }
         }
 
@@ -155,6 +163,37 @@ class MainActivity : AppCompatActivity() {
             .setMessage(
                 getString(R.string.fmt_deletion_info, getPlural(R.plurals.fmt_song_count, songs.size)))
             .setPositiveButton(R.string.lbl_delete) { _, _ -> musicModel.confirmDeleteSongs(songs) }
+            .setNegativeButton(R.string.lbl_cancel, null)
+            .show()
+    }
+
+    /** See [MusicViewModel.organizePreview]'s doc comment for why this always runs. */
+    private fun showOrganizePreview(plan: LibraryOrganizer.Plan) {
+        if (plan.moves.isEmpty()) {
+            showToast(R.string.err_organize_failed)
+            return
+        }
+        val body = buildString {
+            append(getString(R.string.fmt_organize_info, getPlural(R.plurals.fmt_song_count, plan.moves.size)))
+            if (plan.skipped.isNotEmpty()) {
+                append("\n\n")
+                append(getString(R.string.fmt_organize_skipped, plan.skipped.size))
+            }
+            append("\n\n")
+            plan.moves.take(MAX_ORGANIZE_PREVIEW_LINES).forEach { move ->
+                append(getString(R.string.fmt_organize_preview_entry, move.oldDisplayPath, move.newDisplayPath))
+                append("\n\n")
+            }
+            if (plan.moves.size > MAX_ORGANIZE_PREVIEW_LINES) {
+                append(getString(R.string.fmt_organize_preview_more, plan.moves.size - MAX_ORGANIZE_PREVIEW_LINES))
+            }
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.lbl_confirm_organize)
+            .setMessage(body.trim())
+            .setPositiveButton(R.string.lbl_organize) { _, _ ->
+                musicModel.confirmOrganizeLibrary(plan.moves)
+            }
             .setNegativeButton(R.string.lbl_cancel, null)
             .show()
     }
@@ -225,5 +264,6 @@ class MainActivity : AppCompatActivity() {
 
     private companion object {
         const val KEY_INTENT_USED = BuildConfig.APPLICATION_ID + ".key.FILE_INTENT_USED"
+        const val MAX_ORGANIZE_PREVIEW_LINES = 50
     }
 }

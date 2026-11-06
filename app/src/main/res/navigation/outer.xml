@@ -37,8 +37,8 @@
             android:id="@+id/usb_preferences"
             app:destination="@id/usb_preferences_fragment" />
         <action
-            android:id="@+id/music_locations_settings"
-            app:destination="@id/music_locations_dialog" />
+            android:id="@+id/library_preferences"
+            app:destination="@id/library_preferences_fragment" />
     </fragment>
 
     <fragment
@@ -98,6 +98,15 @@
         android:id="@+id/usb_pipeline_fragment"
         android:name="org.oxycblt.auxio.settings.categories.UsbPipelineFragment"
         android:label="usb_pipeline_fragment" />
+
+    <fragment
+        android:id="@+id/library_preferences_fragment"
+        android:name="org.oxycblt.auxio.settings.categories.LibraryPreferenceFragment"
+        android:label="library_preferences_fragment">
+        <action
+            android:id="@+id/music_locations_settings"
+            app:destination="@id/music_locations_dialog" />
+    </fragment>
 
     <dialog
         android:id="@+id/accent_dialog"

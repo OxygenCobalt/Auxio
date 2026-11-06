@@ -23,6 +23,7 @@ import android.content.IntentSender
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -98,6 +99,10 @@ constructor(
      */
     val deleteConfirmation: Event<List<Song>>
         field = MutableEvent<List<Song>>()
+
+    /** A library-reorganize preview awaiting the user's in-app confirmation. */
+    val organizePreview: Event<LibraryOrganizer.Plan>
+        field = MutableEvent<LibraryOrganizer.Plan>()
 
     init {
         musicRepository.addUpdateListener(this)
@@ -428,6 +433,58 @@ constructor(
     }
 
     /**
+     * Computes a preview of what reorganizing the library would do, without touching any files
+     * yet -- always surfaces through [organizePreview] for the user to confirm first, since this
+     * goes through no system prompt of its own at all (see [LibraryOrganizer]'s doc comment).
+     */
+    fun previewOrganizeLibrary() {
+        val library = musicRepository.library ?: return
+        viewModelScope.launch(Dispatchers.Default) {
+            val plan =
+                LibraryOrganizer.plan(
+                    context,
+                    library.songs,
+                    organizeFolderFormat(),
+                    organizeFileFormat(),
+                )
+            L.d("Computed organize plan: ${plan.moves.size} moves, ${plan.skipped.size} skipped")
+            organizePreview.put(plan)
+        }
+    }
+
+    /**
+     * Actually performs a reorganization the user has already confirmed via [organizePreview].
+     *
+     * @param moves The moves to apply, as given by the confirmed [LibraryOrganizer.Plan].
+     */
+    fun confirmOrganizeLibrary(moves: List<LibraryOrganizer.PlannedMove>) {
+        if (moves.isEmpty()) return
+        L.d("Organizing ${moves.size} songs")
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = LibraryOrganizer.execute(context.contentResolver, moves)
+            songMessage.put(
+                if (result.failed == 0) SongMessage.OrganizeSuccess else SongMessage.OrganizeFailed)
+            if (result.succeeded > 0) {
+                musicRepository.requestIndex(true)
+            }
+        }
+    }
+
+    private fun organizeFolderFormat() =
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getString(
+                context.getString(R.string.set_key_organize_folder_format),
+                context.getString(R.string.set_organize_folder_format_default))
+            ?: context.getString(R.string.set_organize_folder_format_default)
+
+    private fun organizeFileFormat() =
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getString(
+                context.getString(R.string.set_key_organize_file_format),
+                context.getString(R.string.set_organize_file_format_default))
+            ?: context.getString(R.string.set_organize_file_format_default)
+
+    /**
      * Non-manipulated statistics bound the last successful music load.
      *
      * @param songs The amount of [Song]s that were loaded.
@@ -572,5 +629,15 @@ sealed interface SongMessage {
     data object DeleteFailed : SongMessage {
         override val stringRes: Int
             get() = R.string.err_delete_failed
+    }
+
+    data object OrganizeSuccess : SongMessage {
+        override val stringRes: Int
+            get() = R.string.lng_library_organized
+    }
+
+    data object OrganizeFailed : SongMessage {
+        override val stringRes: Int
+            get() = R.string.err_organize_failed
     }
 }

@@ -103,6 +103,8 @@
     <string name="lbl_delete">Delete</string>
     <string name="lbl_confirm_delete_playlist">Delete playlist?</string>
     <string name="lbl_confirm_delete_song">Delete from device?</string>
+    <string name="lbl_confirm_organize">Organize library files?</string>
+    <string name="lbl_organize">Organize</string>
     <string name="lbl_edit">Edit</string>
 
     <!-- Search for music -->
@@ -215,6 +217,7 @@
     <string name="lng_playlist_deleted">Playlist deleted</string>
     <string name="lng_playlist_added">Added to playlist</string>
     <string name="lng_song_deleted">Deleted from device</string>
+    <string name="lng_library_organized">Library organized</string>
     <string name="lng_supporters_promo">Donate to the project to get your name added here!</string>
     <!-- As in music library -->
     <string name="lng_search_library">Search your library…</string>
@@ -321,6 +324,9 @@
     <string name="set_usb_volume_step_percent_desc">How much of the DAC\'s own volume range each volume key press moves, as a percentage from 1% (finest) to 10% (coarsest). Based on this specific device\'s native min-to-max range (see Capabilities), not a fixed number of clicks. Only applies while physical volume keys are routed to the DAC.</string>
     <string name="set_usb_abx_test">ABX listening test</string>
     <string name="set_usb_abx_test_desc">While on, Auxio secretly randomizes bit-perfect vs normal output per track and hides which one is active on the Now Playing screen -- each time the track changes, you\'ll be asked to guess, blind, which one you just heard.</string>
+
+    <string name="set_usb_manual_release_control">Manual release control</string>
+    <string name="set_usb_manual_release_control_desc">Keep the DAC claimed while paused instead of handing it back to other apps after a short delay. Turn this off to let other apps use the DAC automatically while playback is paused.</string>
     <string name="set_usb_device">Device</string>
     <string name="set_usb_device_none">No USB audio device attached</string>
     <string name="set_usb_retry">Retry activation</string>
@@ -371,6 +377,7 @@
     <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
     <string name="set_library">Library</string>
+    <string name="set_library_desc">Manage music sources and loading</string>
     <string name="set_locations">Music sources</string>
     <string name="set_locations_desc">Manage where music should be loaded from</string>
     <string name="set_load_from">Load from</string>
@@ -394,6 +401,14 @@
     <!-- Different from "Reload music" -->
     <string name="set_rescan">Rescan music</string>
     <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
+    <string name="set_organize">Organize library</string>
+    <string name="set_organize_desc">Move files on disk into album folders, using the format below</string>
+    <string name="set_organize_folder_format">Folder format</string>
+    <string name="set_organize_folder_format_desc">Tokens: {artist} {albumArtist} {album} {year}. Use / for nested folders</string>
+    <string name="set_organize_file_format">File format</string>
+    <string name="set_organize_file_format_desc">Tokens: {track} {disc} {title} {artist}</string>
+    <string name="set_organize_folder_format_default" translatable="false">{album} ({year})</string>
+    <string name="set_organize_file_format_default" translatable="false">{track} {title}</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_index_failed">Music loading failed</string>
@@ -404,6 +419,7 @@
     <string name="err_no_app">No app found that can handle this task</string>
     <string name="err_no_lyrics">No lyrics found for this song</string>
     <string name="err_delete_failed">Unable to delete this from the device</string>
+    <string name="err_organize_failed">Some files could not be organized</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_bad_location">This folder is not supported</string>
     <string name="lbl_no_folders">No folders</string>
@@ -523,6 +539,10 @@
 
     <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>
     <string name="fmt_deletion_info">Delete %s? This cannot be undone.</string>
+    <string name="fmt_organize_info">%s will be moved into new folders based on the format below. This cannot be undone.</string>
+    <string name="fmt_organize_skipped">%d song(s) will be skipped (not in a folder Auxio can write to, or missing required tags)</string>
+    <string name="fmt_organize_preview_entry">%1$s →\n%2$s</string>
+    <string name="fmt_organize_preview_more">…and %d more</string>
 
     <string name="fmt_lib_song_count">Songs loaded: %d</string>
     <string name="fmt_lib_album_count">Albums loaded: %d</string>

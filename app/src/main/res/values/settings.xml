@@ -6,9 +6,11 @@
     <string name="set_key_music" translatable="false">auxio_music</string>
     <string name="set_key_audio" translatable="false">auxio_audio</string>
     <string name="set_key_usb" translatable="false">auxio_usb</string>
+    <string name="set_key_library" translatable="false">auxio_library</string>
     <string name="set_key_usb_enabled" translatable="false">auxio_usb_enabled</string>
     <string name="set_key_usb_bit_perfect" translatable="false">auxio_usb_bit_perfect</string>
     <string name="set_key_usb_abx_test" translatable="false">auxio_usb_abx_test</string>
+    <string name="set_key_usb_manual_release_control" translatable="false">auxio_usb_manual_release_control</string>
     <string name="set_key_usb_volume_step_percent" translatable="false">auxio_usb_volume_step_percent</string>
     <string name="set_key_usb_device" translatable="false">auxio_usb_device</string>
     <string name="set_key_usb_retry" translatable="false">auxio_usb_retry</string>
@@ -33,6 +35,9 @@
 
     <string name="set_key_reindex" translatable="false">auxio_reindex</string>
     <string name="set_key_rescan" translatable="false">auxio_rescan</string>
+    <string name="set_key_organize" translatable="false">auxio_organize</string>
+    <string name="set_key_organize_folder_format" translatable="false">auxio_organize_folder_format</string>
+    <string name="set_key_organize_file_format" translatable="false">auxio_organize_file_format</string>
     <string name="set_key_observing" translatable="false">auxio_observing</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
     <string name="set_key_excluded_dirs" translatable="false">auxio_excluded_dirs</string>

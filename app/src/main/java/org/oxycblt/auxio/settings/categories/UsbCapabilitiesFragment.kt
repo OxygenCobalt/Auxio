@@ -31,9 +31,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
+import org.ostrichbat2k.usbdac.protocol.SyncType
 import org.ostrichbat2k.usbdac.protocol.UacNonPcmFormat
 import org.ostrichbat2k.usbdac.protocol.UacStreamFormat
-import org.ostrichbat2k.usbdac.protocol.UsbAudioController
 import org.ostrichbat2k.usbdac.control.UsbControlState
 import org.ostrichbat2k.usbdac.protocol.UsbDeviceCapabilities
 import org.ostrichbat2k.usbdac.protocol.UsbInterfaceInfo
@@ -334,12 +334,12 @@ class UsbCapabilitiesFragment : BasePreferenceFragment(R.xml.preferences_usb_cap
         }
     }
 
-    /** A short label for one of [UsbAudioController]'s PD_STATE_* constants, or "unknown". */
+    /** A short label for one of [UsbAudioManager]'s PD_STATE_* constants, or "unknown". */
     private fun powerStateLabel(state: Int?) =
         when (state) {
-            UsbAudioController.PD_STATE_D0 -> "currently D0, full power"
-            UsbAudioController.PD_STATE_D1 -> "currently D1, light sleep"
-            UsbAudioController.PD_STATE_D2 -> "currently D2, deep sleep"
+            UsbAudioManager.PD_STATE_D0 -> "currently D0, full power"
+            UsbAudioManager.PD_STATE_D1 -> "currently D1, light sleep"
+            UsbAudioManager.PD_STATE_D2 -> "currently D2, deep sleep"
             else -> "current state unknown"
         }
 
@@ -450,10 +450,11 @@ class UsbCapabilitiesFragment : BasePreferenceFragment(R.xml.preferences_usb_cap
                 ""
             }
         val syncNote =
-            if (format.isAsync) {
-                "the device supplies its own precise timing"
-            } else {
-                "timing follows the host's USB clock"
+            when (format.syncType) {
+                SyncType.ASYNC -> "the device supplies its own precise timing"
+                SyncType.ADAPTIVE -> "the device adjusts its own buffering to the host's pace"
+                SyncType.SYNCHRONOUS -> "timing follows the host's USB clock"
+                SyncType.NONE -> "timing mode unknown"
             }
         return "Alternate setting ${format.alternateSetting} · ${format.subslotSize}-byte " +
             "samples · sent over endpoint 0x${"%02x".format(format.endpointAddress)} in packets " +

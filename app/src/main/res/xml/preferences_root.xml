@@ -32,23 +32,10 @@
         app:summary="@string/set_usb_desc"
         app:title="@string/set_usb" />
 
-    <PreferenceCategory app:title="@string/set_library">
-
-        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-            app:key="@string/set_key_music_dirs"
-            app:summary="@string/set_locations_desc"
-            app:title="@string/set_locations" />
-
-        <Preference
-            app:key="@string/set_key_reindex"
-            app:summary="@string/set_reindex_desc"
-            app:title="@string/set_reindex" />
-
-        <Preference
-            app:key="@string/set_key_rescan"
-            app:summary="@string/set_rescan_desc"
-            app:title="@string/set_rescan" />
-
-    </PreferenceCategory>
+    <Preference
+        app:icon="@drawable/ic_indexer_24"
+        app:key="@string/set_key_library"
+        app:summary="@string/set_library_desc"
+        app:title="@string/set_library" />
 
 </PreferenceScreen>
