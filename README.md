@@ -24,6 +24,22 @@
     <a href="https://hosted.weblate.org/engage/auxio/"><img height=64 src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>
 </p>
 
+> [!WARNING]
+> **This is a personal, experimental fork -- not an officially supported release.** It adds native USB
+> DAC output on top of upstream Auxio, built and tested by one person on one device/DAC pairing for their
+> own use. It has not been broadly tested across hardware, Android versions, or usage patterns, and comes
+> with no support guarantees.
+>
+> **If you just want a reliable, well-maintained music player, use the original Auxio instead:**
+> [OxygenCobalt/Auxio](https://github.com/OxygenCobalt/Auxio) -- also on
+> [F-Droid](https://f-droid.org/app/org.oxycblt.auxio) and
+> [Accrescent](https://accrescent.app/app/org.oxycblt.auxio) (the badges at the top of this README point
+> there, not to this fork).
+>
+> Only use this fork if you specifically want native USB DAC support and accept it as personal-use,
+> AI-assisted software with the caveats above. See [This Fork](#this-fork-native-usb-dac-support) below
+> for what it actually changes.
+
 ## About
 
 Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of modern media playback libraries, Auxio has superior library support and listening quality compared to other apps that use outdated Android functionality. In short, **It plays music.**
