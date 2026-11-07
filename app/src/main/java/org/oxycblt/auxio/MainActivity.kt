@@ -211,11 +211,23 @@ class MainActivity : AppCompatActivity() {
     /** See [MusicViewModel.organizePreview]'s doc comment for why this always runs. */
     private fun showOrganizePreview(plan: LibraryOrganizer.Plan) {
         if (plan.moves.isEmpty()) {
-            showToast(R.string.err_organize_failed)
+            // Nothing to move isn't necessarily a failure -- it's also what a library that
+            // already matches this folder structure looks like (see LibraryOrganizer.plan's own
+            // doc comment on alreadyOrganizedCount).
+            showToast(
+                if (plan.alreadyOrganizedCount > 0) {
+                    R.string.msg_organize_already_done
+                } else {
+                    R.string.err_organize_failed
+                })
             return
         }
         val body = buildString {
             append(getString(R.string.fmt_organize_info, getPlural(R.plurals.fmt_song_count, plan.moves.size)))
+            if (plan.alreadyOrganizedCount > 0) {
+                append("\n\n")
+                append(getString(R.string.fmt_organize_already_organized, plan.alreadyOrganizedCount))
+            }
             if (plan.skipped.isNotEmpty()) {
                 append("\n\n")
                 append(getString(R.string.fmt_organize_skipped, plan.skipped.size))

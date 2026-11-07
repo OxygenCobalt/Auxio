@@ -541,6 +541,8 @@
     <string name="fmt_deletion_info">Delete %s? This cannot be undone.</string>
     <string name="fmt_organize_info">%s will be moved into new folders based on the format below. This cannot be undone.</string>
     <string name="fmt_organize_skipped">%d song(s) will be skipped (not in a folder Auxio can write to, or missing required tags)</string>
+    <string name="fmt_organize_already_organized">%d song(s) already match this structure and won\'t be touched</string>
+    <string name="msg_organize_already_done">Your library already matches this folder structure</string>
     <string name="fmt_organize_preview_entry">%1$s →\n%2$s</string>
     <string name="fmt_organize_preview_more">…and %d more</string>
 

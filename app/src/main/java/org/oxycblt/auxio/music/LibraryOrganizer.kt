@@ -63,7 +63,12 @@ object LibraryOrganizer {
 
     data class SkippedSong(val song: Song, val reason: SkipReason)
 
-    data class Plan(val moves: List<PlannedMove>, val skipped: List<SkippedSong>)
+    data class Plan(
+        val moves: List<PlannedMove>,
+        val skipped: List<SkippedSong>,
+        /** Songs whose on-disk location already matches the computed target -- nothing to do. */
+        val alreadyOrganizedCount: Int,
+    )
 
     data class ExecuteResult(val succeeded: Int, val failed: Int)
 
@@ -92,6 +97,8 @@ object LibraryOrganizer {
         val moves = mutableListOf<PlannedMove>()
         val skipped = mutableListOf<SkippedSong>()
         val usedPaths = mutableSetOf<String>()
+        var alreadyOrganizedCount = 0
+        val resolver = context.contentResolver
 
         for (song in songs) {
             if (song.uri.authority == MediaStore.AUTHORITY) {
@@ -137,13 +144,58 @@ object LibraryOrganizer {
                 candidateKey = (folderSegments + fileName).joinToString("/").lowercase()
                 suffix++
             }
+            if (isAlreadyOrganized(resolver, song, folderSegments, fileName)) {
+                alreadyOrganizedCount++
+                continue
+            }
             usedPaths.add(candidateKey)
 
             moves.add(PlannedMove(song, song.path.resolve(context), folderSegments, fileName))
         }
 
-        return Plan(moves, skipped)
+        return Plan(moves, skipped, alreadyOrganizedCount)
     }
+
+    /**
+     * Whether [song] already sits exactly where [folderSegments]/[fileName] would move it to --
+     * checked directly against the real SAF document tree, not the indexed [Song.path] (which
+     * only reflects the library's last scan and goes stale the moment a reorganize actually
+     * succeeds, since [confirmOrganizeLibrary][org.oxycblt.auxio.music.MusicViewModel.confirmOrganizeLibrary]
+     * re-indexes asynchronously rather than updating [Song.path] in place -- confirmed, reproduced:
+     * without this, re-running the preview right after a successful organize still listed every
+     * song as needing to move). Read-only, unlike [moveOne]'s own walk down the same tree: never
+     * creates a directory that isn't already there, since a preview must never have side effects.
+     */
+    private fun isAlreadyOrganized(
+        resolver: ContentResolver,
+        song: Song,
+        folderSegments: List<String>,
+        fileName: String,
+    ): Boolean =
+        try {
+            // See moveOne's own comment on this same API: index 0 is the SAF tree root, the last
+            // entry is the song's own document, everything between is its ancestor chain.
+            val ids = DocumentsContract.findDocumentPath(resolver, song.uri)?.path
+            val folderIds = ids?.subList(1, ids.size - 1)
+            folderIds != null &&
+                folderIds.size == folderSegments.size &&
+                folderIds.zip(folderSegments).all { (id, expected) ->
+                    queryDisplayName(resolver, DocumentsContract.buildDocumentUriUsingTree(song.uri, id)) ==
+                        expected
+                } &&
+                queryDisplayName(resolver, song.uri) == fileName
+        } catch (e: Exception) {
+            false
+        }
+
+    private fun queryDisplayName(resolver: ContentResolver, uri: Uri): String? =
+        try {
+            resolver
+                .query(uri, arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME), null, null, null)
+                ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+        } catch (e: Exception) {
+            null
+        }
 
     /**
      * Actually performs a reorganization the user has already confirmed via [plan]. Call this off
