@@ -40,6 +40,20 @@ android {
         }
     }
 
+    // Populated by release.yml from repo secrets; left unset for a local assembleRelease, which
+    // then falls through to an unsigned APK rather than failing the build.
+    def releaseKeystorePath = System.getenv("RELEASE_KEYSTORE_PATH")
+    if (releaseKeystorePath) {
+        signingConfigs {
+            release {
+                storeFile file(releaseKeystorePath)
+                storePassword System.getenv("RELEASE_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword System.getenv("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -50,6 +64,10 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+
+            if (releaseKeystorePath) {
+                signingConfig signingConfigs.release
+            }
 
             dependenciesInfo {
                 includeInApk = false
