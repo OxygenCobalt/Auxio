@@ -30,13 +30,13 @@ import android.graphics.Shader
 import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
@@ -47,11 +47,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.math.abs
+import org.ostrichbat2k.usbdac.UsbAudioManager
+import org.ostrichbat2k.usbdac.UsbDacPreferences
+import org.ostrichbat2k.usbdac.control.UsbControlState
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -72,10 +76,6 @@ import org.oxycblt.auxio.playback.ui.swiper.CarouselTransformer
 import org.oxycblt.auxio.playback.ui.swiper.CoverPagerAdapter
 import org.oxycblt.auxio.playback.ui.swiper.UserAwarePagerCallback
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.ostrichbat2k.usbdac.control.UsbControlState
-import org.ostrichbat2k.usbdac.UsbAudioManager
-import org.ostrichbat2k.usbdac.UsbDacPreferences
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.dampen
 import org.oxycblt.auxio.util.recycler
@@ -267,7 +267,11 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
         collectImmediately(playbackModel.pagerQueue, ::updatePager)
-        collectImmediately(usbAudioManager.playbackRoute, usbAudioManager.controlState, ::updateUsbStatus)
+        collectImmediately(
+            usbAudioManager.playbackRoute,
+            usbAudioManager.controlState,
+            ::updateUsbStatus,
+        )
         collectImmediately(usbAudioManager.abxStats) { _ ->
             updateUsbStatus(usbAudioManager.playbackRoute.value, usbAudioManager.controlState.value)
         }
@@ -392,14 +396,17 @@ class PlaybackPanelFragment :
      * format/bitrate is real, file-derived info relevant to every user.
      *
      * Both [UsbAudioManager.PlaybackRoute.Direct] and [UsbAudioManager.PlaybackRoute.Fallback]
-     * carry the file's own real bit depth/sample rate (see [UsbAudioManager.PlaybackRoute
-     * .Fallback]'s own doc comment for why Fallback's fields mean this despite not being what HAL
-     * is actually doing), so both render the same five-segment layout here -- only the leading
-     * path label ("USB" vs. "HAL") differs. The container/codec label and bitrate are always the
-     * file's own, independent of route entirely -- a compressed source's bitrate has no bearing on
-     * the decoded PCM actually reaching either sink.
+     * carry the file's own real bit depth/sample rate (see
+     * [UsbAudioManager.PlaybackRoute .Fallback]'s own doc comment for why Fallback's fields mean
+     * this despite not being what HAL is actually doing), so both render the same five-segment
+     * layout here -- only the leading path label ("USB" vs. "HAL") differs. The container/codec
+     * label and bitrate are always the file's own, independent of route entirely -- a compressed
+     * source's bitrate has no bearing on the decoded PCM actually reaching either sink.
      */
-    private fun updateUsbStatus(route: UsbAudioManager.PlaybackRoute, controlState: UsbControlState?) {
+    private fun updateUsbStatus(
+        route: UsbAudioManager.PlaybackRoute,
+        controlState: UsbControlState?,
+    ) {
         val statusView = requireBinding().playbackUsbStatus
         statusView.visibility = View.VISIBLE
         if (usbSettings.abxTestMode && controlState != null) {
@@ -417,9 +424,21 @@ class PlaybackPanelFragment :
         statusView.text =
             when (route) {
                 is UsbAudioManager.PlaybackRoute.Direct ->
-                    formatStatus("USB", formatLabel, route.bitDepth, route.sampleRateHz, bitrateLabel)
+                    formatStatus(
+                        "USB",
+                        formatLabel,
+                        route.bitDepth,
+                        route.sampleRateHz,
+                        bitrateLabel,
+                    )
                 is UsbAudioManager.PlaybackRoute.Fallback ->
-                    formatStatus("HAL", formatLabel, route.bitDepth, route.sampleRateHz, bitrateLabel)
+                    formatStatus(
+                        "HAL",
+                        formatLabel,
+                        route.bitDepth,
+                        route.sampleRateHz,
+                        bitrateLabel,
+                    )
                 UsbAudioManager.PlaybackRoute.Switching -> "Switching audio output…"
             }
     }
@@ -431,16 +450,22 @@ class PlaybackPanelFragment :
         sampleRateHz: Int,
         bitrateLabel: String?,
     ): String =
-        listOfNotNull(pathLabel, formatLabel, bitDepth?.let { "$it-bit" }, bitrateLabel, formatSampleRate(sampleRateHz))
+        listOfNotNull(
+                pathLabel,
+                formatLabel,
+                bitDepth?.let { "$it-bit" },
+                bitrateLabel,
+                formatSampleRate(sampleRateHz),
+            )
             .joinToString(" · ")
 
     /**
      * Fires on every track change while an ABX test is running (see
      * [UsbAudioManager.abxPendingGuess]'s doc comment) -- prompts about whichever track just
-     * finished, never the one that's now playing. Pauses first: the queue has already advanced
-     * to the next (independently, freshly-rolled) track by this point, and letting it keep
-     * playing while the user is still deciding about the *previous* one would both be a
-     * distraction and risk them answering about the wrong track entirely.
+     * finished, never the one that's now playing. Pauses first: the queue has already advanced to
+     * the next (independently, freshly-rolled) track by this point, and letting it keep playing
+     * while the user is still deciding about the *previous* one would both be a distraction and
+     * risk them answering about the wrong track entirely.
      */
     private fun updateAbxPendingGuess(pending: Boolean?) {
         if (pending == null) return
@@ -451,9 +476,9 @@ class PlaybackPanelFragment :
     /**
      * Grades the guess immediately via [UsbAudioManager.submitAbxGuess], which also consumes the
      * trial -- this dialog can't be reopened for the same track after a guess, same as a real ABX
-     * test only counting one answer per trial. Not cancelable: a dismissed-without-answering
-     * trial would otherwise silently vanish (the next track change overwrites it) with no
-     * indication anything was missed.
+     * test only counting one answer per trial. Not cancelable: a dismissed-without-answering trial
+     * would otherwise silently vanish (the next track change overwrites it) with no indication
+     * anything was missed.
      */
     private fun showAbxGuessDialog() {
         val context = requireContext()
@@ -462,20 +487,25 @@ class PlaybackPanelFragment :
             .setTitle(R.string.lbl_abx_dialog_title)
             .setItems(
                 arrayOf(
-                    getString(R.string.lbl_abx_guess_direct), getString(R.string.lbl_abx_guess_fallback))) { _, which ->
-                    val guessedDirect = which == 0
-                    val correct = usbAudioManager.submitAbxGuess(guessedDirect) ?: return@setItems
-                    // The guess itself was right or wrong about which route was live -- so the
-                    // actual route is the guess when correct, and its opposite when not.
-                    val actualWasDirect = if (correct) guessedDirect else !guessedDirect
-                    val actualLabel =
-                        getString(
-                            if (actualWasDirect) R.string.lbl_abx_route_direct else R.string.lbl_abx_route_fallback)
-                    val message =
-                        if (correct) getString(R.string.lbl_abx_correct, actualLabel)
-                        else getString(R.string.lbl_abx_incorrect, actualLabel)
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                }
+                    getString(R.string.lbl_abx_guess_direct),
+                    getString(R.string.lbl_abx_guess_fallback),
+                )
+            ) { _, which ->
+                val guessedDirect = which == 0
+                val correct = usbAudioManager.submitAbxGuess(guessedDirect) ?: return@setItems
+                // The guess itself was right or wrong about which route was live -- so the
+                // actual route is the guess when correct, and its opposite when not.
+                val actualWasDirect = if (correct) guessedDirect else !guessedDirect
+                val actualLabel =
+                    getString(
+                        if (actualWasDirect) R.string.lbl_abx_route_direct
+                        else R.string.lbl_abx_route_fallback
+                    )
+                val message =
+                    if (correct) getString(R.string.lbl_abx_correct, actualLabel)
+                    else getString(R.string.lbl_abx_incorrect, actualLabel)
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
             .show()
     }
 

@@ -99,6 +99,7 @@
     <string name="clr_brown">茶</string>
     <string name="fmt_selected">%d 個のアイテムが選択されています</string>
     <string name="fmt_disc_no">ディスク %d</string>
+    <string name="fmt_disc_no_subtitle">ディスク %1$d – %2$s</string>
     <string name="fmt_lib_song_count">読み込みが完了した曲数: %d</string>
     <plurals name="fmt_artist_count">
         <item quantity="other">%d 人のアーティスト</item>

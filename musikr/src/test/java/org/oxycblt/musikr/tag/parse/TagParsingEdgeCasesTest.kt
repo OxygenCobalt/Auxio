@@ -232,6 +232,7 @@ class TagParsingEdgeCasesTest {
         assertNull(metadata.date())
     }
 
+    @Suppress("LongParameterList")
     private fun createTestMetadata(
         id3v2Tags: Map<String, List<String>> = emptyMap(),
         xiphTags: Map<String, List<String>> = emptyMap(),
@@ -241,8 +242,9 @@ class TagParsingEdgeCasesTest {
         bitrateKbps: Int = 320,
         sampleRateHz: Int = 44100,
         mimeType: String = "audio/mpeg",
+        bitDepth: Int = 16,
     ): Metadata {
-        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz, 0)
+        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz, bitDepth)
         return Metadata(id3v2Tags, xiphTags, mp4Tags, cover, properties)
     }
 }

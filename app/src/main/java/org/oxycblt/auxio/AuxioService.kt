@@ -154,13 +154,13 @@ class AuxioService :
      * Wraps [startForeground] to tolerate Android 12+ refusing the start outright (e.g. this
      * service wasn't started from an allowed foreground-equivalent context) -- confirmed,
      * reproduced: an auto-reindex triggered by a watched folder changing while the app was
-     * backgrounded threw [android.app.ForegroundServiceStartNotAllowedException] right here,
-     * and with nothing catching it, that propagated all the way up through the indexing
-     * listener chain and aborted the *entire* reindex job, not just this notification --
-     * silently defeating auto-refresh for the single most common real-world case it exists for
-     * (the app not being in the foreground when a file change is noticed). Failing to show this
-     * purely-informational notification should never be allowed to take down the actual
-     * indexing work it's merely describing.
+     * backgrounded threw [android.app.ForegroundServiceStartNotAllowedException] right here, and
+     * with nothing catching it, that propagated all the way up through the indexing listener chain
+     * and aborted the *entire* reindex job, not just this notification -- silently defeating
+     * auto-refresh for the single most common real-world case it exists for (the app not being in
+     * the foreground when a file change is noticed). Failing to show this purely-informational
+     * notification should never be allowed to take down the actual indexing work it's merely
+     * describing.
      */
     private fun startForegroundSafely(id: Int, notification: Notification) {
         try {

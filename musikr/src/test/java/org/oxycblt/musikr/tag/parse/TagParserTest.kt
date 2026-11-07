@@ -122,6 +122,9 @@ class TagParserTest {
                     mapOf(
                         "TXXX:MUSICBRAINZ RELEASE TRACK ID" to listOf("track-id-123"),
                         "TXXX:MUSICBRAINZ ALBUM ID" to listOf("album-id-456"),
+                        // Artist MBIDs are only used alongside artist names, otherwise we fall
+                        // back to composer tags entirely.
+                        "TPE1" to listOf("Artist"),
                         "TXXX:MUSICBRAINZ ARTIST ID" to listOf("artist-id-789"),
                         "TXXX:MUSICBRAINZ ALBUM ARTIST ID" to listOf("album-artist-id-012"),
                     )
@@ -171,6 +174,7 @@ class TagParserTest {
         assertEquals(listOf("composer-artist-mbid"), tags.artistMusicBrainzIds)
     }
 
+    @Suppress("LongParameterList")
     private fun createTestMetadata(
         id3v2Tags: Map<String, List<String>> = emptyMap(),
         xiphTags: Map<String, List<String>> = emptyMap(),
@@ -180,8 +184,9 @@ class TagParserTest {
         bitrateKbps: Int = 320,
         sampleRateHz: Int = 44100,
         mimeType: String = "audio/mpeg",
+        bitDepth: Int = 16,
     ): Metadata {
-        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz, 0)
+        val properties = Properties(mimeType, durationMs, bitrateKbps, sampleRateHz, bitDepth)
         return Metadata(id3v2Tags, xiphTags, mp4Tags, cover, properties)
     }
 }

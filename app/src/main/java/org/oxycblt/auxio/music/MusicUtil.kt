@@ -173,10 +173,10 @@ fun Format.resolve(context: Context): String =
     }
 
 /**
- * A short acronym/extension (e.g. "FLAC", "MP3", "M4A") instead of [resolve]'s full technical
- * name -- for compact spots like the Now Playing status row, where "Free Lossless Audio Codec
- * (FLAC)" would overflow. These are acronyms, not prose, so unlike [resolve] they're not run
- * through string resources for localization.
+ * A short acronym/extension (e.g. "FLAC", "MP3", "M4A") instead of [resolve]'s full technical name
+ * -- for compact spots like the Now Playing status row, where "Free Lossless Audio Codec (FLAC)"
+ * would overflow. These are acronyms, not prose, so unlike [resolve] they're not run through string
+ * resources for localization.
  */
 fun Format.resolveShort(): String =
     when (this) {

@@ -169,7 +169,8 @@ constructor(
 
     // Set by onConfigure, used by queueInput -- was hardcoded to exactly 2 (16-bit), which meant
     // this processor -- sitting in the AudioProcessor chain ahead of *every* output path,
-    // DAC or speaker -- rejected anything else outright (AudioProcessor.UnhandledAudioFormatException),
+    // DAC or speaker -- rejected anything else outright
+    // (AudioProcessor.UnhandledAudioFormatException),
     // forcing the renderer to decode down to 16-bit even for a genuinely 24-bit source so this
     // processor could accept it at all. Confirmed, reproduced: a real 24-bit/96kHz FLAC
     // (ffprobe: bits_per_raw_sample=24) was still seen by UsbAudioOutputProvider as a 16-bit

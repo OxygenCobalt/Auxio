@@ -38,14 +38,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import org.ostrichbat2k.usbdac.UsbAudioManager
+import org.ostrichbat2k.usbdac.UsbDacPreferences
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.music.LibraryOrganizer
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.DeferredPlayback
 import org.oxycblt.auxio.ui.UISettings
-import org.ostrichbat2k.usbdac.UsbAudioManager
-import org.ostrichbat2k.usbdac.UsbDacPreferences
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.showToast
@@ -123,7 +123,9 @@ class MainActivity : AppCompatActivity() {
                     musicModel.deleteRequest.flow.collect { intentSender ->
                         if (intentSender == null) return@collect
                         musicModel.deleteRequest.consume()
-                        deleteRequestLauncher.launch(IntentSenderRequest.Builder(intentSender).build())
+                        deleteRequestLauncher.launch(
+                            IntentSenderRequest.Builder(intentSender).build()
+                        )
                     }
                 }
                 launch {
@@ -202,7 +204,11 @@ class MainActivity : AppCompatActivity() {
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.lbl_confirm_delete_song)
             .setMessage(
-                getString(R.string.fmt_deletion_info, getPlural(R.plurals.fmt_song_count, songs.size)))
+                getString(
+                    R.string.fmt_deletion_info,
+                    getPlural(R.plurals.fmt_song_count, songs.size),
+                )
+            )
             .setPositiveButton(R.string.lbl_delete) { _, _ -> musicModel.confirmDeleteSongs(songs) }
             .setNegativeButton(R.string.lbl_cancel, null)
             .show()

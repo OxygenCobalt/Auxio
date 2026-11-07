@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ExploreStep.kt$ExploreStepImpl$file.mimeType == M3U.MIME_TYPE || (!file.mimeType.startsWith("audio/") &amp;&amp; file.mimeType != "application/ogg" &amp;&amp; file.mimeType != "application/x-ogg" &amp;&amp; file.mimeType != "application/octet-stream")</ID>
+    <ID>CyclomaticComplexMethod:ExploreStep.kt$ExploreStepImpl$override suspend fun explore( scope: CoroutineScope, explored: Channel&lt;Explored>, ): Deferred&lt;Result&lt;Unit>></ID>
+    <ID>CyclomaticComplexMethod:ExtractStep.kt$ExtractStepImpl$override suspend fun extract( scope: CoroutineScope, explored: Channel&lt;Explored>, extracted: Channel&lt;Extracted>, ): Deferred&lt;Result&lt;Unit>></ID>
+    <ID>CyclomaticComplexMethod:Music.kt$Music.UID.Companion$fun fromString(uid: String): UID?</ID>
+    <ID>CyclomaticComplexMethod:MusicGraph.kt$MusicGraph$fun renderToGraphviz(context: Context, fileName: String = "music_graph.dot")</ID>
+    <ID>CyclomaticComplexMethod:MusicGraph.kt$MusicGraphBuilderImpl$override fun build(): MusicGraph</ID>
+    <ID>CyclomaticComplexMethod:TagFields.kt$internal fun Metadata.albumArtistNames()</ID>
+    <ID>CyclomaticComplexMethod:TagFields.kt$internal fun Metadata.albumArtistSortNames()</ID>
+    <ID>CyclomaticComplexMethod:TagFields.kt$internal fun Metadata.artistSortNames()</ID>
+    <ID>CyclomaticComplexMethod:TagFields.kt$internal fun Metadata.composerSortNames()</ID>
+    <ID>EmptyFunctionBlock:EmbeddedCovers.kt$EmbeddedCovers${}</ID>
+    <ID>ForbiddenComment:M3U.kt$M3UImpl$// TODO: See if repeating #EXTART and #EXTGEN is legal</ID>
+    <ID>ForbiddenComment:M3U.kt$M3UImpl$// TODO: Simplify this logic</ID>
+    <ID>ForbiddenComment:Music.kt$Music.UID.Item.SONG$// TODO: Introduce new UID format that removes these.</ID>
+    <ID>ForbiddenComment:Naming.kt$// TODO: Consider how you want to handle whitespace and "gaps" in names.</ID>
+    <ID>ForbiddenComment:Naming.kt$IntelligentKnownName$// TODO: This routine is consuming much of the song building runtime, find a way to</ID>
+    <ID>ForbiddenComment:ParseUtil.kt$// TODO: Remove the escaping checks, it's too expensive to do this for every single tag.</ID>
+    <ID>ForbiddenComment:PlaylistDatabase.kt$// TODO: Handle playlist defragmentation? I really don't want dead songs to accumulate in this</ID>
+    <ID>ForbiddenComment:TagFields.kt$// TODO: Handle dates that are in "January" because the actual specific release date</ID>
+    <ID>ForbiddenComment:TagFields.kt$// TODO: Show original and normal dates side-by-side</ID>
+    <ID>LongMethod:ExploreStep.kt$ExploreStepImpl$override suspend fun explore( scope: CoroutineScope, explored: Channel&lt;Explored>, ): Deferred&lt;Result&lt;Unit>></ID>
+    <ID>LongMethod:ExtractStep.kt$ExtractStepImpl$override suspend fun extract( scope: CoroutineScope, explored: Channel&lt;Explored>, extracted: Channel&lt;Extracted>, ): Deferred&lt;Result&lt;Unit>></ID>
+    <ID>LongMethod:MediaStore.kt$MediaStore$@OptIn(ExperimentalCoroutinesApi::class) override suspend fun explore(files: Channel&lt;File>): Deferred&lt;Result&lt;Unit>></ID>
+    <ID>LongMethod:MusicGraph.kt$MusicGraph$fun renderToGraphviz(context: Context, fileName: String = "music_graph.dot")</ID>
+    <ID>LongMethod:MusicGraph.kt$MusicGraphBuilderImpl$override fun build(): MusicGraph</ID>
+    <ID>LongMethod:SAF.kt$SAF$private fun CoroutineScope.exploreDirectoryImpl( rootUri: Uri, treeDocumentId: String, relativePath: Path, parent: Deferred&lt;Directory>?, exclude: Set&lt;Path>, files: Channel&lt;File>, ): Deferred&lt;Result&lt;Unit>></ID>
+    <ID>LongMethod:TagInterpreter.kt$TagInterpreterImpl$override fun interpret(song: RawSong): PreSong</ID>
+    <ID>LongParameterList:SAF.kt$SAF$( rootUri: Uri, treeDocumentId: String, relativePath: Path, parent: Deferred&lt;Directory>?, exclude: Set&lt;Path>, files: Channel&lt;File>, )</ID>
+    <ID>LongParameterList:TagFieldsTest.kt$TagFieldsTest$( id3v2Tags: Map&lt;String, List&lt;String>> = emptyMap(), xiphTags: Map&lt;String, List&lt;String>> = emptyMap(), mp4Tags: Map&lt;String, List&lt;String>> = emptyMap(), cover: ByteArray? = null, durationMs: Long = 1000, bitrateKbps: Int = 320, sampleRateHz: Int = 44100, mimeType: String = "audio/mpeg", )</ID>
+    <ID>LongParameterList:TagParserTest.kt$TagParserTest$( id3v2Tags: Map&lt;String, List&lt;String>> = emptyMap(), xiphTags: Map&lt;String, List&lt;String>> = emptyMap(), mp4Tags: Map&lt;String, List&lt;String>> = emptyMap(), cover: ByteArray? = null, durationMs: Long = 1000, bitrateKbps: Int = 320, sampleRateHz: Int = 44100, mimeType: String = "audio/mpeg", )</ID>
+    <ID>LongParameterList:TagParsingEdgeCasesTest.kt$TagParsingEdgeCasesTest$( id3v2Tags: Map&lt;String, List&lt;String>> = emptyMap(), xiphTags: Map&lt;String, List&lt;String>> = emptyMap(), mp4Tags: Map&lt;String, List&lt;String>> = emptyMap(), cover: ByteArray? = null, durationMs: Long = 1000, bitrateKbps: Int = 320, sampleRateHz: Int = 44100, mimeType: String = "audio/mpeg", )</ID>
+    <ID>LoopWithTooManyJumpStatements:M3U.kt$M3UImpl$while</ID>
+    <ID>LoopWithTooManyJumpStatements:SAF.kt$SAF$while</ID>
+    <ID>MagicNumber:AlbumImpl.kt$AlbumImpl$31</ID>
+    <ID>MagicNumber:ArtistImpl.kt$ArtistImpl$31</ID>
+    <ID>MagicNumber:CacheDatabase.kt$CacheWriteDao$999</ID>
+    <ID>MagicNumber:Date.kt$Date$3</ID>
+    <ID>MagicNumber:Date.kt$Date$4</ID>
+    <ID>MagicNumber:Date.kt$Date$5</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$10000000</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$100000000</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$12</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$23</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$3</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$31</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$4</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$5</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$59</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$6</ID>
+    <ID>MagicNumber:Date.kt$Date.Companion$7</ID>
+    <ID>MagicNumber:GenreImpl.kt$GenreImpl$31</ID>
+    <ID>MagicNumber:ID3.kt$3</ID>
+    <ID>MagicNumber:LangUtil.kt$16</ID>
+    <ID>MagicNumber:LangUtil.kt$24</ID>
+    <ID>MagicNumber:LangUtil.kt$8</ID>
+    <ID>MagicNumber:MediaStore.kt$MediaStore$1000</ID>
+    <ID>MagicNumber:Music.kt$Music.UID$31</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$0xFF</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$10</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$11</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$12</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$13</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$14</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$15</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$16</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$24</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$3</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$32</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$4</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$40</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$48</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$5</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$56</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$6</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$7</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$8</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Companion$9</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Item.ALBUM$0xA10A</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Item.ARTIST$0xA109</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Item.GENRE$0xA108</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Item.PLAYLIST$0xA107</ID>
+    <ID>MagicNumber:Music.kt$Music.UID.Item.SONG$0xA10B</ID>
+    <ID>MagicNumber:Naming.kt$IntelligentKnownName$3</ID>
+    <ID>MagicNumber:Naming.kt$IntelligentKnownName$4</ID>
+    <ID>MagicNumber:NativeInputStream.kt$NativeInputStream$2</ID>
+    <ID>MagicNumber:PlaylistDatabase.kt$PlaylistDatabase.Companion.&lt;no name provided>$30</ID>
+    <ID>MagicNumber:PlaylistDatabase.kt$PlaylistDatabase.Companion.&lt;no name provided>$75</ID>
+    <ID>MagicNumber:PlaylistImpl.kt$PlaylistImpl$31</ID>
+    <ID>MagicNumber:SAF.kt$SAF.JoinAddedMs$1000</ID>
+    <ID>MagicNumber:SongImpl.kt$SongImpl$31</ID>
+    <ID>MagicNumber:TagFields.kt$256f</ID>
+    <ID>MagicNumber:TagFields.kt$3</ID>
+    <ID>MagicNumber:TagFields.kt$4</ID>
+    <ID>MagicNumber:TagFields.kt$5</ID>
+    <ID>MaxLineLength:M3U.kt$M3UImpl$"/${song.path.volume.components?.let { it.unixString + "/" } ?: ""}${song.path.components.unixString}"</ID>
+    <ID>MaxLineLength:M3U.kt$M3UImpl$"C:\\\\${song.path.volume.components?.let { it.windowsString + "\\" } ?: ""}${song.path.components.windowsString}"</ID>
+    <ID>NestedBlockDepth:M3U.kt$M3UImpl$override fun read(stream: InputStream, workingDirectory: Path): ImportedPlaylist?</ID>
+    <ID>NestedBlockDepth:M3U.kt$M3UImpl$override fun write( playlist: Playlist, outputStream: OutputStream, workingDirectory: Path, config: ExportConfig, )</ID>
+    <ID>ReturnCount:DBCache.kt$DBCache$override suspend fun read(file: File): CacheResult</ID>
+    <ID>ReturnCount:Date.kt$Date$override fun compareTo(other: Date): Int</ID>
+    <ID>ReturnCount:Date.kt$Date$private fun StringBuilder.appendDate(): StringBuilder</ID>
+    <ID>ReturnCount:Date.kt$Date.Companion$private fun transformTokens(src: List&lt;Int>, dst: MutableList&lt;Int>)</ID>
+    <ID>ReturnCount:DocumentPathFactory.kt$DocumentPathFactoryImpl$private fun fromDocumentId(path: String): Path?</ID>
+    <ID>ReturnCount:ExternalPlaylistManager.kt$ExternalPlaylistManagerImpl$override suspend fun import(uri: Uri): ImportedPlaylist?</ID>
+    <ID>ReturnCount:FSCovers.kt$MutableFSCovers$override suspend fun create(file: File, metadata: Metadata): CoverResult&lt;FDCover></ID>
+    <ID>ReturnCount:Format.kt$Format.Companion$internal fun infer(containerMimeType: String, codecMimeType: String): Format</ID>
+    <ID>ReturnCount:ID3.kt$private fun String.parseId3v2Genre(): List&lt;String>?</ID>
+    <ID>ReturnCount:Location.kt$Location.Unopened$fun open(context: Context): Opened?</ID>
+    <ID>ReturnCount:MediaStorePathInterpreter.kt$VolumeMediaStorePathInterpreter.Factory$override fun createSelector( paths: List&lt;Path> ): MediaStorePathInterpreter.Factory.Selector?</ID>
+    <ID>ReturnCount:Music.kt$Music.UID.Companion$fun fromString(uid: String): UID?</ID>
+    <ID>ReturnCount:MusicGraph.kt$MusicGraphBuilderImpl$private fun simplifyAlbumCluster(cluster: Collection&lt;AlbumVertex>)</ID>
+    <ID>ReturnCount:Name.kt$Token$override fun compareTo(other: Token): Int</ID>
+    <ID>ReturnCount:SAF.kt$SAF.JoinAddedMs$override suspend fun resolve(): Long?</ID>
+    <ID>ReturnCount:StoredCovers.kt$MutableStoredCovers$override suspend fun create(file: File, metadata: Metadata): CoverResult&lt;FDCover></ID>
+    <ID>ReturnCount:StoredCovers.kt$StoredCovers$override suspend fun obtain(id: String): CoverResult&lt;FDCover></ID>
+    <ID>SpreadOperator:ChainedCovers.kt$MutableChainedCovers$(*many)</ID>
+    <ID>SpreadOperator:LangUtil.kt$(method, *params.map { it.java }.toTypedArray())</ID>
+    <ID>SwallowedException:CoverStorage.kt$FSCoverStorage$e: IOException</ID>
+    <ID>SwallowedException:CoverStorage.kt$FSStoredCover$e: IOException</ID>
+    <ID>SwallowedException:ExternalPlaylistManager.kt$ExternalPlaylistManagerImpl$e: Exception</ID>
+    <ID>SwallowedException:FSCovers.kt$FSCovers$e: Exception</ID>
+    <ID>SwallowedException:LangUtil.kt$e: IllegalArgumentException</ID>
+    <ID>SwallowedException:Location.kt$Location.Unopened$e: Exception</ID>
+    <ID>SwallowedException:SAF.kt$SAF.JoinAddedMs$e: Exception</ID>
+    <ID>SwallowedException:StoredCovers.kt$MutableStoredCovers$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ExternalPlaylistManager.kt$ExternalPlaylistManagerImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FSCovers.kt$FSCovers$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FlowUtil.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LangUtil.kt$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:Location.kt$Location.Unopened$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NativeInputStream.kt$NativeInputStream$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SAF.kt$SAF.JoinAddedMs$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:StoredCovers.kt$MutableStoredCovers$e: Exception</ID>
+    <ID>TooManyFunctions:LangUtil.kt$org.oxycblt.musikr.util.LangUtil.kt</ID>
+    <ID>TooManyFunctions:LibraryImpl.kt$LibraryImpl : MutableLibrary</ID>
+    <ID>TooManyFunctions:MusicGraph.kt$MusicGraphBuilderImpl : Builder</ID>
+    <ID>TooManyFunctions:PlaylistDatabase.kt$PlaylistDao</ID>
+    <ID>TooManyFunctions:TagFields.kt$org.oxycblt.musikr.tag.parse.TagFields.kt</ID>
+    <ID>UnusedPrivateProperty:LangUtil.kt$i</ID>
+    <ID>UnusedPrivateProperty:M3U.kt$M3UImpl$i</ID>
+  </CurrentIssues>
+</SmellBaseline>

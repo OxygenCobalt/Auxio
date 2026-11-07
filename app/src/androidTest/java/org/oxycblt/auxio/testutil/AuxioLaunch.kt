@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.testutil
 
 import android.app.Instrumentation
@@ -28,8 +28,8 @@ import androidx.test.uiautomator.Until
  * Launches the app under test and waits for it to reach the foreground, without
  * `ActivityScenarioRule`. For tests where the app process may legitimately die mid-run (a real
  * native crash is the thing under test) -- `ActivityScenarioRule`'s teardown does instrumentation
- * IPC back to the activity it launched, which is an extra failure mode layered on top of the
- * crash itself once that activity's process is gone.
+ * IPC back to the activity it launched, which is an extra failure mode layered on top of the crash
+ * itself once that activity's process is gone.
  */
 object AuxioLaunch {
     fun launchAndWaitForForeground(

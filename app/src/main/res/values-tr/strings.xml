@@ -120,6 +120,7 @@
     <string name="clr_blue">Mavi</string>
     <string name="clr_indigo">Çivit</string>
     <string name="fmt_disc_no">Disk %d</string>
+    <string name="fmt_disc_no_subtitle">Disk %1$d – %2$s</string>
     <string name="clr_brown">Kahverengi</string>
     <string name="clr_grey">Gri</string>
     <string name="clr_dynamic">Dinamik</string>

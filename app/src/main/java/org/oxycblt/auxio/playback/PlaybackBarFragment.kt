@@ -26,6 +26,7 @@ import android.view.animation.LinearInterpolator
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import org.ostrichbat2k.usbdac.UsbAudioManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -34,7 +35,6 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.ostrichbat2k.usbdac.UsbAudioManager
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 

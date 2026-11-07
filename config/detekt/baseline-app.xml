@@ -1,0 +1,332 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:AccentGridLayoutManager.kt$AccentGridLayoutManager$width > 0 &amp;&amp; height > 0 &amp;&amp; (lastWidth != width || lastHeight != height)</ID>
+    <ID>ComplexCondition:CarouselTransformer.kt$CarouselTransformer$currentMask.left != rect.left || currentMask.top != rect.top || currentMask.right != rect.right || currentMask.bottom != rect.bottom</ID>
+    <ID>ComplexCondition:UsbPipelineFragment.kt$UsbPipelineFragment$stats != null &amp;&amp; previous != null &amp;&amp; stats.atMs > previous.atMs &amp;&amp; stats.urbsSubmitted >= previous.urbsSubmitted</ID>
+    <ID>CyclomaticComplexMethod:CarouselTransformer.kt$CarouselTransformer$override fun transformPage(page: View, position: Float)</ID>
+    <ID>CyclomaticComplexMethod:DetailGenerator.kt$DetailGeneratorImpl$override fun artist(uid: Music.UID): Detail&lt;Artist>?</ID>
+    <ID>CyclomaticComplexMethod:FastScrollRecyclerView.kt$FastScrollRecyclerView$private fun onItemTouch(event: MotionEvent): Boolean</ID>
+    <ID>CyclomaticComplexMethod:GalleryComposeFetcher.kt$GalleryComposeFetcher$override fun compose(bitmaps: List&lt;Bitmap>, size: Int, random: Random): Bitmap</ID>
+    <ID>CyclomaticComplexMethod:MediaSessionInterface.kt$MediaSessionInterface$@Suppress("DEPRECATION") private fun expandSearchInfoCommand( query: String?, extras: Bundle, library: Library, ): PlaybackCommand?</ID>
+    <ID>CyclomaticComplexMethod:MusicUtil.kt$fun Format.resolve(context: Context): String</ID>
+    <ID>CyclomaticComplexMethod:MusicUtil.kt$fun ReleaseType.resolve(context: Context)</ID>
+    <ID>CyclomaticComplexMethod:PlaybackStateManager.kt$PlaybackStateManagerImpl$@Synchronized override fun ack(stateHolder: PlaybackStateHolder, ack: StateAck)</ID>
+    <ID>CyclomaticComplexMethod:SearchViewModel.kt$SearchViewModel$private suspend fun searchImpl(library: Library, query: String): List&lt;Item></ID>
+    <ID>CyclomaticComplexMethod:TabNode.kt$TabNode.Companion$fun fromString(str: String): TabNode?</ID>
+    <ID>CyclomaticComplexMethod:UsbCapabilitiesFragment.kt$UsbCapabilitiesFragment$private fun update(capabilities: UsbDeviceCapabilities?, controlState: UsbControlState?)</ID>
+    <ID>CyclomaticComplexMethod:UsbPreferenceFragment.kt$UsbPreferenceFragment$private fun updateControls(state: UsbControlState?)</ID>
+    <ID>ForbiddenComment:AddToPlaylistDialog.kt$AddToPlaylistDialog$// TODO: This is a temporary fix. Eventually I want to make this navigate away and</ID>
+    <ID>ForbiddenComment:AlbumDetailListAdapter.kt$DiscHeaderViewHolder.Companion$// TODO: Get all viewholders to inflate anchored to parent</ID>
+    <ID>ForbiddenComment:Auxio.kt$Auxio$// TODO: Switch to static shortcuts</ID>
+    <ID>ForbiddenComment:AuxioService.kt$AuxioService$// TODO: Start command occurring from a foreign service basically implies a detached</ID>
+    <ID>ForbiddenComment:BaseBottomSheetBehavior.kt$BaseBottomSheetBehavior$// TODO: Just use another library. Tired of Hilt.</ID>
+    <ID>ForbiddenComment:BetterShuffleOrder.kt$BetterShuffleOrder$// TODO: Fix this scuffed hacky logic</ID>
+    <ID>ForbiddenComment:BetterShuffleOrder.kt$BetterShuffleOrder$// TODO: Play next ordering needs to persist in unshuffle</ID>
+    <ID>ForbiddenComment:BluetoothHeadsetReceiver.kt$BluetoothHeadsetReceiver$// TODO: Initialize the service (Permission workflow must be figured out)</ID>
+    <ID>ForbiddenComment:CoverView.kt$CoverView$// FIXME: I think this makes it blurry. Or maybe the animated drawable is blurry itself.</ID>
+    <ID>ForbiddenComment:Data.kt$// TODO: Consider breaking this up into sealed classes for individual adapters</ID>
+    <ID>ForbiddenComment:DetailViewModel.kt$DetailViewModel$// TODO: The user could probably press some kind of button if they were fast enough.</ID>
+    <ID>ForbiddenComment:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$// TODO: Dislike the UX implications of this, I feel should I bite the bullet</ID>
+    <ID>ForbiddenComment:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$// TODO: Introduce a better state management system rather than do something finicky like</ID>
+    <ID>ForbiddenComment:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$// TODO: Replace with no skipping and a notification instead</ID>
+    <ID>ForbiddenComment:FrameworkUtil.kt$// TODO: Fix ViewPager2 RTL Support</ID>
+    <ID>ForbiddenComment:LocationsDialog.kt$LocationsDialog$// TODO: Add failure mode for introduction of third-party filters in system loader</ID>
+    <ID>ForbiddenComment:MainFragment.kt$MainFragment$// FIXME: This is a consequence of sharing events across several consumers. There has to be</ID>
+    <ID>ForbiddenComment:MediaButtonReceiver.kt$MediaButtonReceiver$// TODO: Figure this out</ID>
+    <ID>ForbiddenComment:MediaButtonReceiver.kt$MediaButtonReceiver$// TODO: Think I finally have an alternative with the changes I made to accomodate</ID>
+    <ID>ForbiddenComment:MediaSessionInterface.kt$MediaSessionInterface$// TODO: Error out when we can't correctly resolve the query</ID>
+    <ID>ForbiddenComment:MenuDialogFragment.kt$MenuDialogFragment$// TODO: This should change if the app is 100% migrated to menu dialogs</ID>
+    <ID>ForbiddenComment:MusicRepository.kt$MusicRepositoryImpl$// TODO: Remove this once you start work on kindred.</ID>
+    <ID>ForbiddenComment:MusicSettings.kt$MusicSettingsImpl$// TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"</ID>
+    <ID>ForbiddenComment:MusicSettings.kt$MusicSettingsImpl$// TODO: Temporary!!! This is really dumb, just need to ship a workaround for this rn</ID>
+    <ID>ForbiddenComment:NewPlaylistDialog.kt$NewPlaylistDialog$// TODO: Navigate to playlist if there are songs in it</ID>
+    <ID>ForbiddenComment:PersistenceDatabase.kt$PlaybackState$// TODO: Figure out how to get RepeatMode to map to an int instead of a string</ID>
+    <ID>ForbiddenComment:PlaybackPanelFragment.kt$PlaybackPanelFragment$// FIXME: Old code!! Maybe not necessary anymore?</ID>
+    <ID>ForbiddenComment:PlaybackPanelFragment.kt$PlaybackPanelFragment$// TODO: Add better playback button accessibility</ID>
+    <ID>ForbiddenComment:PlaybackPanelFragment.kt$PlaybackPanelFragment$// TODO: Custom overscroll?</ID>
+    <ID>ForbiddenComment:PlaybackServiceFragment.kt$PlaybackServiceFragment$// TODO: Possibly also force to go foreground?</ID>
+    <ID>ForbiddenComment:PlaylistPickerViewModel.kt$PlaylistPickerViewModel$// TODO: Add music syncing for other playlist states here</ID>
+    <ID>ForbiddenComment:PlaylistPickerViewModel.kt$PlaylistPickerViewModel$// TODO: Add this guard to the rest of the methods here</ID>
+    <ID>ForbiddenComment:QueueAdapter.kt$QueueAdapter$// TODO: Don't update when the index has not moved.</ID>
+    <ID>ForbiddenComment:QueueAdapter.kt$QueueAdapter$// TODO: Optimize this by only updating the range between old and new indices?</ID>
+    <ID>ForbiddenComment:RootPreferenceFragment.kt$RootPreferenceFragment$// TODO: These seem like good things to put into a side navigation view, if I choose to</ID>
+    <ID>ForbiddenComment:SecondsView.kt$SecondsView$// TODO: might want to change this</ID>
+    <ID>ForbiddenComment:SelectionFragment.kt$SelectionFragment$// TODO: Re-add the automatic selection handling</ID>
+    <ID>ForbiddenComment:SelectionIndicatorAdapter.kt$SelectionIndicatorAdapter$// TODO: Perhaps add an optimization that allows me to avoid the O(n) iteration</ID>
+    <ID>ForbiddenComment:Settings.kt$Settings.Impl$// FIXME: Settings initialization firing the listener.</ID>
+    <ID>ForbiddenComment:WavySlider.kt$WavySlider$// TODO: Could move it inside the pkg honestly</ID>
+    <ID>LongMethod:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$override fun handleDeferred(action: DeferredPlayback): Boolean</ID>
+    <ID>LongMethod:FastScrollRecyclerView.kt$FastScrollRecyclerView$private fun onPreDraw()</ID>
+    <ID>LongMethod:GalleryComposeFetcher.kt$GalleryComposeFetcher$override fun compose(bitmaps: List&lt;Bitmap>, size: Int, random: Random): Bitmap</ID>
+    <ID>LongMethod:LocationsDialog.kt$LocationsDialog$override fun onBindingCreated( binding: DialogMusicLocationsBinding, savedInstanceState: Bundle?, )</ID>
+    <ID>LongMethod:MainFragment.kt$MainFragment$@SuppressLint("PrivateResource") override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:MainFragment.kt$MainFragment$override fun onPreDraw(): Boolean</ID>
+    <ID>LongMethod:MediaSessionInterface.kt$MediaSessionInterface$@Suppress("DEPRECATION") private fun expandSearchInfoCommand( query: String?, extras: Bundle, library: Library, ): PlaybackCommand?</ID>
+    <ID>LongMethod:PlaybackPanelFragment.kt$PlaybackPanelFragment$override fun onBindingCreated( binding: FragmentPlaybackPanelBinding, savedInstanceState: Bundle?, )</ID>
+    <ID>LongMethod:PlaybackStateManager.kt$PlaybackStateManagerImpl$@Synchronized override fun ack(stateHolder: PlaybackStateHolder, ack: StateAck)</ID>
+    <ID>LongMethod:SearchFragment.kt$SearchFragment$override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:SearchViewModel.kt$SearchViewModel$private suspend fun searchImpl(library: Library, query: String): List&lt;Item></ID>
+    <ID>LongMethod:SmatteringCompositionFetcher.kt$SmatteringCompositionFetcher$override fun compose(bitmaps: List&lt;Bitmap>, size: Int, random: Random): Bitmap</ID>
+    <ID>LongMethod:SongPropertyAdapter.kt$SongPropertyViewHolder$fun bind(property: SongProperty)</ID>
+    <ID>LongMethod:UsbCapabilitiesFragment.kt$UsbCapabilitiesFragment$private fun update(capabilities: UsbDeviceCapabilities?, controlState: UsbControlState?)</ID>
+    <ID>LongMethod:UsbPreferenceFragment.kt$UsbPreferenceFragment$private fun updateControls(state: UsbControlState?)</ID>
+    <ID>LongMethod:WavySlider.kt$WavySlider$override fun onDraw(canvas: Canvas)</ID>
+    <ID>LongParameterList:CoilModule.kt$CoilModule$( @ApplicationContext context: Context, coverKeyer: CoverFetcher.Keyer, coverFactory: CoverFetcher.Factory, galleryKeyer: GalleryComposeFetcher.Keyer, galleryFetcherFactory: GalleryComposeFetcher.Factory, smatteringKeyer: SmatteringCompositionFetcher.Keyer, smatteringFetcherFactory: SmatteringCompositionFetcher.Factory, stackKeyer: StackCompositionFetcher.Keyer, stackFetcherFactory: StackCompositionFetcher.Factory, )</ID>
+    <ID>LongParameterList:DetailViewModel.kt$DetailViewModel$( detail: Detail&lt;T>?, parent: MutableStateFlow&lt;T?>, list: MutableStateFlow&lt;List&lt;Item>>, instructions: MutableEvent&lt;UpdateInstructions>, replace: Int?, songHeader: (Int) -> PlainHeader = { SortHeader(it) }, )</ID>
+    <ID>LongParameterList:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$( private val context: Context, private val player: ExoPlayer, private val playbackManager: PlaybackStateManager, private val persistenceRepository: PersistenceRepository, private val playbackSettings: PlaybackSettings, private val commandFactory: PlaybackCommand.Factory, private val replayGainProcessor: ReplayGainAudioProcessor, private val musicRepository: MusicRepository, private val imageSettings: ImageSettings, private val usbAudioManager: UsbAudioManager, private val usbSettings: UsbDacPreferences, )</ID>
+    <ID>LongParameterList:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder.Factory$( @ApplicationContext private val context: Context, private val playbackManager: PlaybackStateManager, private val persistenceRepository: PersistenceRepository, private val playbackSettings: PlaybackSettings, private val commandFactory: PlaybackCommand.Factory, private val mediaSourceFactory: MediaSource.Factory, private val replayGainProcessor: ReplayGainAudioProcessor, private val musicRepository: MusicRepository, private val imageSettings: ImageSettings, private val usbAudioManager: UsbAudioManager, private val usbSettings: UsbDacPreferences, )</ID>
+    <ID>LongParameterList:MediaSessionHolder.kt$MediaSessionHolder$( private val context: Context, private val foregroundListener: ForegroundListener, private val playbackManager: PlaybackStateManager, private val bitmapProvider: BitmapProvider, private val imageSettings: ImageSettings, private val mediaSessionInterface: MediaSessionInterface, private val usbAudioManager: UsbAudioManager, private val usbSettings: UsbDacPreferences, )</ID>
+    <ID>LongParameterList:PlaybackServiceFragment.kt$PlaybackServiceFragment$( context: Context, private val foregroundListener: ForegroundListener, private val playbackManager: PlaybackStateManager, private val playbackSettings: PlaybackSettings, exoHolderFactory: ExoPlaybackStateHolder.Factory, sessionHolderFactory: MediaSessionHolder.Factory, widgetComponentFactory: WidgetComponent.Factory, systemReceiverFactory: SystemPlaybackReceiver.Factory, )</ID>
+    <ID>LongParameterList:StepperOverlay.kt$StepperOverlay$( tappedSecondsView: SecondsView, tappedTapView: TapView, tappedOverlayState: OverlayState, setTappedOverlayState: (OverlayState) -> Unit, idleSecondsView: SecondsView, idleTapView: TapView, idleOverlayState: OverlayState, setIdleOverlayState: (OverlayState) -> Unit, )</ID>
+    <ID>LongParameterList:ThemedSpeedDialView.kt$ThemedSpeedDialView$( startValue: Float, finalValue: Float, springTemplate: SpringForce, minimumVisibleChange: Float, dampingRatioOverride: Float? = null, update: (Float) -> Unit, )</ID>
+    <ID>LongParameterList:WavySlider.kt$WavySlider$( canvas: Canvas, trackLength: Float, startBound: Float, endBound: Float, amplitudeFraction: Float, phaseFraction: Float, )</ID>
+    <ID>LongParameterList:WavySlider.kt$WavySlider$( trackLength: Float, start: Float, end: Float, phaseFraction: Float, baseTranslationX: Float, baseTranslationY: Float, )</ID>
+    <ID>MagicNumber:AuxioService.kt$AuxioService$4</ID>
+    <ID>MagicNumber:AuxioToolbar.kt$AuxioToolbar$180f</ID>
+    <ID>MagicNumber:CarouselTransformer.kt$CarouselTransformer$0.08f</ID>
+    <ID>MagicNumber:ComposeCoverUtils.kt$3</ID>
+    <ID>MagicNumber:ContextUtil.kt$16</ID>
+    <ID>MagicNumber:CoverCompositionFetcher.kt$CoverCompositionFetcher$10</ID>
+    <ID>MagicNumber:CoverCompositionFetcher.kt$CoverCompositionFetcher$30</ID>
+    <ID>MagicNumber:CoverCompositionFetcher.kt$CoverCompositionFetcher$4</ID>
+    <ID>MagicNumber:CoverCompositionFetcher.kt$CoverCompositionFetcher$512</ID>
+    <ID>MagicNumber:CoverView.kt$CoverView$0.5f</ID>
+    <ID>MagicNumber:CoverView.kt$CoverView$0.9f</ID>
+    <ID>MagicNumber:CoverView.kt$CoverView.StyledDrawable$4</ID>
+    <ID>MagicNumber:DetailFragment.kt$DetailFragment$0.2f</ID>
+    <ID>MagicNumber:DetailFragment.kt$DetailFragment$0.5f</ID>
+    <ID>MagicNumber:DetailFragment.kt$DetailFragment$3f</ID>
+    <ID>MagicNumber:DetailFragment.kt$DetailFragment$5f</ID>
+    <ID>MagicNumber:DetailGenerator.kt$DetailSection.Discs$13</ID>
+    <ID>MagicNumber:DetailGenerator.kt$DetailSection.Songs$12</ID>
+    <ID>MagicNumber:DetailViewModel.kt$DetailViewModel$3</ID>
+    <ID>MagicNumber:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$1000L</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.053f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.055f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.176f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.193f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.277f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.394f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.398f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.500f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.5f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.723f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$0.884f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$1.099f</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$3</ID>
+    <ID>MagicNumber:ExpressiveShapes.kt$ExpressiveShapes$360f</ID>
+    <ID>MagicNumber:FastScrollRecyclerView.kt$FastScrollRecyclerView$0.5f</ID>
+    <ID>MagicNumber:FastScrollRecyclerView.kt$FastScrollRecyclerView$27</ID>
+    <ID>MagicNumber:FastScrollRecyclerView.kt$FastScrollRecyclerView$360f</ID>
+    <ID>MagicNumber:FastScrollRecyclerView.kt$FastScrollRecyclerView$4</ID>
+    <ID>MagicNumber:FastScrollRecyclerView.kt$SoftBurstPopupDrawable$14f</ID>
+    <ID>MagicNumber:FastScrollRecyclerView.kt$SoftBurstPopupDrawable$255</ID>
+    <ID>MagicNumber:FrameworkUtil.kt$3</ID>
+    <ID>MagicNumber:IndexerNotifications.kt$IndexingNotification$1500</ID>
+    <ID>MagicNumber:ListUtil.kt$CookieShapeDrawable$255</ID>
+    <ID>MagicNumber:LocationsDialog.kt$LocationsDialog$180f</ID>
+    <ID>MagicNumber:MainFragment.kt$MainFragment$0.1f</ID>
+    <ID>MagicNumber:MainFragment.kt$MainFragment$0.5f</ID>
+    <ID>MagicNumber:MainFragment.kt$MainFragment$0.9f</ID>
+    <ID>MagicNumber:MaterialDragCallback.kt$MaterialDragCallback$255</ID>
+    <ID>MagicNumber:MediaItemTranslation.kt$MediaSessionUID.Companion$3</ID>
+    <ID>MagicNumber:MediaSessionHolder.kt$MediaSessionHolder.&lt;no name provided>$37</ID>
+    <ID>MagicNumber:MediaSessionHolder.kt$PlaybackNotification$3</ID>
+    <ID>MagicNumber:MediaSessionHolder.kt$PlaybackNotification$4</ID>
+    <ID>MagicNumber:MultiToolbar.kt$MultiToolbar$0.9f</ID>
+    <ID>MagicNumber:PlaybackBarFragment.kt$PlaybackBarFragment$360f</ID>
+    <ID>MagicNumber:PlaybackBarFragment.kt$PlaybackBarFragment$900</ID>
+    <ID>MagicNumber:PlaybackPanelFragment.kt$PlaybackPanelFragment$0.9f</ID>
+    <ID>MagicNumber:PlaybackPanelFragment.kt$PlaybackPanelFragment$1000f</ID>
+    <ID>MagicNumber:PlaybackPanelFragment.kt$PlaybackPanelFragment$360f</ID>
+    <ID>MagicNumber:PlaybackPanelFragment.kt$PlaybackPanelFragment$700f</ID>
+    <ID>MagicNumber:PlaybackPanelFragment.kt$PlaybackPanelFragment$900</ID>
+    <ID>MagicNumber:PlaybackServiceFragment.kt$PlaybackServiceFragment$60000</ID>
+    <ID>MagicNumber:PlaybackUtil.kt$10</ID>
+    <ID>MagicNumber:PlaybackUtil.kt$100</ID>
+    <ID>MagicNumber:PlaybackUtil.kt$1000</ID>
+    <ID>MagicNumber:PlaybackUtil.kt$60</ID>
+    <ID>MagicNumber:PlaybackUtil.kt$60_000</ID>
+    <ID>MagicNumber:PlaybackViewModel.kt$PlaybackViewModel$10000</ID>
+    <ID>MagicNumber:ReplayGainAudioProcessor.kt$ReplayGainAudioProcessor$0xFF</ID>
+    <ID>MagicNumber:ReplayGainAudioProcessor.kt$ReplayGainAudioProcessor$20f</ID>
+    <ID>MagicNumber:ReplayGainAudioProcessor.kt$ReplayGainAudioProcessor$3</ID>
+    <ID>MagicNumber:ReplayGainAudioProcessor.kt$ReplayGainAudioProcessor$4</ID>
+    <ID>MagicNumber:ReplayGainAudioProcessor.kt$ReplayGainAudioProcessor$64</ID>
+    <ID>MagicNumber:ReplayGainAudioProcessor.kt$ReplayGainAudioProcessor$8</ID>
+    <ID>MagicNumber:SearchFragment.kt$SearchFragment$200</ID>
+    <ID>MagicNumber:SecondsView.kt$SecondsView$0.25f</ID>
+    <ID>MagicNumber:SecondsView.kt$SecondsView$180f</ID>
+    <ID>MagicNumber:SecondsView.kt$SecondsView$3</ID>
+    <ID>MagicNumber:SecondsView.kt$SecondsView$5</ID>
+    <ID>MagicNumber:SettingCovers.kt$SettingCoversImpl$100</ID>
+    <ID>MagicNumber:SettingCovers.kt$SettingCoversImpl$1000</ID>
+    <ID>MagicNumber:SettingCovers.kt$SettingCoversImpl$500</ID>
+    <ID>MagicNumber:SettingCovers.kt$SettingCoversImpl$70</ID>
+    <ID>MagicNumber:SettingCovers.kt$SettingCoversImpl$750</ID>
+    <ID>MagicNumber:SettingCovers.kt$SettingCoversImpl$85</ID>
+    <ID>MagicNumber:SmatteringCompositionFetcher.kt$SmatteringCompositionFetcher$10f</ID>
+    <ID>MagicNumber:SmatteringCompositionFetcher.kt$SmatteringCompositionFetcher$20f</ID>
+    <ID>MagicNumber:SmatteringCompositionFetcher.kt$SmatteringCompositionFetcher$3</ID>
+    <ID>MagicNumber:SmatteringCompositionFetcher.kt$SmatteringCompositionFetcher$5f</ID>
+    <ID>MagicNumber:SmatteringCompositionFetcher.kt$SmatteringCompositionFetcher$8</ID>
+    <ID>MagicNumber:SoftBurstShapeDrawable.kt$SoftBurstShapeDrawable$255</ID>
+    <ID>MagicNumber:Start.kt$StartActionRunner$100</ID>
+    <ID>MagicNumber:StepperOverlay.kt$StepperOverlay$0.5</ID>
+    <ID>MagicNumber:StepperOverlay.kt$StepperOverlay$10</ID>
+    <ID>MagicNumber:Tab.kt$Tab.Companion$0b1111</ID>
+    <ID>MagicNumber:Tab.kt$Tab.Companion$3</ID>
+    <ID>MagicNumber:Tab.kt$Tab.Companion$4</ID>
+    <ID>MagicNumber:Tab.kt$Tab.Companion$7</ID>
+    <ID>MagicNumber:TapView.kt$TapView$0.5f</ID>
+    <ID>MagicNumber:TapView.kt$TapView$0x30000000</ID>
+    <ID>MagicNumber:TapView.kt$TapView$11.4f</ID>
+    <ID>MagicNumber:TapView.kt$TapView$80f</ID>
+    <ID>MagicNumber:ThemedSpeedDialView.kt$ThemedSpeedDialView$0.87f</ID>
+    <ID>MagicNumber:ThemedSpeedDialView.kt$ThemedSpeedDialView$0x00FFFFFF</ID>
+    <ID>MagicNumber:ThemedSpeedDialView.kt$ThemedSpeedDialView$24</ID>
+    <ID>MagicNumber:UISettings.kt$UISettingsImpl$16</ID>
+    <ID>MagicNumber:UISettings.kt$UISettingsImpl$5</ID>
+    <ID>MagicNumber:UsbCapabilitiesFragment.kt$UsbCapabilitiesFragment$3</ID>
+    <ID>MagicNumber:UsbPipelineFragment.kt$UsbPipelineFragment$100</ID>
+    <ID>MagicNumber:UsbPipelineFragment.kt$UsbPipelineFragment$1000.0</ID>
+    <ID>MagicNumber:UsbPipelineFragment.kt$UsbPipelineFragment$1000L</ID>
+    <ID>MagicNumber:UsbVolumeSteps.kt$UsbVolumeSteps$100</ID>
+    <ID>MagicNumber:WavySlider.kt$WavySlider$1_000_000_000f</ID>
+    <ID>MagicNumber:WavySlider.kt$WavySlider$2f</ID>
+    <ID>MagicNumber:WavySlider.kt$WavySlider$3f</ID>
+    <ID>MagicNumber:WidgetBitmapTransformation.kt$WidgetBitmapTransformation$1.5</ID>
+    <ID>MagicNumber:WidgetComponent.kt$WidgetComponent.&lt;no name provided>$15f</ID>
+    <ID>MagicNumber:WidgetComponent.kt$WidgetComponent.&lt;no name provided>$3f</ID>
+    <ID>MagicNumber:WidgetProvider.kt$WidgetProvider$152f</ID>
+    <ID>MagicNumber:WidgetProvider.kt$WidgetProvider$180f</ID>
+    <ID>MagicNumber:WidgetProvider.kt$WidgetProvider$272f</ID>
+    <ID>MagicNumber:WidgetProvider.kt$WidgetProvider$304f</ID>
+    <ID>MagicNumber:WidgetProvider.kt$WidgetProvider$48f</ID>
+    <ID>MagicNumber:WidgetProvider.kt$WidgetProvider$80f</ID>
+    <ID>MatchingDeclarationName:ComposeCoverUtils.kt$ComposeCoverDefaults</ID>
+    <ID>MatchingDeclarationName:CoversModule.kt$CoilModule</ID>
+    <ID>MatchingDeclarationName:MediaItemTranslation.kt$MediaSessionUID</ID>
+    <ID>MatchingDeclarationName:UsbSettings.kt$UsbSettingsImpl : ImplUsbDacPreferences</ID>
+    <ID>MaxLineLength:CopyleftNoticeTree.kt$CopyleftNoticeTree$"You can fork this project and even add ads, but it still needs to be kept open-source with the same license!"</ID>
+    <ID>MaxLineLength:UsbPipelineFragment.kt$UsbPipelineFragment$"${capabilities.deviceName} -- ${controlState.activeFormat.bitResolution}-bit @ ${controlState.sampleRateHz}Hz"</ID>
+    <ID>NestedBlockDepth:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$override fun handleDeferred(action: DeferredPlayback): Boolean</ID>
+    <ID>ReturnCount:AlbumListFragment.kt$AlbumListFragment$override fun getPopupData(pos: Int): FastScrollRecyclerView.PopupProvider.PopupData?</ID>
+    <ID>ReturnCount:BottomSheetContentBehavior.kt$BottomSheetContentBehavior$override fun onDependentViewChanged( parent: CoordinatorLayout, child: V, dependency: View, ): Boolean</ID>
+    <ID>ReturnCount:CoverCompositionFetcher.kt$CoverCompositionFetcher$final override suspend fun fetch(): FetchResult?</ID>
+    <ID>ReturnCount:CoverProvider.kt$CoverProvider$override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor?</ID>
+    <ID>ReturnCount:CoverView.kt$CoverView$private fun responsiveCornerRatio(size: Size): Float</ID>
+    <ID>ReturnCount:DetailFragment.kt$DetailFragment$override fun onMenuItemClick(item: MenuItem): Boolean</ID>
+    <ID>ReturnCount:DetailGenerator.kt$DetailGeneratorImpl$override fun playlist(uid: Music.UID): Detail&lt;Playlist>?</ID>
+    <ID>ReturnCount:DetailViewModel.kt$DetailViewModel$fun dropPlaylistEdit(): Boolean</ID>
+    <ID>ReturnCount:DetailViewModel.kt$DetailViewModel$fun movePlaylistSongs(from: Int, to: Int): Boolean</ID>
+    <ID>ReturnCount:DetailViewModel.kt$DetailViewModel$fun removePlaylistSong(at: Int)</ID>
+    <ID>ReturnCount:DetailViewModel.kt$DetailViewModel$override fun invalidate(type: MusicType, replace: Int?)</ID>
+    <ID>ReturnCount:DeviceFileDeleter.kt$DeviceFileDeleter$private fun deleteDirectly(resolver: ContentResolver, uris: List&lt;Uri>): Result</ID>
+    <ID>ReturnCount:FastScrollRecyclerView.kt$FastScrollRecyclerView$private fun onItemTouch(event: MotionEvent): Boolean</ID>
+    <ID>ReturnCount:FastScrollRecyclerView.kt$FastScrollRecyclerView$private fun updatePopupTextAutoScaleConfigFor(text: String, popupSize: Int)</ID>
+    <ID>ReturnCount:FrameworkUtil.kt$fun ViewPager2.smoothScrollByPageTo(item: Int, durationMs: Int = 300)</ID>
+    <ID>ReturnCount:IndexerNotifications.kt$IndexingNotification$fun updateIndexingState(progress: IndexingProgress): Boolean</ID>
+    <ID>ReturnCount:MainActivity.kt$MainActivity$private fun startIntentAction(intent: Intent?): Boolean</ID>
+    <ID>ReturnCount:MediaItemTranslation.kt$MediaSessionUID.Companion$fun fromString(str: String): MediaSessionUID?</ID>
+    <ID>ReturnCount:MediaSessionInterface.kt$MediaSessionInterface$@Suppress("DEPRECATION") private fun expandSearchInfoCommand( query: String?, extras: Bundle, library: Library, ): PlaybackCommand?</ID>
+    <ID>ReturnCount:MediaSessionInterface.kt$MediaSessionInterface$override fun onAddQueueItem(description: MediaDescriptionCompat)</ID>
+    <ID>ReturnCount:MediaSessionInterface.kt$MediaSessionInterface$override fun onRemoveQueueItem(description: MediaDescriptionCompat)</ID>
+    <ID>ReturnCount:MediaSessionInterface.kt$MediaSessionInterface$private fun expandUidIntoCommand( uid: MediaSessionUID, parentUid: MediaSessionUID?, ): PlaybackCommand?</ID>
+    <ID>ReturnCount:MenuViewModel.kt$MenuViewModel$private fun unpackSongParcel(parcel: Menu.ForSong.Parcel): Menu.ForSong?</ID>
+    <ID>ReturnCount:MusicBrowser.kt$MusicBrowser$fun getItem(mediaId: String): MediaItem?</ID>
+    <ID>ReturnCount:MusicBrowser.kt$MusicBrowser$override fun invalidate(type: MusicType, replace: Int?)</ID>
+    <ID>ReturnCount:MusicBrowser.kt$MusicBrowser$suspend fun search(query: String): MutableList&lt;MediaItem></ID>
+    <ID>ReturnCount:MusicUtil.kt$fun &lt;T : Music> List&lt;T>.areNamesTheSame(other: List&lt;T>): Boolean</ID>
+    <ID>ReturnCount:PersistenceRepository.kt$PersistenceRepositoryImpl$override suspend fun readState(): PlaybackStateManager.SavedState?</ID>
+    <ID>ReturnCount:PersistenceRepository.kt$PersistenceRepositoryImpl$override suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean</ID>
+    <ID>ReturnCount:PlaybackPanelFragment.kt$PlaybackPanelFragment$private fun updatePagerImpl(queue: PagerQueue)</ID>
+    <ID>ReturnCount:PlaybackStateManager.kt$PlaybackStateManagerImpl$@Synchronized override fun applySavedState( savedState: PlaybackStateManager.SavedState, destructive: Boolean, )</ID>
+    <ID>ReturnCount:PlaylistDetailFragment.kt$PlaylistDetailFragment$override fun onMenuItemClick(item: MenuItem): Boolean</ID>
+    <ID>ReturnCount:SongListFragment.kt$SongListFragment$override fun getPopupData(pos: Int): FastScrollRecyclerView.PopupProvider.PopupData?</ID>
+    <ID>ReturnCount:TabNode.kt$TabNode.Companion$fun fromString(str: String): TabNode?</ID>
+    <ID>ReturnCount:UsbCapabilitiesFragment.kt$UsbCapabilitiesFragment$private fun outputControlLabel(controlState: UsbControlState?): String</ID>
+    <ID>ReturnCount:UsbPipelineFragment.kt$UsbPipelineFragment$private fun msFor(bytes: Int, controlState: UsbControlState?, channels: Int): Long</ID>
+    <ID>ReturnCount:UsbPreferenceFragment.kt$UsbPreferenceFragment$override fun onPreferenceTreeClick(preference: Preference): Boolean</ID>
+    <ID>ReturnCount:UsbPreferenceFragment.kt$UsbPreferenceFragment$private fun updateControls(state: UsbControlState?)</ID>
+    <ID>ReturnCount:WavySlider.kt$WavySlider$override fun onDraw(canvas: Canvas)</ID>
+    <ID>ReturnCount:WavySlider.kt$WavySlider$private fun calculateDisplayedWavePath( trackLength: Float, start: Float, end: Float, phaseFraction: Float, baseTranslationX: Float, baseTranslationY: Float, ): Boolean</ID>
+    <ID>ReturnCount:WavySlider.kt$WavySlider$private fun calculateStartRampFraction(progressFraction: Float, trackLength: Float): Float</ID>
+    <ID>ReturnCount:WavySlider.kt$WavySlider$private fun updatePhaseFraction()</ID>
+    <ID>ReturnCount:WidgetProvider.kt$WidgetProvider$fun update(context: Context, uiSettings: UISettings, state: WidgetComponent.PlaybackState?)</ID>
+    <ID>SpreadOperator:LangUtil.kt$(method, *params.map { it.java }.toTypedArray())</ID>
+    <ID>SwallowedException:FrameworkUtil.kt$e: ActivityNotFoundException</ID>
+    <ID>SwallowedException:LocationsDialog.kt$LocationsDialog$e: ActivityNotFoundException</ID>
+    <ID>SwallowedException:PlaybackPanelFragment.kt$PlaybackPanelFragment$e: ActivityNotFoundException</ID>
+    <ID>SwallowedException:PreferenceHeaderItemDecoration.kt$PreferenceHeaderItemDecoration$e: ClassCastException</ID>
+    <ID>SwallowedException:PreferenceHeaderItemDecoration.kt$PreferenceHeaderItemDecoration$e: IndexOutOfBoundsException</ID>
+    <ID>ThrowingExceptionsWithoutMessageOrCause:NewPlaylistDialog.kt$NewPlaylistDialog$IllegalStateException()</ID>
+    <ID>ThrowingExceptionsWithoutMessageOrCause:QueueAdapter.kt$QueueAdapter$IllegalStateException()</ID>
+    <ID>ThrowingExceptionsWithoutMessageOrCause:TabDragCallback.kt$TabDragCallback$IllegalStateException()</ID>
+    <ID>TooGenericExceptionCaught:AuxioService.kt$AuxioService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DeviceFileDeleter.kt$DeviceFileDeleter$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FrameworkUtil.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LocationsDialog.kt$LocationsDialog$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MusicRepository.kt$MusicRepositoryImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MusicServiceFragment.kt$MusicServiceFragment$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PersistenceRepository.kt$PersistenceRepositoryImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PreferenceHeaderItemDecoration.kt$PreferenceHeaderItemDecoration$e: IndexOutOfBoundsException</ID>
+    <ID>TooGenericExceptionCaught:WidgetProvider.kt$WidgetProvider$e: Exception</ID>
+    <ID>TooManyFunctions:AlbumDetailFragment.kt$AlbumDetailFragment : DetailFragment</ID>
+    <ID>TooManyFunctions:AlbumListFragment.kt$AlbumListFragment : ListFragmentListenerPopupProvider</ID>
+    <ID>TooManyFunctions:ArtistDetailFragment.kt$ArtistDetailFragment : DetailFragment</ID>
+    <ID>TooManyFunctions:ArtistListFragment.kt$ArtistListFragment : ListFragmentPopupProviderListener</ID>
+    <ID>TooManyFunctions:AuxioService.kt$AuxioService : MediaBrowserServiceCompatForegroundListenerInvalidator</ID>
+    <ID>TooManyFunctions:AuxioToolbar.kt$AuxioToolbar : FrameLayout</ID>
+    <ID>TooManyFunctions:ContextUtil.kt$org.oxycblt.auxio.util.ContextUtil.kt</ID>
+    <ID>TooManyFunctions:CoverView.kt$CoverView : FrameLayout</ID>
+    <ID>TooManyFunctions:DetailFragment.kt$DetailFragment&lt;P : MusicParent, C : Music> : ListFragmentListenerOnOffsetChangedListener</ID>
+    <ID>TooManyFunctions:DetailGenerator.kt$DetailGeneratorImpl : DetailGeneratorUpdateListenerListener</ID>
+    <ID>TooManyFunctions:DetailViewModel.kt$DetailViewModel : ViewModelInvalidator</ID>
+    <ID>TooManyFunctions:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder : PlaybackStateHolderListenerUpdateListenerListenerListenerListener</ID>
+    <ID>TooManyFunctions:FastScrollRecyclerView.kt$FastScrollRecyclerView : AuxioRecyclerView</ID>
+    <ID>TooManyFunctions:FrameworkUtil.kt$org.oxycblt.auxio.util.FrameworkUtil.kt</ID>
+    <ID>TooManyFunctions:GenreDetailFragment.kt$GenreDetailFragment : DetailFragment</ID>
+    <ID>TooManyFunctions:GenreListFragment.kt$GenreListFragment : ListFragmentPopupProviderListener</ID>
+    <ID>TooManyFunctions:HomeFragment.kt$HomeFragment : SelectionFragment</ID>
+    <ID>TooManyFunctions:HomeGenerator.kt$HomeGeneratorImpl : HomeGeneratorListenerListenerUpdateListener</ID>
+    <ID>TooManyFunctions:HomeViewModel.kt$HomeViewModel : ViewModelInvalidator</ID>
+    <ID>TooManyFunctions:IndexingHolder.kt$IndexingHolder : IndexingWorkerIndexingListenerUpdateListenerListener</ID>
+    <ID>TooManyFunctions:ListViewModel.kt$ListViewModel : ViewModelUpdateListener</ID>
+    <ID>TooManyFunctions:LocationsDialog.kt$LocationsDialog : ViewBindingMaterialDialogFragment</ID>
+    <ID>TooManyFunctions:MainFragment.kt$MainFragment : ViewBindingFragmentOnPreDrawListenerOnActionSelectedListener</ID>
+    <ID>TooManyFunctions:MediaItemTranslation.kt$org.oxycblt.auxio.music.service.MediaItemTranslation.kt</ID>
+    <ID>TooManyFunctions:MediaSessionHolder.kt$MediaSessionHolder : ListenerListenerListener</ID>
+    <ID>TooManyFunctions:MediaSessionInterface.kt$MediaSessionInterface : Callback</ID>
+    <ID>TooManyFunctions:MusicBrowser.kt$MusicBrowser : InvalidatorInvalidator</ID>
+    <ID>TooManyFunctions:MusicRepository.kt$MusicRepository</ID>
+    <ID>TooManyFunctions:MusicRepository.kt$MusicRepositoryImpl : MusicRepository</ID>
+    <ID>TooManyFunctions:MusicServiceFragment.kt$MusicServiceFragment : Invalidator</ID>
+    <ID>TooManyFunctions:MusicViewModel.kt$MusicViewModel : ViewModelUpdateListenerIndexingListener</ID>
+    <ID>TooManyFunctions:PlaybackCommand.kt$PlaybackCommand$Factory</ID>
+    <ID>TooManyFunctions:PlaybackCommand.kt$PlaybackCommandFactoryImpl : Factory</ID>
+    <ID>TooManyFunctions:PlaybackPanelFragment.kt$PlaybackPanelFragment : ViewBindingFragmentOnMenuItemClickListenerListenerListener</ID>
+    <ID>TooManyFunctions:PlaybackStateHolder.kt$PlaybackStateHolder</ID>
+    <ID>TooManyFunctions:PlaybackStateManager.kt$PlaybackStateManager</ID>
+    <ID>TooManyFunctions:PlaybackStateManager.kt$PlaybackStateManagerImpl : PlaybackStateManager</ID>
+    <ID>TooManyFunctions:PlaybackViewModel.kt$PlaybackViewModel : ViewModelListenerListener</ID>
+    <ID>TooManyFunctions:PlaylistDetailFragment.kt$PlaylistDetailFragment : DetailFragmentListener</ID>
+    <ID>TooManyFunctions:PlaylistListFragment.kt$PlaylistListFragment : ListFragmentPopupProviderListener</ID>
+    <ID>TooManyFunctions:ReplayGainAudioProcessor.kt$ReplayGainAudioProcessor : BaseAudioProcessorListenerListener</ID>
+    <ID>TooManyFunctions:SearchFragment.kt$SearchFragment : ListFragment</ID>
+    <ID>TooManyFunctions:SongListFragment.kt$SongListFragment : ListFragmentPopupProviderListener</ID>
+    <ID>TooManyFunctions:ThemedSpeedDialView.kt$RotatingDrawable : DrawableCallback</ID>
+    <ID>TooManyFunctions:UsbCapabilitiesFragment.kt$UsbCapabilitiesFragment : BasePreferenceFragment</ID>
+    <ID>TooManyFunctions:WavySlider.kt$WavySlider : Slider</ID>
+    <ID>TooManyFunctions:WidgetComponent.kt$WidgetComponent : ListenerListenerListener</ID>
+    <ID>TooManyFunctions:WidgetProvider.kt$WidgetProvider : AppWidgetProvider</ID>
+    <ID>UnusedPrivateProperty:CoverCompositionFetcher.kt$CoverCompositionFetcher$i</ID>
+    <ID>UseCheckOrError:ExoPlaybackStateHolder.kt$ExoPlaybackStateHolder$throw IllegalStateException("Unknown repeat mode: $repeatMode")</ID>
+    <ID>UseCheckOrError:NewPlaylistDialog.kt$NewPlaylistDialog$throw IllegalStateException()</ID>
+    <ID>UseCheckOrError:QueueAdapter.kt$QueueAdapter$throw IllegalStateException()</ID>
+    <ID>UseCheckOrError:TabDragCallback.kt$TabDragCallback$throw IllegalStateException()</ID>
+    <ID>UseRequire:WidgetBitmapTransformation.kt$WidgetBitmapTransformation$throw IllegalArgumentException("WidgetBitmapTransformation requires original size.")</ID>
+  </CurrentIssues>
+</SmellBaseline>

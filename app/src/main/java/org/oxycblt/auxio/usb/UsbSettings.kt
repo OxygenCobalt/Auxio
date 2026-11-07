@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.usb
 
 import android.content.Context
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import org.ostrichbat2k.usbdac.UsbDacPreferences
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
-import org.ostrichbat2k.usbdac.UsbDacPreferences
 
 /**
  * Auxio's own [Settings]-backed implementation of [UsbDacPreferences] -- the libusbdac library
@@ -50,7 +50,10 @@ class UsbSettingsImpl @Inject constructor(@ApplicationContext context: Context) 
     override val volumeStepPercent: Int
         get() =
             sharedPreferences
-                .getInt(getString(R.string.set_key_usb_volume_step_percent), DEFAULT_VOLUME_STEP_PERCENT)
+                .getInt(
+                    getString(R.string.set_key_usb_volume_step_percent),
+                    DEFAULT_VOLUME_STEP_PERCENT,
+                )
                 .coerceIn(1, UsbDacPreferences.MAX_VOLUME_STEP_PERCENT)
 
     override var volumeDb: Int?
@@ -70,7 +73,8 @@ class UsbSettingsImpl @Inject constructor(@ApplicationContext context: Context) 
             getString(R.string.set_key_usb_enabled) -> listener.onUsbEnabledChanged()
             getString(R.string.set_key_usb_bit_perfect) -> listener.onBitPerfectModeChanged()
             getString(R.string.set_key_usb_abx_test) -> listener.onAbxTestModeChanged()
-            getString(R.string.set_key_usb_volume_step_percent) -> listener.onVolumeStepPercentChanged()
+            getString(R.string.set_key_usb_volume_step_percent) ->
+                listener.onVolumeStepPercentChanged()
             getString(R.string.set_key_usb_manual_release_control) -> listener.onManualReleaseControlChanged()
         }
     }

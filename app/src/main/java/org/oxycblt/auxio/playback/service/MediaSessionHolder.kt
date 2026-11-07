@@ -41,6 +41,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.ostrichbat2k.usbdac.UsbAudioManager
+import org.ostrichbat2k.usbdac.UsbDacPreferences
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.ForegroundListener
 import org.oxycblt.auxio.ForegroundServiceNotification
@@ -56,8 +58,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.ostrichbat2k.usbdac.UsbAudioManager
-import org.ostrichbat2k.usbdac.UsbDacPreferences
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 import org.oxycblt.musikr.MusicParent
@@ -170,24 +170,24 @@ private constructor(
 
     /**
      * Routes the device's physical volume keys to the DAC's own hardware volume (via
-     * [usbAudioManager]) instead of Android's normal [AudioManager.STREAM_MUSIC] handling,
-     * whenever the DAC is actually what's receiving audio right now.
+     * [usbAudioManager]) instead of Android's normal [AudioManager.STREAM_MUSIC] handling, whenever
+     * the DAC is actually what's receiving audio right now.
      *
      * Direct USB output ([UsbAudioOutput][org.ostrichbat2k.usbdac.UsbAudioOutput]) bypasses
-     * AudioTrack/AudioFlinger entirely, so [AudioManager.STREAM_MUSIC] -- what physical volume
-     * keys adjust by default -- has no connection whatsoever to what's actually reaching the
-     * DAC: the keys would move a slider that does nothing audible. [MediaSessionCompat
-     * .setPlaybackToRemote] is the standard mechanism for exactly this (the same one a
+     * AudioTrack/AudioFlinger entirely, so [AudioManager.STREAM_MUSIC] -- what physical volume keys
+     * adjust by default -- has no connection whatsoever to what's actually reaching the DAC: the
+     * keys would move a slider that does nothing audible. [MediaSessionCompat .setPlaybackToRemote]
+     * is the standard mechanism for exactly this (the same one a
      * Cast/Bluetooth-AVRCP-absolute-volume session uses) -- it hands volume key events to a
-     * [UsbVolumeProvider] instead, which forwards them to the Feature Unit via
-     * [usbAudioManager]. [usbAudioManager.resolveActiveSink] is null unless
-     * [UsbDacPreferences.bitPerfectMode] is on *and* the device's volume range was actually read back
-     * successfully ([UsbAudioManager.isBitPerfectCapable]) -- the same condition
+     * [UsbVolumeProvider] instead, which forwards them to the Feature Unit via [usbAudioManager].
+     * [usbAudioManager.resolveActiveSink] is null unless [UsbDacPreferences.bitPerfectMode] is on
+     * *and* the device's volume range was actually read back successfully
+     * ([UsbAudioManager.isBitPerfectCapable]) -- the same condition
      * [org.ostrichbat2k.usbdac.RoutingAudioSink] uses to decide whether a track actually gets
      * routed to the DAC -- but that decision is itself per-track, not per-session (a format the
-     * device can't take falls back to Android's normal HAL path even while bit-perfect mode
-     * stays on), so [usbAudioManager.playbackRoute] -- RoutingAudioSink's own per-track report --
-     * is what this actually keys off of, not just the static session-level toggle.
+     * device can't take falls back to Android's normal HAL path even while bit-perfect mode stays
+     * on), so [usbAudioManager.playbackRoute] -- RoutingAudioSink's own per-track report -- is what
+     * this actually keys off of, not just the static session-level toggle.
      */
     private fun updateVolumeRouting() {
         val range = usbAudioManager.controlState.value?.volumeRange
@@ -217,15 +217,15 @@ private constructor(
 
     /**
      * Translates the system volume UI's abstract 0..[divisions] scale to/from the DAC's own raw
-     * dB*256 Feature Unit range, since [VolumeProviderCompat] needs a small fixed step count
-     * rather than the device's often much finer native resolution -- and that native range's
-     * actual min/max varies per device (see the Capabilities screen), so a fixed dB delta per
-     * step would feel wildly different from one DAC to the next.
+     * dB*256 Feature Unit range, since [VolumeProviderCompat] needs a small fixed step count rather
+     * than the device's often much finer native resolution -- and that native range's actual
+     * min/max varies per device (see the Capabilities screen), so a fixed dB delta per step would
+     * feel wildly different from one DAC to the next.
      *
      * [percentPerStep] is the user-facing control ([UsbDacPreferences.volumeStepPercent]: what
      * percentage of [range] one press should move). [divisions] -- the actual number of equal
-     * slices [range] is cut into for [VolumeProviderCompat]'s own 0..maxVolume scale -- is
-     * `100 / percentPerStep`, e.g. a 5% step means the range is cut into 20 slices.
+     * slices [range] is cut into for [VolumeProviderCompat]'s own 0..maxVolume scale -- is `100 /
+     * percentPerStep`, e.g. a 5% step means the range is cut into 20 slices.
      */
     private inner class UsbVolumeProvider(val percentPerStep: Int) :
         VolumeProviderCompat(VOLUME_CONTROL_ABSOLUTE, UsbVolumeSteps.divisions(percentPerStep), 0) {
@@ -235,7 +235,8 @@ private constructor(
         fun applyRange(newRange: Pair<Int, Int>) {
             range = newRange
             // usbSettings.volumeDb (the user's last explicitly-chosen level, persisted, and kept
-            // in sync with HAL-mode's own volume too -- see UsbVolumeController.onStreamMusicChanged)
+            // in sync with HAL-mode's own volume too -- see
+            // UsbVolumeController.onStreamMusicChanged)
             // is preferred over controlState.volume, the device's own live GET_CUR readback, even
             // though that sounds backwards -- two real, reproduced bugs, both from trusting a
             // "live" value that wasn't actually trustworthy at the exact moment this runs:
@@ -248,13 +249,17 @@ private constructor(
             // refreshControlState() call runs *before* UsbAudioOutput's volume-restoration step
             // on a HAL->DAC switch (getAudioOutput() calls the former, then constructs the
             // latter), reading the Feature Unit back while it's still sitting at
-            // UsbVolumeController.prepareForHalHandoff()'s unity gain from the HAL release -- a real, non-null, but
+            // UsbVolumeController.prepareForHalHandoff()'s unity gain from the HAL release -- a
+            // real, non-null, but
             // momentarily *wrong* value, published to controlState just long enough to be read
             // here before the real restoration catches up a few lines later. Confirmed,
             // reproduced: "switch to DAC, volume starts at/snaps to max". usbSettings.volumeDb
             // never has this race -- it's set directly, synchronously, by whichever code path
             // decided what the real target volume should be, not reconstructed from a readback.
-            val db = usbSettings.volumeDb ?: usbAudioManager.controlState.value?.volume ?: newRange.second
+            val db =
+                usbSettings.volumeDb
+                    ?: usbAudioManager.controlState.value?.volume
+                    ?: newRange.second
             currentVolume = UsbVolumeSteps.dbToStep(db, range, divisions)
         }
 

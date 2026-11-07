@@ -18,9 +18,11 @@
  
 package org.oxycblt.auxio.widgets
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.SizeF
 import android.widget.RemoteViews
@@ -31,17 +33,32 @@ import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.newMainPendingIntent
 import timber.log.Timber as L
 
+/** Share one immutable artwork snapshot across the RemoteViews in an update. */
+internal fun prepareWidgetBitmap(bitmap: Bitmap?): Bitmap? =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && bitmap?.isMutable == true) {
+        // Android 13+ copies mutable artwork separately into each RemoteViews cache.
+        // Preparing it once also lets the responsive parent reuse the same snapshot.
+        bitmap.asShared()
+    } else {
+        bitmap
+    }
+
 /**
  * Create a [RemoteViews] instance with the specified layout and an automatic click handler to open
  * the Auxio activity.
  *
  * @param context [Context] required to create [RemoteViews].
  * @param layoutRes Resource ID of the layout to use. Must be compatible with [RemoteViews].
+ * @param mainPendingIntent App-opening action, optionally shared across layouts in one update.
  * @return A new [RemoteViews] instance with the specified configuration.
  */
-fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
+fun newRemoteViews(
+    context: Context,
+    @LayoutRes layoutRes: Int,
+    mainPendingIntent: PendingIntent = context.newMainPendingIntent(),
+): RemoteViews {
     val views = RemoteViews(context.packageName, layoutRes)
-    views.setOnClickPendingIntent(android.R.id.background, context.newMainPendingIntent())
+    views.setOnClickPendingIntent(android.R.id.background, mainPendingIntent)
     return views
 }
 

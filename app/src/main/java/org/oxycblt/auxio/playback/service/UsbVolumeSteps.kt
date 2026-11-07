@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.service
 
 /**
  * Pure step<->dB conversion math for [MediaSessionHolder]'s remote [UsbVolumeProvider][
  * MediaSessionHolder.UsbVolumeProvider], pulled out of that inner class so it can be unit tested
- * directly -- [androidx.media.VolumeProviderCompat]'s own methods touch Android framework
- * internals not available under a plain JVM unit test.
+ * directly -- [androidx.media.VolumeProviderCompat]'s own methods touch Android framework internals
+ * not available under a plain JVM unit test.
  */
 internal object UsbVolumeSteps {
     /**
@@ -32,7 +32,9 @@ internal object UsbVolumeSteps {
      */
     fun divisions(percentPerStep: Int): Int = 100 / percentPerStep.coerceAtLeast(1)
 
-    /** The raw dB*256 value [divisions] equal slices of [range] away from its minimum, at [step]. */
+    /**
+     * The raw dB*256 value [divisions] equal slices of [range] away from its minimum, at [step].
+     */
     fun stepToDb(step: Int, range: Pair<Int, Int>, divisions: Int): Int {
         val (min, max) = range
         return min + (max - min) * step / divisions
@@ -40,11 +42,11 @@ internal object UsbVolumeSteps {
 
     /**
      * The nearest step [db] falls on, rounding to the closest slice rather than truncating.
-     * [stepToDb] already truncates when computing a dB delta from a step, so round-tripping a
-     * value it just produced back through floor-division here would land one step short (floor
-     * of floor rounds down twice) -- confirmed on real hardware: a device's reported volume
-     * silently drifted down a step every time this ran on a periodic control-state refresh, with
-     * no corresponding volume-key press.
+     * [stepToDb] already truncates when computing a dB delta from a step, so round-tripping a value
+     * it just produced back through floor-division here would land one step short (floor of floor
+     * rounds down twice) -- confirmed on real hardware: a device's reported volume silently drifted
+     * down a step every time this ran on a periodic control-state refresh, with no corresponding
+     * volume-key press.
      */
     fun dbToStep(db: Int, range: Pair<Int, Int>, divisions: Int): Int {
         val (min, max) = range

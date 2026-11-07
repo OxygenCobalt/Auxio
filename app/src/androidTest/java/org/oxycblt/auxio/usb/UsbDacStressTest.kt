@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.usb
 
 import androidx.test.platform.app.InstrumentationRegistry
@@ -28,41 +28,39 @@ import org.oxycblt.auxio.testutil.AuxioLaunch
 import org.oxycblt.auxio.testutil.AuxioUiAutomator
 
 /**
- * Repeats the real-hardware playback-stress scenarios that have historically surfaced bugs in
- * this project (format switching, pause/resume, seeking, flipping the USB routing settings mid-
- * track) against the actually-running app, with random cycle counts so repeat runs vary timing
- * instead of hammering the exact same sequence every time.
+ * Repeats the real-hardware playback-stress scenarios that have historically surfaced bugs in this
+ * project (format switching, pause/resume, seeking, flipping the USB routing settings mid- track)
+ * against the actually-running app, with random cycle counts so repeat runs vary timing instead of
+ * hammering the exact same sequence every time.
  *
  * All interaction goes through [AuxioUiAutomator] (UiDevice/By), never Espresso's `onView()` --
  * Espresso's `.perform()`/`.check()` wait for the main-thread Looper to go idle first, and
- * `PlaybackViewModel.positionDs` continuously reposts to the main thread while something plays,
- * so that wait never completes. Confirmed via `dumpsys input` showing zero new touch events
- * dispatched for 5+ minutes when this test was still Espresso-based.
+ * `PlaybackViewModel.positionDs` continuously reposts to the main thread while something plays, so
+ * that wait never completes. Confirmed via `dumpsys input` showing zero new touch events dispatched
+ * for 5+ minutes when this test was still Espresso-based.
  *
  * Launch is done manually via [AuxioLaunch], not `ActivityScenarioRule` -- the app process may
  * genuinely die mid-test (that's the point of the MTE instrumentation this pairs with), and
- * `ActivityScenarioRule`'s teardown does instrumentation IPC back to the activity it launched,
- * an unnecessary extra failure mode on top of the crash itself once that activity's process is
- * gone.
+ * `ActivityScenarioRule`'s teardown does instrumentation IPC back to the activity it launched, an
+ * unnecessary extra failure mode on top of the crash itself once that activity's process is gone.
  *
  * This is a developer stress tool, not a from-scratch CI suite: it assumes a real USB DAC is
  * already attached and activated, and that a queue is already playing when the suite starts (it
- * stress-tests an *active* session; it doesn't set one up from an empty library). Build and run
- * it with the native libraries instrumented for Arm MTE (see libusbdac/src/main/cpp/CMakeLists.txt
- * and media/libraries/decoder_ffmpeg/src/main/jni/CMakeLists.txt's debug-only sanitize=memtag
- * flags, plus app/src/debug/AndroidManifest.xml's memtagMode) on a real MTE-capable device (e.g.
- * Pixel 8+) with Settings > Developer options > Memory Tagging Extension enabled and the device
- * rebooted, for this to actually be able to catch a native memory-safety bug rather than just a
- * Kotlin-level crash. On a non-MTE device (e.g. the x86_64 emulator), this still validates the
- * harness itself -- clicks land, cycles complete, nothing hangs -- just not real ARM memory
- * tagging.
+ * stress-tests an *active* session; it doesn't set one up from an empty library). Build and run it
+ * with the native libraries instrumented for Arm MTE (see libusbdac/src/main/cpp/CMakeLists.txt and
+ * media/libraries/decoder_ffmpeg/src/main/jni/CMakeLists.txt's debug-only sanitize=memtag flags,
+ * plus app/src/debug/AndroidManifest.xml's memtagMode) on a real MTE-capable device (e.g. Pixel 8+)
+ * with Settings > Developer options > Memory Tagging Extension enabled and the device rebooted, for
+ * this to actually be able to catch a native memory-safety bug rather than just a Kotlin-level
+ * crash. On a non-MTE device (e.g. the x86_64 emulator), this still validates the harness itself --
+ * clicks land, cycles complete, nothing hangs -- just not real ARM memory tagging.
  *
  * Run with: ./gradlew :app:connectedDebugAndroidTest
- *   -Pandroid.testInstrumentationRunnerArguments.class=org.oxycblt.auxio.usb.UsbDacStressTest
+ * -Pandroid.testInstrumentationRunnerArguments.class=org.oxycblt.auxio.usb.UsbDacStressTest
  *
- * Deliberately NOT covered here: physically unplugging/replugging the DAC. There's no software
- * hook to simulate a real USB disconnect on an attached device without extra relay hardware --
- * that stays a manual step.
+ * Deliberately NOT covered here: physically unplugging/replugging the DAC. There's no software hook
+ * to simulate a real USB disconnect on an attached device without extra relay hardware -- that
+ * stays a manual step.
  */
 class UsbDacStressTest {
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -85,7 +83,9 @@ class UsbDacStressTest {
         device.executeShellCommand("logcat -b crash -c")
     }
 
-    /** Clicks the mini player bar to expand it into the full panel (skip/seek controls live there). */
+    /**
+     * Clicks the mini player bar to expand it into the full panel (skip/seek controls live there).
+     */
     private fun expandToPanel() {
         ui.clickRes(R.id.playback_bar_fragment)
         Thread.sleep(500)

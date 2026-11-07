@@ -155,6 +155,7 @@
     <string name="set_locations_desc">Gestionar de dónde se cargará la música</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
+    <string name="fmt_disc_no_subtitle">Disco %1$d – %2$s</string>
     <string name="lbl_eps">Reproduciones Extendidos</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_singles">Sencillos</string>

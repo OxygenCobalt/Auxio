@@ -13,6 +13,7 @@ buildscript {
         target_sdk = 37
         ndk_version = "28.2.13676358"
 
+        detekt_version = '1.23.8'
     }
 
     dependencies {
@@ -33,17 +34,45 @@ plugins {
     id "com.google.devtools.ksp" version '2.3.6' apply false
     // We use spotless in the root build.gradle to apply to all modules.
     id "com.diffplug.spotless" version "8.10.1" apply true
+    id "io.gitlab.arturbosch.detekt" version "$detekt_version" apply false
+    // Aggregates app/musikr into one SonarQube project; see docs/code-quality.md.
+    id "org.sonarqube" version "7.5.0.8588" apply true
 }
 
+// detekt is applied per-module below rather than via `apply true` here because :libusbdac
+// is also a standalone repo that applies and configures its own detekt in its own
+// build.gradle -- applying it again from this subprojects block would double-apply it.
+subprojects { subproject ->
+    if (subproject.name != 'libusbdac') {
+        subproject.apply plugin: 'io.gitlab.arturbosch.detekt'
+        subproject.detekt {
+            buildUponDefaultConfig = true
+            baseline = subproject.file("$rootDir/config/detekt/baseline-${subproject.name}.xml")
+        }
+    }
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "auxio"
+        property "sonar.projectName", "Auxio"
+        // Server is self-hosted and loopback-only; see ~/claude/sonarqube/README.md.
+        property "sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "http://localhost:9000"
+    }
+}
+
+// :libusbdac is excluded from both targets below, same as the detekt exclusion above --
+// it's a standalone repo with its own license and its own formatting setup, so applying
+// Auxio's NOTICE license header to its sources would be wrong.
 spotless {
     kotlin {
-        target "*/src/**/*.kt"
+        target "{app,musikr}/src/**/*.kt"
         ktfmt().kotlinlangStyle()
         licenseHeaderFile("NOTICE")
     }
 
     cpp {
-        target("*/src/**/cpp/*.cpp", "*/src/**/cpp/*.h", "*/src/**/cpp/*.hpp")
+        target("{app,musikr}/src/**/cpp/*.cpp", "{app,musikr}/src/**/cpp/*.h", "{app,musikr}/src/**/cpp/*.hpp")
         eclipseCdt().configFile("eclipse-cdt.xml")
         licenseHeaderFile("NOTICE")
     }

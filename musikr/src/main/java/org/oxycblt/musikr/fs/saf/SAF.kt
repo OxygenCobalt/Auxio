@@ -94,7 +94,8 @@ private constructor(
         observers.add(
             LocationObserver(context, AOSPMediaStore.Audio.Media.EXTERNAL_CONTENT_URI) {
                 trySend(FSUpdate.LocationChanged(null))
-            })
+            }
+        )
 
         awaitClose { observers.forEach { observer -> observer.release() } }
     }
