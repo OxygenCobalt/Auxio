@@ -97,8 +97,10 @@ class ExoPlaybackStateHolder(
     private val saveJob = Job()
     private val saveScope = CoroutineScope(Dispatchers.IO + saveJob)
     private val restoreScope = CoroutineScope(Dispatchers.IO + saveJob)
+    private val positionSyncScope = CoroutineScope(Dispatchers.Main + saveJob)
     private var currentSaveJob: Job? = null
     private var pendingPlayJob: Job? = null
+    private var positionSyncJob: Job? = null
     // The user's (or any other playing() caller's) latest actual intent, independent of whatever
     // player.playWhenReady happens to be mid-reconfigure -- see forceReconfigureOnDacStateChange's
     // own doc comment on why its final step reads this instead of a stale snapshot.
@@ -737,6 +739,46 @@ class ExoPlaybackStateHolder(
             L.d("Player state changed, must synchronize state")
             playbackManager.ack(this, StateAck.ProgressionChanged)
         }
+
+        if (events.containsAny(Player.EVENT_IS_PLAYING_CHANGED)) {
+            if (player.isPlaying) {
+                beginPositionSyncUntilAdvancing()
+            } else {
+                positionSyncJob?.cancel()
+            }
+        }
+    }
+
+    /**
+     * Since the USB DAC path's `UsbAudioOutput.play()` stopped blocking the caller for its own
+     * clock/volume relock (libusbdac#30), [player].isPlaying flips `true` essentially the instant
+     * [Player.play] is called, well before the DAC's real output position starts moving --
+     * confirmed on real hardware via logcat: `UsbAudioOutput: play()` to `UsbAudioOutput:
+     * streaming thread starting` is a multi-second gap during a genuine relock.
+     * [player].currentPosition itself stays correctly frozen for that whole window, but
+     * [progression]'s wall-clock extrapolation (anchored off whatever [player].currentPosition
+     * was the last time [StateAck.ProgressionChanged] fired) has no way to know that, and runs
+     * open-loop until the next discrete player event naturally corrects it -- visible as the seek
+     * bar jumping forward for seconds, then snapping back down once real streaming starts.
+     *
+     * Forces a fresh [StateAck.ProgressionChanged] every 150ms -- short enough that the worst-case
+     * fake-advancement window this causes is one tick, not the whole relock -- until
+     * [player].currentPosition has genuinely moved away from where it was when this started,
+     * confirming real streaming is now underway, then stops itself. Before #30, this never
+     * surfaced because [Player.play]'s own blocking call froze ExoPlayer's internal playback
+     * thread for the same duration, so `isPlaying=true` was never even observable until real
+     * audio had already started.
+     */
+    private fun beginPositionSyncUntilAdvancing() {
+        positionSyncJob?.cancel()
+        val anchorPositionMs = player.currentPosition
+        positionSyncJob =
+            positionSyncScope.launch {
+                while (player.currentPosition == anchorPositionMs) {
+                    delay(150.milliseconds)
+                    playbackManager.ack(this@ExoPlaybackStateHolder, StateAck.ProgressionChanged)
+                }
+            }
     }
 
     override fun onPlayerError(error: PlaybackException) {
