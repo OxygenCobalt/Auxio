@@ -181,22 +181,30 @@ class UsbPreferenceFragment : BasePreferenceFragment(R.xml.preferences_usb) {
 
         val volumeRange = state.volumeRange
         if (volumeRange != null) {
+            // Capped to UsbDacPreferences.maxVolumePercent's ceiling, same as
+            // MediaSessionHolder.UsbVolumeProvider -- usbAudioManager.setVolume clamps the actual
+            // write independently regardless, but bounding this slider's own max keeps it from
+            // visibly offering a position louder than what will actually happen.
+            val maxPercent = usbSettings.maxVolumePercent.coerceIn(1, 100)
+            val cappedMax = volumeRange.first + (volumeRange.second - volumeRange.first) * maxPercent / 100
             category.addPreference(
                 SeekBarPreference(requireContext()).apply {
                     key = getString(R.string.set_key_usb_volume)
                     title = getString(R.string.set_usb_volume)
                     isPersistent = false
                     min = volumeRange.first
-                    max = volumeRange.second
+                    max = cappedMax
                     showSeekBarValue = true
                     // Prefer our own tracked target over the live device readback, not the other
                     // way around -- confirmed, on real hardware, that a live readback taken right
                     // after a clock change or route switch can be transiently stale (e.g. still
                     // reporting unity gain) before the device's own state has settled, which this
                     // exact fallback order has already caused real, reproduced bugs from
-                    // elsewhere in this codebase (see MediaSessionHolder.UsbVolumeProvider).
+                    // elsewhere in this codebase (see MediaSessionHolder.UsbVolumeProvider). The
+                    // final fallback is the capped ceiling, not volumeRange.second/true max, for
+                    // the same reason that one is capped above.
                     value =
-                        (usbSettings.volumeDb ?: state.volume ?: volumeRange.second).coerceIn(
+                        (usbSettings.volumeDb ?: state.volume ?: cappedMax).coerceIn(
                             min,
                             max,
                         )

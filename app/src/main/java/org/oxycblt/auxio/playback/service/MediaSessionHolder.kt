@@ -27,6 +27,7 @@ import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.car.app.mediaextensions.MetadataExtras
 import androidx.core.app.NotificationCompat
@@ -129,6 +130,20 @@ private constructor(
             usbAudioManager.controlState.collect { updateVolumeRouting() }
         }
         volumeScope.launch {
+            // See UsbAudioOutput's own doc comment on its pre-stream safety read-back: this is
+            // that violation's one real user-visible surface -- nothing else in this app shows
+            // playback errors to the user at all yet (see ExoPlaybackStateHolder.onPlayerError's
+            // own TODO), so this is a deliberately minimal, standalone Toast rather than plugging
+            // into infrastructure that doesn't exist.
+            usbAudioManager.volumeSafetyExceeded.collect {
+                Toast.makeText(
+                        context,
+                        context.getString(R.string.err_usb_volume_too_high, usbSettings.maxVolumePercent),
+                        Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+        volumeScope.launch {
             // RoutingAudioSink decides per-track, not per-session, whether a given track
             // actually goes out over the DAC -- a 96kHz track against a 44.1/48kHz-only device
             // falls back to Android's normal HAL path even while bitPerfectMode stays on for the
@@ -165,6 +180,10 @@ private constructor(
     }
 
     override fun onVolumeStepPercentChanged() {
+        updateVolumeRouting()
+    }
+
+    override fun onMaxVolumePercentChanged() {
         updateVolumeRouting()
     }
 
@@ -207,7 +226,14 @@ private constructor(
             val provider =
                 usbVolumeProvider?.takeIf { it.percentPerStep == percent }
                     ?: UsbVolumeProvider(percent).also { usbVolumeProvider = it }
-            provider.applyRange(range)
+            // Capped to UsbDacPreferences.maxVolumePercent's ceiling before the provider ever
+            // sees it -- not just at the eventual hardware write (usbAudioManager.setVolume
+            // clamps that independently) -- so the system's 0..100% key-press/slider scale maps
+            // onto the safe sub-range directly, instead of leaving a "dead zone" at the top where
+            // further presses visibly do nothing because the write silently got capped anyway.
+            val maxPercent = usbSettings.maxVolumePercent.coerceIn(1, 100)
+            val cappedRange = range.first to (range.first + (range.second - range.first) * maxPercent / 100)
+            provider.applyRange(cappedRange)
             mediaSession.setPlaybackToRemote(provider)
         } else {
             usbVolumeProvider = null

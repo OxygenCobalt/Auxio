@@ -322,6 +322,8 @@
     <string name="set_usb_bit_perfect_not_capable">Not available -- this device\'s output volume range couldn\'t be confirmed, so Auxio can\'t guarantee unity gain (no digital attenuation)</string>
     <string name="set_usb_volume_step_percent">Volume key step size</string>
     <string name="set_usb_volume_step_percent_desc">How much of the DAC\'s own volume range each volume key press moves, as a percentage from 1% (finest) to 10% (coarsest). Based on this specific device\'s native min-to-max range (see Capabilities), not a fixed number of clicks. Only applies while physical volume keys are routed to the DAC.</string>
+    <string name="set_usb_max_volume_percent">Max volume limit</string>
+    <string name="set_usb_max_volume_percent_desc">A hard safety ceiling on how loud the DAC\'s own hardware volume can ever go, as a percentage of this device\'s native min-to-max range. Headphones/IEMs driven directly by a bit-perfect DAC bypass Android\'s usual volume limiter entirely, so this is set conservatively low by default. Volume keys and sliders simply stop working past this point -- it never gets louder, no matter how far up you push them.</string>
     <string name="set_usb_abx_test">ABX listening test</string>
     <string name="set_usb_abx_test_desc">While on, Auxio secretly randomizes bit-perfect vs normal output per track and hides which one is active on the Now Playing screen -- each time the track changes, you\'ll be asked to guess, blind, which one you just heard.</string>
 
@@ -420,6 +422,7 @@
     <string name="err_no_lyrics">No lyrics found for this song</string>
     <string name="err_delete_failed">Unable to delete this from the device</string>
     <string name="err_organize_failed">Some files could not be organized</string>
+    <string name="err_usb_volume_too_high">USB DAC volume exceeded the %1$d%% safety limit -- playback was stopped</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_bad_location">This folder is not supported</string>
     <string name="lbl_no_folders">No folders</string>

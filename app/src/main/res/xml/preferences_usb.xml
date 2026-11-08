@@ -24,6 +24,15 @@
         app:summary="@string/set_usb_volume_step_percent_desc"
         app:title="@string/set_usb_volume_step_percent" />
 
+    <SeekBarPreference
+        android:max="100"
+        app:defaultValue="40"
+        app:key="@string/set_key_usb_max_volume_percent"
+        app:min="1"
+        app:showSeekBarValue="true"
+        app:summary="@string/set_usb_max_volume_percent_desc"
+        app:title="@string/set_usb_max_volume_percent" />
+
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:key="@string/set_key_usb_abx_test"

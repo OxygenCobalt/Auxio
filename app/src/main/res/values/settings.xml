@@ -12,6 +12,7 @@
     <string name="set_key_usb_abx_test" translatable="false">auxio_usb_abx_test</string>
     <string name="set_key_usb_manual_release_control" translatable="false">auxio_usb_manual_release_control</string>
     <string name="set_key_usb_volume_step_percent" translatable="false">auxio_usb_volume_step_percent</string>
+    <string name="set_key_usb_max_volume_percent" translatable="false">auxio_usb_max_volume_percent</string>
     <string name="set_key_usb_device" translatable="false">auxio_usb_device</string>
     <string name="set_key_usb_retry" translatable="false">auxio_usb_retry</string>
     <string name="set_key_usb_capabilities" translatable="false">auxio_usb_capabilities</string>
