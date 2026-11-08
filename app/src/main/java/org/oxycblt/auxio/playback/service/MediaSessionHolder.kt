@@ -256,10 +256,20 @@ private constructor(
             // reproduced: "switch to DAC, volume starts at/snaps to max". usbSettings.volumeDb
             // never has this race -- it's set directly, synchronously, by whichever code path
             // decided what the real target volume should be, not reconstructed from a readback.
+            //
+            // The final fallback -- a genuinely first-ever-seen device, where both of the above
+            // are null -- must match UsbAudioOutput.restoreVolumeAfterRelock()'s own default
+            // (the midpoint of the range, via UsbAudioController.defaultVolumeTarget, internal to
+            // libusbdac so re-derived here) rather than newRange.second/max: that's the actual
+            // hardware volume a fresh device gets set to on activation, and reporting max here
+            // instead desynced the system's displayed volume from it -- confirmed, reproduced:
+            // on a fresh install, the very first volume change after enabling bit-perfect mode
+            // snapped straight to full volume, because this provider had already told the system
+            // the stream was at max before the user ever touched it.
             val db =
                 usbSettings.volumeDb
                     ?: usbAudioManager.controlState.value?.volume
-                    ?: newRange.second
+                    ?: (newRange.first + newRange.second) / 2
             currentVolume = UsbVolumeSteps.dbToStep(db, range, divisions)
         }
 
