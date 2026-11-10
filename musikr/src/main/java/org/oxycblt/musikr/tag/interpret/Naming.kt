@@ -103,12 +103,10 @@ private data class IntelligentKnownName(override val raw: String, override val s
                     }
                 }
 
-        // Transliterate to latin if available
-        if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                Transliterator.getAvailableIDs().toList().contains("Any-Latin")
-        ) {
-            stripped = Transliterator.getInstance("Any-Latin;").transliterate(stripped)
+        // Transliterate to latin if available. Text that is already entirely latin is left
+        // untouched by Any-Latin, so skip the (expensive) transliteration pass for it.
+        if (stripped.any { it >= FIRST_NON_LATIN_CHAR }) {
+            latinTransliterator?.let { stripped = it.transliterate(stripped) }
         }
 
         // To properly compare numeric components in names, we have to split them up into
@@ -137,5 +135,26 @@ private data class IntelligentKnownName(override val raw: String, override val s
 
     companion object {
         private val TOKEN_REGEX by lazy { Regex("(\\d+)|(\\D+)") }
+
+        /**
+         * Everything below this is Basic Latin, Latin-1 or Latin Extended-A/B, which Any-Latin
+         * passes through unchanged.
+         */
+        private const val FIRST_NON_LATIN_CHAR = '\u0250'
+
+        /**
+         * Looking up and instantiating a [Transliterator] is very slow, so it must only be done
+         * once rather than for every name. Null if unavailable on this device.
+         */
+        private val latinTransliterator: Transliterator? by lazy {
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    Transliterator.getAvailableIDs().asSequence().contains("Any-Latin")
+            ) {
+                Transliterator.getInstance("Any-Latin;")
+            } else {
+                null
+            }
+        }
     }
 }
