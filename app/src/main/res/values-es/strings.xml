@@ -349,7 +349,7 @@
     </plurals>
     <string name="fmt_lib_total_size">Tamaño total: %s</string>
     <string name="set_saf_multithread">Exploración de archivos multihilo</string>
-    <string name="set_saf_multithread_desc">Más rápido, pero falla en algunos dispositivos</string>
+    <string name="set_saf_multithread_desc">Puede ser más rápido, pero podría empeorar en algunos dispositivos o carpetas de aplicaciones de terceros</string>
     <string name="err_share_too_large">Demasiado grande para compartir</string>
     <string name="err_share_failed">Incapaz de compartir esto</string>
     <string name="set_task_exit">Salir siempre al cerrar</string>
