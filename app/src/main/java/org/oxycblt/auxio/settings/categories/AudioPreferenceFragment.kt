@@ -45,7 +45,7 @@ class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) 
                 PreferenceManager.getDefaultSharedPreferences(requireContext())
                     .getInt(preference.key, DEFAULT_SLEEP_TIMER_MINUTES)
                     .coerceIn(MIN_SLEEP_TIMER_MINUTES, MAX_SLEEP_TIMER_MINUTES)
-            preference.summary = getString(R.string.set_sleep_timer_minutes_desc, minutes)
+            preference.summary = getString(R.string.set_sleep_timer_minutes_summary, minutes)
         }
     }
 
@@ -94,7 +94,7 @@ class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) 
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val minutes = picker.value
                 sharedPreferences.edit { putInt(preference.key, minutes) }
-                preference.summary = getString(R.string.set_sleep_timer_minutes_desc, minutes)
+                preference.summary = getString(R.string.set_sleep_timer_minutes_summary, minutes)
             }
             .show()
     }

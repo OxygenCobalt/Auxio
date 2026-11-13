@@ -350,7 +350,8 @@
     <string name="lbl_sleep_timer_compact">轻巧条定时器</string>
     <string name="lng_sleep_timer_widget">控制播放和睡眠定时器</string>
     <string name="set_sleep_timer_minutes">默认倒计时时长</string>
-    <string name="set_sleep_timer_minutes_desc">当前默认：%1$d 分钟</string>
+    <string name="set_sleep_timer_minutes_desc">设置桌面定时挂件的默认时长</string>
+    <string name="set_sleep_timer_minutes_summary">当前默认：%1$d 分钟</string>
     <string name="set_sleep_timer_minutes_dialog">选择倒计时时长</string>
     <string name="set_sleep_timer_minutes_unit">分钟</string>
     <string name="desc_sleep_timer_start">启动 %1$d 分钟睡眠定时器</string>

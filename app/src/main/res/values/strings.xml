@@ -303,7 +303,8 @@
     <string name="set_audio_desc">Configure sound and playback behavior</string>
     <string name="set_playback">Playback</string>
     <string name="set_sleep_timer_minutes">Default sleep timer</string>
-    <string name="set_sleep_timer_minutes_desc">Current default: %1$d minutes</string>
+    <string name="set_sleep_timer_minutes_desc">Choose the default duration used by home-screen timer widgets</string>
+    <string name="set_sleep_timer_minutes_summary">Current default: %1$d minutes</string>
     <string name="set_sleep_timer_minutes_dialog">Choose timer duration</string>
     <string name="set_sleep_timer_minutes_unit">minutes</string>
     <string name="set_headset_autoplay">Headset autoplay</string>
