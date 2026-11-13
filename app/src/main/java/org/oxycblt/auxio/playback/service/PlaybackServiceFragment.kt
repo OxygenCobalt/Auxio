@@ -77,14 +77,24 @@ private constructor(
     private val waitJob = Job()
     private val scope = CoroutineScope(Dispatchers.Main + waitJob)
     private var autoStopJob: Job? = null
-    private val exoHolder = exoHolderFactory.create()
-    private val sessionHolder = sessionHolderFactory.create(context, foregroundListener)
     private val widgetComponent = widgetComponentFactory.create(context)
+    private val sleepTimerController =
+        SleepTimerController(
+            context,
+            playbackManager,
+            playbackSettings,
+            scope,
+            widgetComponent::updateSleepTimer,
+        )
+    private val exoHolder =
+        exoHolderFactory.create(onNaturalTrackEnd = sleepTimerController::onNaturalTrackEnded)
+    private val sessionHolder = sessionHolderFactory.create(context, foregroundListener)
     private val systemReceiver =
         systemReceiverFactory.create(
             context,
             widgetComponent,
             onExitRequested = { playbackManager.endSession() },
+            onSleepTimerRequested = { sleepTimerController.toggle() },
         )
 
     private fun scheduleAutoStop() {
@@ -174,6 +184,7 @@ private constructor(
 
     fun release() {
         autoStopJob?.cancel()
+        sleepTimerController.release()
         waitJob.cancel()
         playbackManager.removeListener(this)
         systemReceiver.release()
@@ -192,11 +203,12 @@ private constructor(
     }
 
     override fun onProgressionChanged(progression: Progression) {
-        // Update timer whenever play/pause state changes
+        sleepTimerController.onPlaybackChanged(progression.isPlaying)
         updateAutoStopTimer(progression.isPlaying)
     }
 
     override fun onSessionEnded() {
+        sleepTimerController.onSessionEnded()
         foregroundListener.updateForeground(ForegroundListener.Change.MEDIA_SESSION)
     }
 

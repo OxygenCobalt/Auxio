@@ -23,8 +23,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import javax.inject.Inject
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.widgets.WidgetComponent
@@ -42,6 +44,7 @@ private constructor(
     private val playbackSettings: PlaybackSettings,
     private val widgetComponent: WidgetComponent,
     private val onExitRequested: () -> Unit,
+    private val onSleepTimerRequested: () -> Boolean,
 ) : BroadcastReceiver() {
     private var initialHeadsetPlugEventHandled = false
 
@@ -55,6 +58,7 @@ private constructor(
             context: Context,
             widgetComponent: WidgetComponent,
             onExitRequested: () -> Unit,
+            onSleepTimerRequested: () -> Boolean,
         ) =
             SystemPlaybackReceiver(
                 context,
@@ -62,6 +66,7 @@ private constructor(
                 playbackSettings,
                 widgetComponent,
                 onExitRequested,
+                onSleepTimerRequested,
             )
     }
 
@@ -129,6 +134,17 @@ private constructor(
                 L.d("Received exit event")
                 onExitRequested()
             }
+            PlaybackActions.ACTION_SLEEP_TIMER_TOGGLE -> {
+                L.d("Received sleep timer event")
+                if (!onSleepTimerRequested()) {
+                    Toast.makeText(
+                        context,
+                        R.string.widget_sleep_timer_requires_playback,
+                        Toast.LENGTH_SHORT,
+                    )
+                        .show()
+                }
+            }
             WidgetProvider.ACTION_WIDGET_UPDATE -> {
                 L.d("Received widget update event")
                 widgetComponent.update()
@@ -168,6 +184,7 @@ private constructor(
                 addAction(PlaybackActions.ACTION_PLAY_PAUSE)
                 addAction(PlaybackActions.ACTION_SKIP_NEXT)
                 addAction(PlaybackActions.ACTION_EXIT)
+                addAction(PlaybackActions.ACTION_SLEEP_TIMER_TOGGLE)
                 addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
             }
     }

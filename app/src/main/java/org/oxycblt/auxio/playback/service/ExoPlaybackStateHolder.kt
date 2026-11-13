@@ -76,6 +76,7 @@ class ExoPlaybackStateHolder(
     private val replayGainProcessor: ReplayGainAudioProcessor,
     private val musicRepository: MusicRepository,
     private val imageSettings: ImageSettings,
+    private val onNaturalTrackEnd: () -> Boolean,
 ) :
     PlaybackStateHolder,
     Player.Listener,
@@ -490,6 +491,7 @@ class ExoPlaybackStateHolder(
         super.onPlaybackStateChanged(playbackState)
 
         if (playbackState == Player.STATE_ENDED && player.repeatMode == Player.REPEAT_MODE_OFF) {
+            if (onNaturalTrackEnd()) return
             goto(0)
             player.pause()
         }
@@ -500,6 +502,7 @@ class ExoPlaybackStateHolder(
 
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
             playbackManager.ack(this, StateAck.IndexMoved)
+            if (onNaturalTrackEnd()) return
             deferSave()
         }
     }
@@ -654,7 +657,7 @@ class ExoPlaybackStateHolder(
         private val musicRepository: MusicRepository,
         private val imageSettings: ImageSettings,
     ) {
-        fun create(): ExoPlaybackStateHolder {
+        fun create(onNaturalTrackEnd: () -> Boolean): ExoPlaybackStateHolder {
             // Since Auxio is a music player, only specify an audio renderer to save
             // battery/apk size/cache size]
             val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
@@ -697,6 +700,7 @@ class ExoPlaybackStateHolder(
                 replayGainProcessor,
                 musicRepository,
                 imageSettings,
+                onNaturalTrackEnd,
             )
         }
     }

@@ -39,6 +39,8 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
     val barAction: ActionMode
     /** Whether to start playback when a headset is plugged in. */
     val headsetAutoplay: Boolean
+    /** Default sleep-timer duration in minutes. */
+    val sleepTimerMinutes: Int
     /** The current ReplayGain configuration. */
     val replayGainMode: ReplayGainMode
     /** The current ReplayGain pre-amp configuration. */
@@ -70,6 +72,9 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
 
         /** Called when [pauseOnRepeat] has changed. */
         fun onPauseOnRepeatChanged() {}
+
+        /** Called when [sleepTimerMinutes] has changed. */
+        fun onSleepTimerMinutesChanged() {}
     }
 }
 
@@ -101,6 +106,12 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
 
     override val headsetAutoplay: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_headset_autoplay), false)
+
+    override val sleepTimerMinutes: Int
+        get() =
+            sharedPreferences
+                .getInt(getString(R.string.set_key_sleep_timer_minutes), SLEEP_TIMER_DEFAULT_MINUTES)
+                .coerceIn(SLEEP_TIMER_MIN_MINUTES, SLEEP_TIMER_MAX_MINUTES)
 
     override val replayGainMode: ReplayGainMode
         get() =
@@ -201,10 +212,17 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
                 L.d("Dispatching pause on repeat change")
                 listener.onPauseOnRepeatChanged()
             }
+            getString(R.string.set_key_sleep_timer_minutes) -> {
+                L.d("Dispatching sleep timer duration change")
+                listener.onSleepTimerMinutesChanged()
+            }
         }
     }
 
     private companion object {
+        const val SLEEP_TIMER_DEFAULT_MINUTES = 15
+        const val SLEEP_TIMER_MIN_MINUTES = 1
+        const val SLEEP_TIMER_MAX_MINUTES = 180
         const val OLD_KEY_LIB_MUSIC_PLAYBACK_MODE = "auxio_library_playback_mode"
         const val OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE = "auxio_detail_playback_mode"
     }

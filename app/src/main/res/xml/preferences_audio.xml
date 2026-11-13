@@ -27,6 +27,11 @@
             app:summary="@string/set_remember_pause_desc"
             app:title="@string/set_remember_pause" />
 
+        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+            app:key="@string/set_key_sleep_timer_minutes"
+            app:summary="@string/set_sleep_timer_minutes_desc"
+            app:title="@string/set_sleep_timer_minutes" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/set_replay_gain">

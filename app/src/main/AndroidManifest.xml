@@ -145,6 +145,45 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
+        <!-- Clear timer widget. -->
+        <receiver
+            android:name=".widgets.ClearTimerWidgetProvider"
+            android:exported="false"
+            android:label="@string/lbl_sleep_timer_clear">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_sleep_timer_clear_info" />
+        </receiver>
+
+        <!-- Playback card timer widget. -->
+        <receiver
+            android:name=".widgets.PlaybackTimerWidgetProvider"
+            android:exported="false"
+            android:label="@string/lbl_sleep_timer_player">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_sleep_timer_player_info" />
+        </receiver>
+
+        <!-- Compact timer widget. -->
+        <receiver
+            android:name=".widgets.CompactTimerWidgetProvider"
+            android:exported="false"
+            android:label="@string/lbl_sleep_timer_compact">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_sleep_timer_compact_info" />
+        </receiver>
+
         <!-- Tasker 'start service' integration -->
         <activity
             android:name=".tasker.ActivityConfigStartAction"

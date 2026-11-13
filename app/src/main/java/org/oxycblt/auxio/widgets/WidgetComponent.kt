@@ -30,6 +30,8 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.coil.RoundedRectTransformation
 import org.oxycblt.auxio.image.coil.SquareCropTransformation
+import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.SleepTimerState
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Progression
 import org.oxycblt.auxio.playback.state.QueueChange
@@ -52,34 +54,57 @@ private constructor(
     private val imageSettings: ImageSettings,
     private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
+    private val playbackSettings: PlaybackSettings,
     private val uiSettings: UISettings,
-) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
+) : PlaybackStateManager.Listener, PlaybackSettings.Listener, UISettings.Listener, ImageSettings.Listener {
     class Factory
     @Inject
     constructor(
         private val imageSettings: ImageSettings,
         private val bitmapProvider: BitmapProvider,
         private val playbackManager: PlaybackStateManager,
+        private val playbackSettings: PlaybackSettings,
         private val uiSettings: UISettings,
     ) {
         fun create(context: Context) =
-            WidgetComponent(context, imageSettings, bitmapProvider, playbackManager, uiSettings)
+            WidgetComponent(
+                context,
+                imageSettings,
+                bitmapProvider,
+                playbackManager,
+                playbackSettings,
+                uiSettings,
+            )
     }
 
     private val widgetProvider = WidgetProvider()
+    private var sleepTimerState: SleepTimerState = SleepTimerState.Idle
 
     fun attach() {
         playbackManager.addListener(this)
+        playbackSettings.registerListener(this)
         uiSettings.registerListener(this)
         imageSettings.registerListener(this)
     }
 
-    /** Update [WidgetProvider] with the current playback state. */
+    /** Update widgets whenever the shared timer state changes. */
+    fun updateSleepTimer(state: SleepTimerState) {
+        sleepTimerState = state
+        update()
+    }
+
+    /** Update widgets with the current playback and timer state. */
     fun update() {
         val song = playbackManager.currentSong
         if (song == null) {
-            L.d("No song, resetting widget")
+            L.d("No state, resetting widgets")
             widgetProvider.update(context, uiSettings, null)
+            SleepTimerWidgetRenderer.updateAll(
+                context,
+                null,
+                sleepTimerState,
+                playbackSettings.sleepTimerMinutes,
+            )
             return
         }
 
@@ -127,6 +152,12 @@ private constructor(
                     val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
                     L.d("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
+                    SleepTimerWidgetRenderer.updateAll(
+                        context,
+                        state,
+                        sleepTimerState,
+                        playbackSettings.sleepTimerMinutes,
+                    )
                 }
             },
         )
@@ -136,9 +167,16 @@ private constructor(
     fun release() {
         bitmapProvider.release()
         imageSettings.unregisterListener(this)
+        playbackSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)
         widgetProvider.reset(context, uiSettings)
+        SleepTimerWidgetRenderer.updateAll(
+            context,
+            null,
+            SleepTimerState.Idle,
+            playbackSettings.sleepTimerMinutes,
+        )
     }
 
     // --- CALLBACKS ---
@@ -169,6 +207,8 @@ private constructor(
     override fun onRoundModeChanged() = update()
 
     override fun onImageSettingsChanged() = update()
+
+    override fun onSleepTimerMinutesChanged() = update()
 
     /**
      * A condensed form of the playback state that is safe to use in AppWidgets.

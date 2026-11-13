@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/widget_sleep_timer_compact"
+    android:minWidth="250dp"
+    android:minHeight="48dp"
+    android:minResizeWidth="210dp"
+    android:minResizeHeight="48dp"
+    android:resizeMode="horizontal"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen" />

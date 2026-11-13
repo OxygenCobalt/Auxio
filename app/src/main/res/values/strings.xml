@@ -118,6 +118,9 @@
     <string name="lbl_sort_dsc">Descending</string>
 
     <string name="lbl_playback">Now playing</string>
+    <string name="lbl_sleep_timer_clear">Clear sleep timer</string>
+    <string name="lbl_sleep_timer_player">Sleep timer playback card</string>
+    <string name="lbl_sleep_timer_compact">Compact sleep timer</string>
     <string name="lbl_equalizer">Equalizer</string>
     <string name="lbl_play">Play</string>
     <string name="lbl_shuffle">Shuffle</string>
@@ -193,6 +196,7 @@
     <eat-comment />
 
     <string name="lng_widget">View and control music playback</string>
+    <string name="lng_sleep_timer_widget">Control playback and sleep timer</string>
     <string name="lng_indexing">Loading your music library…</string>
     <string name="lng_observing">Monitoring your music library for changes…</string>
     <string name="lng_queue_added">Added to queue</string>
@@ -298,6 +302,10 @@
     <string name="set_audio">Audio</string>
     <string name="set_audio_desc">Configure sound and playback behavior</string>
     <string name="set_playback">Playback</string>
+    <string name="set_sleep_timer_minutes">Default sleep timer</string>
+    <string name="set_sleep_timer_minutes_desc">Current default: %1$d minutes</string>
+    <string name="set_sleep_timer_minutes_dialog">Choose timer duration</string>
+    <string name="set_sleep_timer_minutes_unit">minutes</string>
     <string name="set_headset_autoplay">Headset autoplay</string>
     <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
     <string name="set_rewind_prev">Rewind before skipping back</string>
@@ -361,6 +369,8 @@
     <string name="desc_play_pause">Play or pause</string>
     <string name="desc_skip_next">Skip to next song</string>
     <string name="desc_skip_prev">Skip to last song</string>
+    <string name="desc_sleep_timer_start">Start a %1$d-minute sleep timer</string>
+    <string name="desc_sleep_timer_cancel">Cancel sleep timer</string>
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
     <string name="desc_exit">Stop playback</string>
@@ -394,6 +404,10 @@
     <string name="def_song_count">No songs</string>
     <string name="def_album_count">No albums</string>
     <string name="def_playback">No music playing</string>
+    <string name="widget_sleep_timer_idle">Tap to start · %1$d min</string>
+    <string name="widget_sleep_timer_counting">Countdown active</string>
+    <string name="widget_sleep_timer_pending">Stop after this song</string>
+    <string name="widget_sleep_timer_requires_playback">Play music to start a timer</string>
 
     <!-- Codec Namespace | Format names -->
     <eat-comment />
