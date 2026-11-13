@@ -79,11 +79,7 @@ internal object SleepTimerWidgetRenderer {
 
     private val widgetSpecs =
         listOf(
-            WidgetSpec(
-                ClearTimerWidgetProvider::class.java,
-                R.layout.widget_sleep_timer_clear,
-                showArtist = true,
-            ),
+            WidgetSpec(ClearTimerWidgetProvider::class.java, R.layout.widget_sleep_timer_clear),
             WidgetSpec(
                 PlaybackTimerWidgetProvider::class.java,
                 R.layout.widget_sleep_timer_player,

@@ -28,33 +28,26 @@ internal class SleepTimerController(
     private val onStateChanged: (SleepTimerState) -> Unit,
 ) {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-    private var deadlineMillis = preferences.getLong(KEY_DEADLINE_MILLIS, 0L)
-    private var stopAfterCurrentTrack = preferences.getBoolean(KEY_STOP_AFTER_TRACK, false)
+    private val stateMachine = SleepTimerStateMachine(readPersistedState())
     private var timerJob: Job? = null
     private var hasObservedPlayback = false
 
     val state: SleepTimerState
-        get() =
-            when {
-                stopAfterCurrentTrack -> SleepTimerState.StopAfterCurrentTrack
-                deadlineMillis > 0L -> SleepTimerState.CountingDown(deadlineMillis)
-                else -> SleepTimerState.Idle
-            }
+        get() = stateMachine.state
 
     /** Starts a timer while audio is playing, or cancels an existing timer. */
     fun toggle(): Boolean {
-        if (deadlineMillis > 0L || stopAfterCurrentTrack) {
+        if (state !is SleepTimerState.Idle) {
             cancel()
             return true
         }
         if (!playbackManager.progression.isPlaying) return false
 
         hasObservedPlayback = true
-        deadlineMillis =
-            System.currentTimeMillis() + playbackSettings.sleepTimerMinutes * MILLIS_PER_MINUTE
-        stopAfterCurrentTrack = false
+        stateMachine.start(System.currentTimeMillis(), playbackSettings.sleepTimerMinutes)
         persist()
-        schedule(deadlineMillis)
+        val deadline = (state as SleepTimerState.CountingDown).deadlineMillis
+        schedule(deadline)
         publish()
         return true
     }
@@ -63,22 +56,24 @@ internal class SleepTimerController(
     fun onPlaybackChanged(isPlaying: Boolean) {
         if (isPlaying) {
             hasObservedPlayback = true
-            if (deadlineMillis > 0L && timerJob == null) {
-                schedule(deadlineMillis)
-            }
+            val countdown = state as? SleepTimerState.CountingDown
+            if (countdown != null && timerJob == null) schedule(countdown.deadlineMillis)
             if (state !is SleepTimerState.Idle) publish()
         } else if (hasObservedPlayback && state !is SleepTimerState.Idle) {
-            cancel()
+            stateMachine.pause()
+            clearJobAndPersist()
+            publish()
         } else if (state !is SleepTimerState.Idle) {
-            // Preserve a persisted timer until restored playback tells us whether it is resuming.
+            // Preserve persisted state until restored playback tells us whether it is resuming.
             publish()
         }
     }
 
     /** Ends playback at a natural track boundary if the countdown already expired. */
     fun onNaturalTrackEnded(): Boolean {
-        if (!stopAfterCurrentTrack) return false
-        clearState()
+        if (!stateMachine.finishCurrentTrack()) return false
+        clearJobAndPersist()
+        publish()
         playbackManager.endSession()
         return true
     }
@@ -96,6 +91,7 @@ internal class SleepTimerController(
 
     private fun schedule(deadline: Long) {
         timerJob?.cancel()
+        timerJob = null
         val remaining = deadline - System.currentTimeMillis()
         if (remaining <= 0L) {
             expire(deadline)
@@ -106,47 +102,59 @@ internal class SleepTimerController(
             scope.launch {
                 delay(remaining)
                 timerJob = null
-                if (deadlineMillis == deadline) expire(deadline)
+                expire(deadline)
             }
     }
 
     private fun expire(deadline: Long) {
-        if (deadlineMillis != deadline) return
-        if (!playbackManager.progression.isPlaying) {
-            cancel()
-            return
+        val countdown = state as? SleepTimerState.CountingDown ?: return
+        if (countdown.deadlineMillis != deadline) return
+        if (stateMachine.expire(System.currentTimeMillis(), playbackManager.progression.isPlaying)) {
+            persist()
+            publish()
         }
-
-        deadlineMillis = 0L
-        stopAfterCurrentTrack = true
-        persist()
-        publish()
     }
 
     private fun cancel() {
         if (state is SleepTimerState.Idle) return
-        clearState()
+        stateMachine.cancel()
+        clearJobAndPersist()
+        publish()
     }
 
-    private fun clearState() {
+    private fun clearJobAndPersist() {
         timerJob?.cancel()
         timerJob = null
-        deadlineMillis = 0L
-        stopAfterCurrentTrack = false
-        preferences.edit {
-            remove(KEY_DEADLINE_MILLIS)
-            remove(KEY_STOP_AFTER_TRACK)
-        }
-        publish()
+        persist()
     }
 
     private fun persist() {
         preferences.edit {
-            if (deadlineMillis > 0L) putLong(KEY_DEADLINE_MILLIS, deadlineMillis)
-            else remove(KEY_DEADLINE_MILLIS)
-            putBoolean(KEY_STOP_AFTER_TRACK, stopAfterCurrentTrack)
+            when (val current = state) {
+                SleepTimerState.Idle -> {
+                    remove(KEY_DEADLINE_MILLIS)
+                    remove(KEY_STOP_AFTER_TRACK)
+                }
+                is SleepTimerState.CountingDown -> {
+                    putLong(KEY_DEADLINE_MILLIS, current.deadlineMillis)
+                    remove(KEY_STOP_AFTER_TRACK)
+                }
+                SleepTimerState.StopAfterCurrentTrack -> {
+                    remove(KEY_DEADLINE_MILLIS)
+                    putBoolean(KEY_STOP_AFTER_TRACK, true)
+                }
+            }
         }
     }
+
+    private fun readPersistedState(): SleepTimerState =
+        when {
+            preferences.getBoolean(KEY_STOP_AFTER_TRACK, false) ->
+                SleepTimerState.StopAfterCurrentTrack
+            preferences.getLong(KEY_DEADLINE_MILLIS, 0L) > 0L ->
+                SleepTimerState.CountingDown(preferences.getLong(KEY_DEADLINE_MILLIS, 0L))
+            else -> SleepTimerState.Idle
+        }
 
     private fun publish() = onStateChanged(state)
 
@@ -154,6 +162,5 @@ internal class SleepTimerController(
         const val PREFERENCES_NAME = "sleep_timer_state"
         const val KEY_DEADLINE_MILLIS = "deadline_wall_clock_ms"
         const val KEY_STOP_AFTER_TRACK = "stop_after_current_track"
-        const val MILLIS_PER_MINUTE = 60_000L
     }
 }

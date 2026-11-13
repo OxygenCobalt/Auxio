@@ -66,6 +66,11 @@ import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
 @OptIn(UnstableApi::class)
+internal fun isNaturalTrackBoundary(reason: Int) =
+    reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
+        reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT
+
+@OptIn(UnstableApi::class)
 class ExoPlaybackStateHolder(
     private val context: Context,
     private val player: ExoPlayer,
@@ -500,17 +505,12 @@ class ExoPlaybackStateHolder(
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         super.onMediaItemTransition(mediaItem, reason)
 
-        when (reason) {
-            Player.MEDIA_ITEM_TRANSITION_REASON_AUTO -> {
-                playbackManager.ack(this, StateAck.IndexMoved)
-                if (onNaturalTrackEnd()) return
-                deferSave()
-            }
-            Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {
-                if (onNaturalTrackEnd()) return
-                deferSave()
-            }
+        if (!isNaturalTrackBoundary(reason)) return
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+            playbackManager.ack(this, StateAck.IndexMoved)
         }
+        if (onNaturalTrackEnd()) return
+        deferSave()
     }
 
     override fun onEvents(player: Player, events: Player.Events) {

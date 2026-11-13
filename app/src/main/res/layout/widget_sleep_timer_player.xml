@@ -8,7 +8,7 @@
     android:backgroundTint="?attr/colorSurface"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/spacing_medium"
+    android:padding="@dimen/spacing_small"
     android:theme="@style/Theme.Auxio.Widget">
 
     <ImageView
@@ -88,7 +88,7 @@
                 style="@style/Widget.Auxio.MaterialButton.AppWidget.PlayPause"
                 android:layout_width="@dimen/size_touchable_small"
                 android:layout_height="@dimen/size_touchable_small"
-                android:contentDescription="@string/desc_sleep_timer_start"
+                android:contentDescription="@string/set_sleep_timer_minutes"
                 android:src="@drawable/ic_time_24" />
 
             <ImageButton
