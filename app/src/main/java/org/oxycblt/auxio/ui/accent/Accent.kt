@@ -153,15 +153,11 @@ class Accent private constructor(val index: Int) {
             return Accent(index)
         }
 
-        /** The default accent. */
-        val DEFAULT =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // Use dynamic coloring on devices that support it.
-                accentThemes.lastIndex
-            } else {
-                // Use blue everywhere else.
-                5
-            }
+        /**
+         * The default accent. In this fork, the "Red" accent is re-tinted to the Apple Music
+         * palette and used everywhere by default, instead of dynamic color or blue.
+         */
+        val DEFAULT = 0
 
         /** The amount of valid accents. */
         val MAX =
