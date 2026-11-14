@@ -75,15 +75,15 @@
 
             <org.oxycblt.auxio.playback.ui.button.WidthFixMaterialButton
                 android:id="@+id/playback_secondary_action"
-                style="@style/Widget.Material3Expressive.Button.IconButton.Outlined"
+                style="@style/Widget.Material3Expressive.Button.IconButton"
                 app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 app:toggleCheckedStateOnClick="false"
-                app:backgroundTint="?attr/colorSurfaceContainerLow"
+                app:backgroundTint="@android:color/transparent"
                 app:iconTint="@color/sel_checkable_icon"
-                app:strokeColor="@color/sel_checkable_outline"
+                app:strokeWidth="0dp"
                 tools:icon="@drawable/ic_skip_next_24" />
         </com.google.android.material.button.MaterialButtonGroup>
 

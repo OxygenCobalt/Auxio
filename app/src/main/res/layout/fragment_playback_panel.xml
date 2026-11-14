@@ -27,7 +27,7 @@
         android:layout_marginVertical="@dimen/spacing_small"
         app:enablePlaybackIndicator="false"
         app:enableSelectionBadge="false"
-        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Large"
+        app:shapeAppearance="@style/ShapeAppearance.Auxio.Cover.Large"
         android:layout_marginStart="@dimen/spacing_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +50,7 @@
         <TextView
             android:id="@+id/playback_song"
             style="@style/Widget.Auxio.TextView.Primary.Compact"
+            android:textAppearance="?attr/textAppearanceTitleLargeEmphasized"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fallbackLineSpacing="false"
@@ -58,6 +59,8 @@
         <TextView
             android:id="@+id/playback_artist"
             style="@style/Widget.Auxio.TextView.Secondary.Compact"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fallbackLineSpacing="false"
