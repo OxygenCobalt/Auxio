@@ -153,7 +153,7 @@ private constructor(
                 PlaybackStateCompat.SHUFFLE_MODE_ALL
             } else {
                 PlaybackStateCompat.SHUFFLE_MODE_NONE
-            }
+            },
         )
         invalidateNotificationActions()
     }
@@ -183,7 +183,7 @@ private constructor(
                 RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
                 RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
                 RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
-            }
+            },
         )
 
         invalidateNotificationActions()
@@ -404,16 +404,16 @@ private class PlaybackNotification(
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))
         addAction(
-            buildAction(context, PlaybackActions.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24)
+            buildAction(context, PlaybackActions.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24),
         )
         addAction(buildPlayPauseAction(context, true))
         addAction(
-            buildAction(context, PlaybackActions.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24)
+            buildAction(context, PlaybackActions.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24),
         )
         addAction(buildShuffleAction(context, false))
 
         setStyle(
-            MediaStyle(this).setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3)
+            MediaStyle(this).setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3),
         )
     }
 

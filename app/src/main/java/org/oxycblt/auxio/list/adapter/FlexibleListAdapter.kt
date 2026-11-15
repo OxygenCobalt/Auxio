@@ -34,7 +34,7 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
-    diffCallback: DiffUtil.ItemCallback<T>
+    diffCallback: DiffUtil.ItemCallback<T>,
 ) : RecyclerView.Adapter<VH>() {
     @Suppress("LeakingThis") private val differ = FlexibleListDiffer(this, diffCallback)
 
@@ -242,7 +242,7 @@ private class FlexibleListDiffer<T>(
                             }
                             throw AssertionError()
                         }
-                    }
+                    },
                 )
 
             mainThreadExecutor.execute {

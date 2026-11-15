@@ -95,7 +95,7 @@ private class ExploreStepImpl(private val fs: FS, private val storage: Storage) 
                                 audio.tags,
                                 coverId,
                                 item.cachedFile.addedMs,
-                            )
+                            ),
                         )
                     }
                 }

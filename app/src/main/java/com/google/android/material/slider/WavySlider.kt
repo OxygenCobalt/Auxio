@@ -141,7 +141,7 @@ constructor(
                 getDimensionPixelSizeOrThrow(R.styleable.WavySlider_waveAmplitude)
             configuredSpeedPx = getDimensionPixelSizeOrThrow(R.styleable.WavySlider_waveSpeed)
             check(
-                configuredWavelengthPx > 0 && configuredAmplitudePx > 0 && configuredSpeedPx > 0
+                configuredWavelengthPx > 0 && configuredAmplitudePx > 0 && configuredSpeedPx > 0,
             ) {
                 "Invalid wave dimensions, must be >0"
             }
@@ -165,13 +165,13 @@ constructor(
         // The funky tangent stuff was just not my thing
         if (trackCornerSize < trackHeight) {
             Timber.w(
-                "WavySlider can only be fully rounded. Clamping corner size down to trackHeight / 2"
+                "WavySlider can only be fully rounded. Clamping corner size down to trackHeight / 2",
             )
             trackCornerSize = trackHeight
         }
         if (trackInsideCornerSize < trackHeight) {
             Timber.w(
-                "WavySlider can only be fully rounded. Clamping inner corner size down to trackHeight / 2"
+                "WavySlider can only be fully rounded. Clamping inner corner size down to trackHeight / 2",
             )
             trackInsideCornerSize = trackHeight
         }

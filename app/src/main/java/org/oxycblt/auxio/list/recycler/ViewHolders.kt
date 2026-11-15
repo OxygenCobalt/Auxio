@@ -392,7 +392,7 @@ class DividerViewHolder private constructor(divider: MaterialDivider) :
                             RecyclerView.LayoutParams.MATCH_PARENT,
                             RecyclerView.LayoutParams.WRAP_CONTENT,
                         )
-                }
+                },
             )
 
         /** A comparator that can be used with DiffUtil. */

@@ -125,7 +125,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         // --- UI SETUP ---
 
         binding.homeAppbar.addOnOffsetChangedListener(
-            FadingToolbarOffsetListener(binding.homeToolbar, binding.homeContent)
+            FadingToolbarOffsetListener(binding.homeToolbar, binding.homeContent),
         )
         binding.homeNormalToolbar.apply {
             setOnMenuItemClickListener(this@HomeFragment)
@@ -141,7 +141,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                     override fun onPageSelected(position: Int) {
                         homeModel.synchronizeTabPosition(position)
                     }
-                }
+                },
             )
 
             // ViewPager2 will nominally consume window insets, which will then break the window
@@ -369,7 +369,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} to a playlist")
                     HomeFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray()
+                        decision.songs.map { it.uid }.toTypedArray(),
                     )
                 }
             }

@@ -115,7 +115,7 @@ class SongListFragment :
             // Artist -> Use name of first artist
             is Sort.Mode.ByArtist ->
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    song.album.artists[0].name.thumb() ?: "?"
+                    song.album.artists[0].name.thumb() ?: "?",
                 )
 
             // Album -> Use Album Name
@@ -131,7 +131,7 @@ class SongListFragment :
             // Duration -> Use compact bucket duration
             is Sort.Mode.ByDuration ->
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    song.durationMs.formatDurationMsPopup()
+                    song.durationMs.formatDurationMsPopup(),
                 )
 
             // Last added -> Use year
@@ -139,7 +139,7 @@ class SongListFragment :
                 val calendar = Calendar.getInstance()
                 calendar.timeInMillis = song.addedMs
                 FastScrollRecyclerView.PopupProvider.PopupData(
-                    getString(R.string.fmt_number, calendar.get(Calendar.YEAR))
+                    getString(R.string.fmt_number, calendar.get(Calendar.YEAR)),
                 )
             }
 

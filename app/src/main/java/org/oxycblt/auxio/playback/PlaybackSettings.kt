@@ -81,7 +81,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
                 sharedPreferences.getInt(
                     getString(R.string.set_key_play_in_list_with),
                     Int.MIN_VALUE,
-                )
+                ),
             ) ?: PlaySong.FromAll
 
     override val inParentPlaybackMode: PlaySong?
@@ -90,13 +90,13 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
                 sharedPreferences.getInt(
                     getString(R.string.set_key_play_in_parent_with),
                     Int.MIN_VALUE,
-                )
+                ),
             )
 
     override val barAction: ActionMode
         get() =
             ActionMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_bar_action), Int.MIN_VALUE)
+                sharedPreferences.getInt(getString(R.string.set_key_bar_action), Int.MIN_VALUE),
             ) ?: ActionMode.NEXT
 
     override val headsetAutoplay: Boolean
@@ -105,7 +105,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
     override val replayGainMode: ReplayGainMode
         get() =
             ReplayGainMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_replay_gain), Int.MIN_VALUE)
+                sharedPreferences.getInt(getString(R.string.set_key_replay_gain), Int.MIN_VALUE),
             ) ?: ReplayGainMode.DYNAMIC
 
     override var replayGainPreAmp: ReplayGainPreAmp

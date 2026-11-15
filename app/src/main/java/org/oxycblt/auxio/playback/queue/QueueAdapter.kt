@@ -87,8 +87,6 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
 
         // Have to update not only the currently playing item, but also all items marked
         // as playing.
-        // TODO: Optimize this by only updating the range between old and new indices?
-        // TODO: Don't update when the index has not moved.
         if (currentIndex < lastIndex) {
             L.d("Moved backwards, must update items above last index")
             val since = if (incremental) currentIndex else 0
@@ -196,7 +194,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
          */
         fun from(parent: ViewGroup) =
             QueueSongViewHolder(
-                ItemEditableSongBinding.inflate(parent.context.inflater, parent, false)
+                ItemEditableSongBinding.inflate(parent.context.inflater, parent, false),
             )
 
         /** A comparator that can be used with DiffUtil. */

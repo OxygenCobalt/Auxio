@@ -313,7 +313,7 @@ class PlaylistDetailFragment :
                 L.d("Navigating to artist choices for ${show.album}")
                 findNavController()
                     .navigateSafe(
-                        PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid)
+                        PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid),
                     )
             }
             is Show.PlaylistDetails -> {
@@ -387,7 +387,7 @@ class PlaylistDetailFragment :
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     PlaylistDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray()
+                        decision.songs.map { it.uid }.toTypedArray(),
                     )
                 }
                 is PlaylistDecision.New -> error("Unexpected playlist decision $decision")

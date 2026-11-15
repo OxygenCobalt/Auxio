@@ -182,7 +182,7 @@ class ExoPlaybackStateHolder(
                 playbackManager.play(
                     requireNotNull(commandFactory.all(ShuffleMode.ON)) {
                         "Invalid playback parameters"
-                    }
+                    },
                 )
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
@@ -210,7 +210,7 @@ class ExoPlaybackStateHolder(
                             if (song != null) {
                                 val command =
                                     requireNotNull(
-                                        commandFactory.songFromAll(song, ShuffleMode.IMPLICIT)
+                                        commandFactory.songFromAll(song, ShuffleMode.IMPLICIT),
                                     ) {
                                         "Invalid playback command"
                                     }
@@ -270,7 +270,7 @@ class ExoPlaybackStateHolder(
         if (player.shuffleModeEnabled) {
             // Have to manually refresh the shuffle seed and anchor it to the new current songs
             player.setShuffleOrder(
-                BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex)
+                BetterShuffleOrder(player.mediaItemCount, player.currentMediaItemIndex),
             )
         }
         playbackManager.ack(this, StateAck.QueueReordered)
@@ -537,7 +537,7 @@ class ExoPlaybackStateHolder(
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC),
         )
     }
 

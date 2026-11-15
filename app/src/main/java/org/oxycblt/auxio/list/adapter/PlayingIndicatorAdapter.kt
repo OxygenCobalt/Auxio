@@ -30,7 +30,7 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
-    diffCallback: DiffUtil.ItemCallback<T>
+    diffCallback: DiffUtil.ItemCallback<T>,
 ) : FlexibleListAdapter<T, VH>(diffCallback) {
     // There are actually two states for this adapter:
     // - The currently playing item, which is usually marked as "selected" and becomes accented.

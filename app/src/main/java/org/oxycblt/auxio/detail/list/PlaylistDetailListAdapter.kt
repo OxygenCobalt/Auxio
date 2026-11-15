@@ -206,7 +206,7 @@ private class EditHeaderViewHolder private constructor(private val binding: Item
          */
         fun from(parent: ViewGroup) =
             EditHeaderViewHolder(
-                ItemEditHeaderBinding.inflate(parent.context.inflater, parent, false)
+                ItemEditHeaderBinding.inflate(parent.context.inflater, parent, false),
             )
 
         /** A comparator that can be used with DiffUtil. */
@@ -297,7 +297,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
          */
         fun from(parent: ViewGroup) =
             PlaylistSongViewHolder(
-                ItemEditableSongBinding.inflate(parent.context.inflater, parent, false)
+                ItemEditableSongBinding.inflate(parent.context.inflater, parent, false),
             )
 
         /** A comparator that can be used with DiffUtil. */

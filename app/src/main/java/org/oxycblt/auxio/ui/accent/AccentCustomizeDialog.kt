@@ -71,7 +71,7 @@ class AccentCustomizeDialog :
                 Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
                 uiSettings.accent
-            }
+            },
         )
     }
 

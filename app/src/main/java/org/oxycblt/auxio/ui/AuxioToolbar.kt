@@ -113,7 +113,7 @@ constructor(
                 toolbarAttrs.getResourceId(
                     AR.styleable.Toolbar_titleTextAppearance,
                     MR.attr.textAppearanceDisplaySmallEmphasized,
-                )
+                ),
             )
         }
 
@@ -135,7 +135,7 @@ constructor(
                 toolbarAttrs.getResourceId(
                     AR.styleable.Toolbar_subtitleTextAppearance,
                     MR.attr.textAppearanceTitleLarge,
-                )
+                ),
             )
         }
         binding.toolbarNavigationButton.apply {

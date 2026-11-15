@@ -32,7 +32,7 @@ import timber.log.Timber as L
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class SelectionIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
-    diffCallback: DiffUtil.ItemCallback<T>
+    diffCallback: DiffUtil.ItemCallback<T>,
 ) : PlayingIndicatorAdapter<T, VH>(diffCallback) {
     private var selectedItems = setOf<T>()
 

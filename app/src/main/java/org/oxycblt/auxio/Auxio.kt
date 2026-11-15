@@ -74,9 +74,9 @@ class Auxio : Application() {
                     .setIcon(IconCompat.createWithResource(this, R.drawable.ic_shortcut_shuffle_24))
                     .setIntent(
                         Intent(this, MainActivity::class.java)
-                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE)
+                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE),
                     )
-                    .build()
+                    .build(),
             ),
         )
     }

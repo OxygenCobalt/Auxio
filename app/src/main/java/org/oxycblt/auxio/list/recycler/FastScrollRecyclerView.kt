@@ -260,7 +260,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 override fun onDraw(canvas: Canvas, parent: RecyclerView, state: State) {
                     onPreDraw()
                 }
-            }
+            },
         )
 
         // We use a listener instead of overriding onTouchEvent so that we don't conflict with
@@ -277,7 +277,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 ): Boolean {
                     return onItemTouch(event)
                 }
-            }
+            },
         )
     }
 
@@ -392,7 +392,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             (thumbTop + thumbAnchorY - popupAnchorY)
                 .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
                 .coerceAtMost(
-                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupSize
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupSize,
                 )
 
         popupView.layout(popupLeft, popupTop, popupLeft + popupSize, popupTop + popupSize)
@@ -672,7 +672,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 HapticFeedbackConstants.TEXT_HANDLE_MOVE
             } else {
                 HapticFeedbackConstants.KEYBOARD_TAP
-            }
+            },
         )
     }
 

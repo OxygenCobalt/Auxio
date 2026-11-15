@@ -114,7 +114,7 @@ private class ExtractStepImpl(
                                 // it's slow hacky workaround that we must accommodate
                                 // here.)
                                 item.newSong.file.addedMs.resolve() ?: addingMs,
-                            )
+                            ),
                         )
                     }
                 }

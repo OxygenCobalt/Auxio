@@ -76,7 +76,7 @@ private constructor(private val binding: ItemNewPlaylistChoiceBinding) :
          */
         fun from(parent: ViewGroup) =
             NewPlaylistFooterViewHolder(
-                ItemNewPlaylistChoiceBinding.inflate(parent.context.inflater, parent, false)
+                ItemNewPlaylistChoiceBinding.inflate(parent.context.inflater, parent, false),
             )
     }
 }

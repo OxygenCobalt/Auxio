@@ -187,7 +187,7 @@ constructor(
                                 importedPlaylist.name,
                                 songs,
                                 PlaylistDecision.Rename.Reason.IMPORT,
-                            )
+                            ),
                         )
                     } else {
                         musicRepository.rewritePlaylist(target, songs)
@@ -199,7 +199,7 @@ constructor(
                             songs,
                             importedPlaylist.name,
                             PlaylistDecision.New.Reason.IMPORT,
-                        )
+                        ),
                     )
                 }
             }

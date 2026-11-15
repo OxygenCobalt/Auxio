@@ -283,7 +283,7 @@ class ArtistDetailFragment : DetailFragment<Artist, Music>() {
                 is PlaylistDecision.Add -> {
                     L.d("Adding ${decision.songs.size} songs to a playlist")
                     ArtistDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray()
+                        decision.songs.map { it.uid }.toTypedArray(),
                     )
                 }
                 is PlaylistDecision.New,

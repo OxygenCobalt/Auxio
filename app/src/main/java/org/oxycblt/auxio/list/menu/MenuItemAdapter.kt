@@ -74,7 +74,7 @@ class MenuItemViewHolder private constructor(private val binding: ItemMenuOption
          */
         fun from(parent: ViewGroup) =
             MenuItemViewHolder(
-                ItemMenuOptionBinding.inflate(parent.context.inflater, parent, false)
+                ItemMenuOptionBinding.inflate(parent.context.inflater, parent, false),
             )
 
         /** A comparator that can be used with DiffUtil. */

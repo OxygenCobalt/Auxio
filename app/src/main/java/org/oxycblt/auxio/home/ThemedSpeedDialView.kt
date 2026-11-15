@@ -129,16 +129,16 @@ class ThemedSpeedDialView : SpeedDialView {
                     mainFab.backgroundTintList =
                         ColorStateList.valueOf(
                             if (isOpen) mainFabClosedBackgroundColor
-                            else mainFabOpenedBackgroundColor
+                            else mainFabOpenedBackgroundColor,
                         )
                     mainFab.imageTintList =
                         ColorStateList.valueOf(
-                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor
+                            if (isOpen) mainFabClosedIconColor else mainFabOpenedIconColor,
                         )
                     mainFabAnimation = createMainFabAnimation(isOpen).apply { start() }
                     innerChangeListener?.invoke(isOpen)
                 }
-            }
+            },
         )
     }
 
@@ -174,7 +174,7 @@ class ThemedSpeedDialView : SpeedDialView {
             }
 
         return MainFabAnimation(
-            listOf(backgroundTintAnimation, imageTintAnimation, rotationAnimation)
+            listOf(backgroundTintAnimation, imageTintAnimation, rotationAnimation),
         ) {
             mainFabAnimation = null
         }
@@ -231,7 +231,7 @@ class ThemedSpeedDialView : SpeedDialView {
     }
 
     private fun Int.withModulatedAlpha(
-        @FloatRange(from = 0.0, to = 1.0) alphaModulation: Float
+        @FloatRange(from = 0.0, to = 1.0) alphaModulation: Float,
     ): Int {
         val alpha = (alpha * alphaModulation).roundToInt()
         return ((alpha shl 24) or (this and 0x00FFFFFF))

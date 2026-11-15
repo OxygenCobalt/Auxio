@@ -68,7 +68,7 @@ internal abstract class PlaylistDatabase : RoomDatabase() {
                                 db.query(
                                         SupportSQLiteQueryBuilder.builder(table)
                                             .columns(arrayOf(column))
-                                            .create()
+                                            .create(),
                                     )
                                     .use {
                                         val migrations = mutableListOf<Pair<String, String>>()
@@ -76,7 +76,7 @@ internal abstract class PlaylistDatabase : RoomDatabase() {
                                         while (it.moveToNext()) {
                                             val oldUid =
                                                 requireNotNull(
-                                                    it.getStringOrNull(playlistUidIndex)
+                                                    it.getStringOrNull(playlistUidIndex),
                                                 ) {
                                                     "catastrophic migration failure: $table has no UID"
                                                 }
@@ -117,7 +117,7 @@ internal abstract class PlaylistDatabase : RoomDatabase() {
                             washUids(db, "PlaylistInfo", "playlistUid")
                             washUids(db, "PlaylistSongCrossRef", "playlistUid")
                         }
-                    }
+                    },
                 )
                 .fallbackToDestructiveMigration(true)
                 .build()
@@ -158,7 +158,7 @@ internal abstract class PlaylistDao {
                     playlistUid = rawPlaylist.playlistInfo.playlistUid,
                     songUid = it.songUid,
                 )
-            }
+            },
         )
     }
 
@@ -194,7 +194,7 @@ internal abstract class PlaylistDao {
     open suspend fun insertPlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
         insertSongs(songs)
         insertRefs(
-            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) }
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) },
         )
     }
 
@@ -210,7 +210,7 @@ internal abstract class PlaylistDao {
         deleteRefs(playlistUid)
         insertSongs(songs)
         insertRefs(
-            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) }
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) },
         )
     }
 

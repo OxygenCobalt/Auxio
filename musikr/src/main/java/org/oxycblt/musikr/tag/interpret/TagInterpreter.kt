@@ -175,7 +175,7 @@ private class TagInterpreterImpl(private val interpretation: Interpretation) : T
             preArtists =
                 PreArtistsFrom.Album(albumPreArtists).takeIf { it.preArtists.isNotEmpty() }
                     ?: PreArtistsFrom.Individual(
-                        individualPreArtists.ifEmpty { listOf(unknownPreArtist()) }
+                        individualPreArtists.ifEmpty { listOf(unknownPreArtist()) },
                     ),
         )
     }

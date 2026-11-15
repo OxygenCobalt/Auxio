@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.inflater
  */
 class PlaylistChoiceAdapter(val listener: ClickableListListener<PlaylistChoice>) :
     FlexibleListAdapter<PlaylistChoice, PlaylistChoiceViewHolder>(
-        PlaylistChoiceViewHolder.DIFF_CALLBACK
+        PlaylistChoiceViewHolder.DIFF_CALLBACK,
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaylistChoiceViewHolder.from(parent)
@@ -72,7 +72,7 @@ class PlaylistChoiceViewHolder private constructor(private val binding: ItemPick
          */
         fun from(parent: ViewGroup) =
             PlaylistChoiceViewHolder(
-                ItemPickerChoiceBinding.inflate(parent.context.inflater, parent, false)
+                ItemPickerChoiceBinding.inflate(parent.context.inflater, parent, false),
             )
 
         /** A comparator that can be used with DiffUtil. */

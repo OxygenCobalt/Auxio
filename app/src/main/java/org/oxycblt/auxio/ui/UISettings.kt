@@ -65,7 +65,7 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     override var accent: Accent
         get() =
             Accent.from(
-                sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT)
+                sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT),
             )
         set(value) {
             sharedPreferences.edit {

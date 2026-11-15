@@ -48,7 +48,7 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
     override val coverMode: CoverMode
         get() =
             CoverMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE)
+                sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE),
             ) ?: CoverMode.BALANCED
 
     override val forceSquareCovers: Boolean

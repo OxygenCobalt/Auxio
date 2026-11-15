@@ -252,7 +252,7 @@ constructor(
                 Show.SongArtistDecision(song)
             } else {
                 Show.ArtistDetails(song.artists.first())
-            }
+            },
         )
 
     /**
@@ -267,7 +267,7 @@ constructor(
                 Show.AlbumArtistDecision(album)
             } else {
                 Show.ArtistDetails(album.artists.first())
-            }
+            },
         )
 
     /**
@@ -526,7 +526,7 @@ constructor(
                 SongProperty(
                     R.string.lbl_sample_rate,
                     SongProperty.Value.SampleRate(song.sampleRateHz),
-                )
+                ),
             )
             song.replayGainAdjustment.track?.let {
                 add(SongProperty(R.string.lbl_replaygain_track, SongProperty.Value.Decibels(it)))

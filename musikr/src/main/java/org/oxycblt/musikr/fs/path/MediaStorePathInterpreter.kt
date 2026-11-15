@@ -130,7 +130,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
                 )
 
         override fun createSelector(
-            paths: List<Path>
+            paths: List<Path>,
         ): MediaStorePathInterpreter.Factory.Selector? {
             val args = mutableListOf<String>()
             var template = ""
@@ -210,7 +210,7 @@ private constructor(private val cursor: Cursor, volumeManager: VolumeManager) :
         // column values.
 
         override fun createSelector(
-            paths: List<Path>
+            paths: List<Path>,
         ): MediaStorePathInterpreter.Factory.Selector? {
             val args = mutableListOf<String>()
             var template = ""

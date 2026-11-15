@@ -136,7 +136,7 @@ class WidgetProvider : AppWidgetProvider() {
                 val msg = e.message ?: return
                 if (
                     !msg.startsWith(
-                        "RemoteViews for widget update exceeds maximum bitmap memory usage"
+                        "RemoteViews for widget update exceeds maximum bitmap memory usage",
                     )
                 ) {
                     throw e

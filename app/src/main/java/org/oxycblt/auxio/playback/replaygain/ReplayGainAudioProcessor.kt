@@ -168,7 +168,7 @@ constructor(
     // --- AUDIO PROCESSOR IMPLEMENTATION ---
 
     override fun onConfigure(
-        inputAudioFormat: AudioProcessor.AudioFormat
+        inputAudioFormat: AudioProcessor.AudioFormat,
     ): AudioProcessor.AudioFormat {
         if (inputAudioFormat.encoding == C.ENCODING_PCM_16BIT) {
             // AudioProcessor is only provided 16-bit PCM audio data, so that's the only

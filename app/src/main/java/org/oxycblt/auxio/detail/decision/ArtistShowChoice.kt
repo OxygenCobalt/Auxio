@@ -37,7 +37,7 @@ import org.oxycblt.musikr.Artist
  */
 class ArtistShowChoice(private val listener: ClickableListListener<Artist>) :
     FlexibleListAdapter<Artist, ArtistNavigationChoiceViewHolder>(
-        ArtistNavigationChoiceViewHolder.DIFF_CALLBACK
+        ArtistNavigationChoiceViewHolder.DIFF_CALLBACK,
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ArtistNavigationChoiceViewHolder.from(parent)
@@ -78,7 +78,7 @@ private constructor(private val binding: ItemPickerChoiceBinding) :
          */
         fun from(parent: ViewGroup) =
             ArtistNavigationChoiceViewHolder(
-                ItemPickerChoiceBinding.inflate(parent.context.inflater, parent, false)
+                ItemPickerChoiceBinding.inflate(parent.context.inflater, parent, false),
             )
 
         /** A comparator that can be used with DiffUtil. */

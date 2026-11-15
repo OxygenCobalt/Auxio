@@ -157,7 +157,7 @@ fun Album.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setIconUri(
                 covers.covers.firstOrNull()?.let {
                     Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
-                }
+                },
             )
             .setExtras(extras)
             .build()
@@ -190,7 +190,7 @@ fun Artist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setIconUri(
                 covers.covers.firstOrNull()?.let {
                     Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
-                }
+                },
             )
             .setExtras(extras)
             .build()
@@ -214,7 +214,7 @@ fun Genre.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setIconUri(
                 covers.covers.firstOrNull()?.let {
                     Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
-                }
+                },
             )
             .setExtras(extras)
             .build()
@@ -239,7 +239,7 @@ fun Playlist.toMediaItem(context: Context, vararg sugar: Sugar): MediaItem {
             .setIconUri(
                 covers.covers.firstOrNull()?.let {
                     Uri.withAppendedPath(CoverProvider.CONTENT_URI, it.id)
-                }
+                },
             )
             .setExtras(extras)
             .build()

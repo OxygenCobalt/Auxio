@@ -93,43 +93,42 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
     private inline fun <T : Music> Collection<T>.searchListImpl(
         query: String,
         fallback: (String, T) -> Boolean = { _, _ -> false },
-    ) =
-        filter {
-                // See if the plain resolved name matches the query. This works for most
-                // situations.
-                val name = it.name
+    ) = filter {
+        // See if the plain resolved name matches the query. This works for most
+        // situations.
+        val name = it.name
 
-                val resolvedName = name.resolve(context)
-                if (resolvedName.contains(query, ignoreCase = true)) {
-                    return@filter true
-                }
+        val resolvedName = name.resolve(context)
+        if (resolvedName.contains(query, ignoreCase = true)) {
+            return@filter true
+        }
 
-                // See if the sort name matches. This can sometimes be helpful as certain
-                // libraries
-                // will tag sort names to have a alphabetized version of the title.
-                if (name is Name.Known) {
-                    val sortName = name.sort
-                    if (sortName != null && sortName.contains(query, ignoreCase = true)) {
-                        return@filter true
-                    }
-                }
-
-                // As a last-ditch effort, see if the normalized name matches. This will replace
-                // any non-alphabetical characters with their alphabetical representations,
-                // which
-                // could make it match the query.
-                val normalizedName =
-                    NORMALIZE_POST_PROCESSING_REGEX.replace(
-                        Normalizer.normalize(resolvedName, Normalizer.Form.NFKD),
-                        "",
-                    )
-                if (normalizedName.contains(query, ignoreCase = true)) {
-                    return@filter true
-                }
-
-                fallback(query, it)
+        // See if the sort name matches. This can sometimes be helpful as certain
+        // libraries
+        // will tag sort names to have a alphabetized version of the title.
+        if (name is Name.Known) {
+            val sortName = name.sort
+            if (sortName != null && sortName.contains(query, ignoreCase = true)) {
+                return@filter true
             }
-            .ifEmpty { null }
+        }
+
+        // As a last-ditch effort, see if the normalized name matches. This will replace
+        // any non-alphabetical characters with their alphabetical representations,
+        // which
+        // could make it match the query.
+        val normalizedName =
+            NORMALIZE_POST_PROCESSING_REGEX.replace(
+                Normalizer.normalize(resolvedName, Normalizer.Form.NFKD),
+                "",
+            )
+        if (normalizedName.contains(query, ignoreCase = true)) {
+            return@filter true
+        }
+
+        fallback(query, it)
+    }
+        .ifEmpty { null }
 
     private companion object {
         /**

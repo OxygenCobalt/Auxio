@@ -103,7 +103,7 @@ class AddToPlaylistDialog :
                     songs.map { it.uid }.toTypedArray(),
                     null,
                     PlaylistDecision.New.Reason.ADD,
-                )
+                ),
             )
     }
 

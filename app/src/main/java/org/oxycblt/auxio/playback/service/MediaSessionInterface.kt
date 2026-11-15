@@ -168,14 +168,14 @@ constructor(
                 PlaybackStateCompat.REPEAT_MODE_GROUP -> RepeatMode.ALL
                 PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.TRACK
                 else -> RepeatMode.NONE
-            }
+            },
         )
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
         playbackManager.shuffled(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
         )
     }
 
