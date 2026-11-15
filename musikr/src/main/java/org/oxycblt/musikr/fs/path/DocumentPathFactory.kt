@@ -76,12 +76,17 @@ private class DocumentPathFactoryImpl(
                 val contentUri = ContentUris.withAppendedId(prefix, numericId)
 
                 val path =
-                    context.contentResolverSafe.useQuery(
-                        contentUri,
-                        mediaStorePathInterpreterFactory.projection,
-                    ) {
-                        it.moveToFirst()
-                        mediaStorePathInterpreterFactory.wrap(it).extract()
+                    try {
+                        context.contentResolverSafe.useQuery(
+                            contentUri,
+                            mediaStorePathInterpreterFactory.projection,
+                        ) {
+                            it.moveToFirst()
+                            mediaStorePathInterpreterFactory.wrap(it).extract()
+                        }
+                    } catch (_: Exception) {
+                        // Certain doc paths just crash when you try to query them
+                        null
                     }
 
                 if (path != null) {
