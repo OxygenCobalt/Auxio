@@ -260,6 +260,7 @@
     <string name="clr_orange">Оранжево</string>
     <string name="fmt_editing">Редактиране %s</string>
     <string name="fmt_disc_no">Диск %d</string>
+    <string name="fmt_disc_no_subtitle">Диск %1$d – %2$s</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="fmt_def_playlist">Плейлист %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>

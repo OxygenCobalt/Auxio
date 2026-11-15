@@ -102,6 +102,7 @@
     <string name="set_black_mode_desc">Gebruik een puur zwart thema</string>
     <string name="set_repeat_pause">Pauze op herhaling</string>
     <string name="fmt_disc_no">Schijf %d</string>
+    <string name="fmt_disc_no_subtitle">Schijf %1$d – %2$s</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="lng_widget">Bekijk en regel muziekweergave</string>

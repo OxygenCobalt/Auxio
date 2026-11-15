@@ -320,6 +320,7 @@
     <string name="fmt_selected">ເລືອກແລ້ວ %d</string>
     <string name="fmt_editing">ກຳລັງແກ້ໄຂ %s</string>
     <string name="fmt_disc_no">ແຜ່ນ %d</string>
+    <string name="fmt_disc_no_subtitle">ແຜ່ນ %1$d – %2$s</string>
     <string name="fmt_def_playlist">ລາຍການເພງ %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>

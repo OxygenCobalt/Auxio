@@ -34,6 +34,7 @@
     <string name="fmt_selected">%d தேர்ந்தெடுக்கப்பட்டது</string>
     <string name="fmt_editing">திருத்துதல் %s</string>
     <string name="fmt_disc_no">வட்டு %d</string>
+    <string name="fmt_disc_no_subtitle">வட்டு %1$d – %2$s</string>
     <string name="fmt_def_playlist">பிளேலிச்ட் %d</string>
     <string name="fmt_db_pos">+%.1f டெசிபெல்</string>
     <string name="fmt_lib_song_count">பாடல்கள் ஏற்றப்பட்டன: %d</string>

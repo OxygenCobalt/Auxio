@@ -152,6 +152,7 @@
     <string name="clr_deep_purple">Глыбокі фіялетавы</string>
     <string name="clr_deep_green">Глыбокі зялёны</string>
     <string name="fmt_disc_no">Дыск %d</string>
+    <string name="fmt_disc_no_subtitle">Дыск %1$d – %2$s</string>
     <string name="fmt_db_pos">+%.1f дБ</string>
     <string name="fmt_lib_song_count">Загружана песень: %d</string>
     <string name="clr_indigo">Індыга</string>

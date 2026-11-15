@@ -173,6 +173,7 @@
     <string name="set_personalize_desc">Mukauta käyttöliittymän säätimiä ja toimintaa</string>
     <string name="clr_orange">Oranssi</string>
     <string name="fmt_disc_no">Levy %d</string>
+    <string name="fmt_disc_no_subtitle">Levy %1$d – %2$s</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_date">Päiväys</string>
     <string name="set_content_desc">Määritä miten musiikki ja kuvat ladataan</string>
