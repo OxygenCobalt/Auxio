@@ -127,6 +127,7 @@
     <string name="lbl_queue_add">Add to queue</string>
 
     <string name="lbl_playlist_add">Add to playlist</string>
+    <string name="lbl_playlist_remove">Remove from playlist</string>
 
     <string name="lbl_artist_details">Go to artist</string>
     <string name="lbl_album_details">Go to album</string>
@@ -203,6 +204,7 @@
     <string name="lng_playlist_exported">Playlist exported</string>
     <string name="lng_playlist_deleted">Playlist deleted</string>
     <string name="lng_playlist_added">Added to playlist</string>
+    <string name="lng_playlist_removed">Removed from playlist</string>
     <string name="lng_supporters_promo">Donate to the project to get your name added here!</string>
     <!-- As in music library -->
     <string name="lng_search_library">Search your library…</string>

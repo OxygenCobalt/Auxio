@@ -30,6 +30,7 @@ import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.getPlural
@@ -57,8 +58,14 @@ class SongMenuDialogFragment : MenuDialogFragment<Menu.ForSong>() {
     override val parcel
         get() = args.parcel
 
-    // Nothing to disable in song menus.
-    override fun getDisabledItemIds(menu: Menu.ForSong) = setOf<Int>()
+    override fun getDisabledItemIds(menu: Menu.ForSong) =
+        if (menu.res == R.menu.playback_song && playlistForRemoval(menu) == null) {
+            // Nothing to remove when this song is not playing from a playlist and does not belong
+            // to exactly one playlist.
+            setOf(R.id.action_playlist_remove)
+        } else {
+            setOf()
+        }
 
     override fun updateMenu(binding: DialogMenuBinding, menu: Menu.ForSong) {
         val context = requireContext()
@@ -81,6 +88,10 @@ class SongMenuDialogFragment : MenuDialogFragment<Menu.ForSong>() {
                 requireContext().showToast(R.string.lng_queue_added)
             }
             R.id.action_playlist_add -> musicModel.addToPlaylist(menu.song)
+            R.id.action_playlist_remove -> {
+                val playlist = playlistForRemoval(menu) ?: return
+                musicModel.removeFromPlaylist(menu.song, playlist)
+            }
             R.id.action_artist_details -> detailModel.showArtist(menu.song)
             R.id.action_album_details -> detailModel.showAlbum(menu.song.album)
             R.id.action_share -> requireContext().share(menu.song)
@@ -88,6 +99,31 @@ class SongMenuDialogFragment : MenuDialogFragment<Menu.ForSong>() {
             else -> error("Unexpected menu item selected $item")
         }
     }
+
+    /**
+     * Playlist a "remove from playlist" action should edit.
+     *
+     * The now-playing menu removes from the playlist currently being played. If playback is not
+     * from a playlist, the song is removed from the only playlist that contains it. The playlist
+     * detail menu removes from the playlist on screen.
+     */
+    private fun playlistForRemoval(menu: Menu.ForSong): Playlist? =
+        when (menu.res) {
+            R.menu.playback_song -> {
+                val playing =
+                    (menu.playWith as? PlaySong.FromPlaylist)?.which
+                        ?: (playbackModel.parent.value as? Playlist)
+                val containing = musicModel.playlistsContaining(menu.song)
+                when {
+                    playing != null && containing.any { it.uid == playing.uid } ->
+                        containing.first { it.uid == playing.uid }
+                    playing == null && containing.size == 1 -> containing.first()
+                    else -> null
+                }
+            }
+            R.menu.playlist_song -> detailModel.currentPlaylist.value
+            else -> null
+        }
 }
 
 /**
@@ -344,6 +380,7 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Menu.ForPlaylist>() {
 class SelectionMenuDialogFragment : MenuDialogFragment<Menu.ForSelection>() {
     override val menuModel: MenuViewModel by activityViewModels()
     override val listModel: ListViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: SelectionMenuDialogFragmentArgs by navArgs()
@@ -380,6 +417,10 @@ class SelectionMenuDialogFragment : MenuDialogFragment<Menu.ForSelection>() {
                 requireContext().showToast(R.string.lng_queue_added)
             }
             R.id.action_playlist_add -> musicModel.addToPlaylist(menu.songs)
+            R.id.action_playlist_remove -> {
+                val playlist = detailModel.currentPlaylist.value ?: return
+                musicModel.removeFromPlaylist(menu.songs, playlist)
+            }
             R.id.action_share -> requireContext().share(menu.songs)
             else -> error("Unexpected menu item selected $item")
         }

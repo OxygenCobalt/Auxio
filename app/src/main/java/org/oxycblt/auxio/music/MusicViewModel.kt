@@ -352,6 +352,49 @@ constructor(
     }
 
     /**
+     * Remove a [Song] from a [Playlist].
+     *
+     * @param song The [Song] to remove from the [Playlist].
+     * @param playlist The [Playlist] to remove from.
+     */
+    fun removeFromPlaylist(song: Song, playlist: Playlist) {
+        L.d("Removing $song from $playlist")
+        removeFromPlaylist(listOf(song), playlist)
+    }
+
+    /**
+     * Remove [Song]s from a [Playlist].
+     *
+     * Every occurrence of each song is removed. Does nothing when none of [songs] are in
+     * [playlist].
+     *
+     * @param songs The [Song]s to remove from the [Playlist].
+     * @param playlist The [Playlist] to remove from.
+     */
+    fun removeFromPlaylist(songs: List<Song>, playlist: Playlist) {
+        val removeUids = songs.mapTo(hashSetOf()) { it.uid }
+        L.d("Removing songs from $playlist")
+        viewModelScope.launch(Dispatchers.IO) {
+            val current = musicRepository.library?.findPlaylist(playlist.uid) ?: return@launch
+            val updated = current.songs.filterNot { it.uid in removeUids }
+            if (updated.size == current.songs.size) {
+                L.d("No matching songs to remove from $current")
+                return@launch
+            }
+            L.d("Removing ${current.songs.size - updated.size} songs from $current")
+            musicRepository.rewritePlaylist(current, updated)
+            playlistMessage.put(PlaylistMessage.RemoveSuccess)
+        }
+    }
+
+    /** Playlists that currently contain [song]. */
+    fun playlistsContaining(song: Song): List<Playlist> =
+        musicRepository.library
+            ?.playlists
+            ?.filter { playlist -> playlist.songs.any { it.uid == song.uid } }
+            .orEmpty()
+
+    /**
      * Non-manipulated statistics bound the last successful music load.
      *
      * @param songs The amount of [Song]s that were loaded.
@@ -472,6 +515,11 @@ sealed interface PlaylistMessage {
     data object AddSuccess : PlaylistMessage {
         override val stringRes: Int
             get() = R.string.lng_playlist_added
+    }
+
+    data object RemoveSuccess : PlaylistMessage {
+        override val stringRes: Int
+            get() = R.string.lng_playlist_removed
     }
 
     data object ExportSuccess : PlaylistMessage {

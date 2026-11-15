@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_selection_play_next"
+        android:icon="@drawable/ic_play_next_24"
+        android:title="@string/lbl_play_next"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_selection_playlist_add"
+        android:icon="@drawable/ic_playlist_add_24"
+        android:title="@string/lbl_playlist_add"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_playlist_remove"
+        android:icon="@drawable/ic_playlist_remove_24"
+        android:title="@string/lbl_playlist_remove"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/placeholder"
+        android:title=""
+        app:showAsAction="never" />
+</menu>

@@ -58,6 +58,7 @@ import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.smoothScrollByPageTo
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.musikr.MusicParent
+import org.oxycblt.musikr.Playlist
 import org.oxycblt.musikr.Song
 import timber.log.Timber as L
 
@@ -168,9 +169,11 @@ class PlaybackPanelFragment :
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
         binding.playbackMore?.setOnClickListener {
-            playbackModel.song.value?.let {
-                listModel.openMenu(R.menu.playback_song, it, PlaySong.ByItself)
-            }
+            val song = playbackModel.song.value ?: return@setOnClickListener
+            val playWith =
+                (playbackModel.parent.value as? Playlist)?.let(PlaySong::FromPlaylist)
+                    ?: PlaySong.ByItself
+            listModel.openMenu(R.menu.playback_song, song, playWith)
         }
 
         // --- VIEWMODEL SETUP --
