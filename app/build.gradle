@@ -154,11 +154,11 @@ dependencies {
     // --- THIRD PARTY ---
 
     // Exoplayer (Vendored)
-    implementation "androidx.media3:media3-exoplayer:1.11.0"
+    implementation "androidx.media3:media3-exoplayer:1.11.1"
     implementation "androidx.media3:media3-decoder-ffmpeg:1.11.0"
 
     // Image loading
-    implementation 'io.coil-kt.coil3:coil-core:3.6.0'
+    implementation 'io.coil-kt.coil3:coil-core:3.6.3'
 
     // Material
     // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
