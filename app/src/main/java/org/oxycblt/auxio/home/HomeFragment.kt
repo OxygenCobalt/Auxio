@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.home
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -342,10 +343,14 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 is PlaylistDecision.Import -> {
                     L.d("Importing playlist")
                     pendingImportTarget = decision.target
-                    requireNotNull(getContentLauncher) {
-                            "Content picker launcher was not available"
-                        }
-                        .launch(M3U.MIME_TYPE)
+                    try {
+                        requireNotNull(getContentLauncher) {
+                                "Content picker launcher was not available"
+                            }
+                            .launch(M3U.MIME_TYPE)
+                    } catch (e: ActivityNotFoundException) {
+                        requireContext().showToast(R.string.err_no_app)
+                    }
                     musicModel.playlistDecision.consume()
                     return
                 }
