@@ -122,9 +122,9 @@ class SongListFragment :
             is Sort.Mode.ByAlbum ->
                 FastScrollRecyclerView.PopupProvider.PopupData(song.album.name.thumb() ?: "?")
 
-            // Date -> Use year of the range minimum
+            // Date -> Use song first, *then* year of the range minimum
             is Sort.Mode.ByDate -> {
-                val year = song.album.dates?.min?.year ?: return null
+                val year = (song.date ?: song.album.dates?.min?.year) ?: return null
                 FastScrollRecyclerView.PopupProvider.PopupData(getString(R.string.fmt_number, year))
             }
 

@@ -229,8 +229,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
                 songs.sortBy { it.disc }
                 songs.sortByDescending { it.album.name }
                 when (direction) {
-                    Direction.ASCENDING -> songs.sortBy { it.album.dates }
-                    Direction.DESCENDING -> songs.sortByDescending { it.album.dates }
+                    Direction.ASCENDING -> songs.sortBy { it.date ?: it.album.dates?.min }
+                    Direction.DESCENDING ->
+                        songs.sortByDescending { it.date ?: it.album.dates?.min }
                 }
             }
 
