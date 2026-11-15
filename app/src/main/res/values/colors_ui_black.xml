@@ -2,12 +2,12 @@
 <resources>
     <color name="red_surface_black">#000000</color>
     <color name="red_surfaceDim_black">#000000</color>
-    <color name="red_surfaceBright_black">#211b1a</color>
+    <color name="red_surfaceBright_black">#1C1C1E</color>
     <color name="red_surfaceContainerLowest_black">#000000</color>
-    <color name="red_surfaceContainerLow_black">#110c0c</color>
-    <color name="red_surfaceContainer_black">#130e0e</color>
-    <color name="red_surfaceContainerHigh_black">#181413</color>
-    <color name="red_surfaceContainerHighest_black">#1e1918</color>
+    <color name="red_surfaceContainerLow_black">#080808</color>
+    <color name="red_surfaceContainer_black">#121214</color>
+    <color name="red_surfaceContainerHigh_black">#1C1C1E</color>
+    <color name="red_surfaceContainerHighest_black">#242426</color>
 
     <color name="pink_surface_black">#000000</color>
     <color name="pink_surfaceDim_black">#000000</color>
