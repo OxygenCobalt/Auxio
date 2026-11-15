@@ -213,7 +213,10 @@ class PlaylistDetailFragment :
             L.d("Binding edited playlist image")
             binding.detailCover.bind(
                 editedPlaylist,
-                binding.context.getString(R.string.desc_playlist_image, playlist.name),
+                binding.context.getString(
+                    R.string.desc_playlist_image,
+                    playlist.name.resolve(binding.context),
+                ),
                 R.drawable.ic_playlist_24,
                 playlist.uid.toString().hashCode(),
             )

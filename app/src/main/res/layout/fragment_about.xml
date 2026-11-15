@@ -18,6 +18,7 @@
             android:id="@+id/about_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:navigationContentDescription="@string/desc_back"
             app:navigationIcon="@drawable/ic_back_24"
             app:title="@string/lbl_about" />
 

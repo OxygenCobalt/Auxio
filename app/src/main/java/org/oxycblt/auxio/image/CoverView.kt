@@ -61,6 +61,7 @@ import org.oxycblt.auxio.image.coil.RoundedRectTransformation
 import org.oxycblt.auxio.image.coil.SmatteringCoverComposition
 import org.oxycblt.auxio.image.coil.SquareCropTransformation
 import org.oxycblt.auxio.image.coil.StackCoverComposition
+import org.oxycblt.auxio.music.resolve
 import org.oxycblt.auxio.ui.Effect
 import org.oxycblt.auxio.ui.Spatial
 import org.oxycblt.auxio.ui.UISettings
@@ -347,7 +348,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     fun bind(song: Song) =
         bindImpl(
             { song.cover },
-            context.getString(R.string.desc_album_cover, song.album.name),
+            context.getString(R.string.desc_album_cover, song.album.name.resolve(context)),
             R.drawable.ic_album_24,
             squareishShapeAppearance,
         )
@@ -370,7 +371,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     ?.value
                     ?.firstOrNull()
             },
-            context.getString(R.string.desc_album_cover, album.name),
+            context.getString(R.string.desc_album_cover, album.name.resolve(context)),
             R.drawable.ic_album_24,
             squareishShapeAppearance,
         )
@@ -394,7 +395,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     backgroundColor(),
                 )
             },
-            context.getString(R.string.desc_artist_image, artist.name),
+            context.getString(R.string.desc_artist_image, artist.name.resolve(context)),
             R.drawable.ic_artist_24,
             circularShapeAppearance,
         )
@@ -417,7 +418,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     backgroundColor(),
                 )
             },
-            context.getString(R.string.desc_genre_image, genre.name),
+            context.getString(R.string.desc_genre_image, genre.name.resolve(context)),
             R.drawable.ic_genre_24,
             squareishShapeAppearance,
         )
@@ -439,7 +440,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     backgroundColor(),
                 )
             },
-            context.getString(R.string.desc_playlist_image, playlist.name),
+            context.getString(R.string.desc_playlist_image, playlist.name.resolve(context)),
             R.drawable.ic_playlist_24,
             squareishShapeAppearance,
         )

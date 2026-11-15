@@ -195,6 +195,8 @@ class MainFragment :
         binding.homeShuffleFab.setOnClickListener { playbackModel.shuffleAll() }
         binding.homeNewPlaylistFab.apply {
             inflate(R.menu.new_playlist_actions)
+            // The main FAB is what gets focused, not the speed dial container.
+            mainFab.contentDescription = getString(R.string.lbl_new_playlist)
             setOnActionSelectedListener(this@MainFragment)
             setChangeListener(::updateSpeedDial)
         }

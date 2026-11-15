@@ -364,6 +364,10 @@
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
     <string name="desc_exit">Stop playback</string>
+    <string name="desc_collapse_player">Collapse the player</string>
+
+    <string name="desc_back">Go back</string>
+    <string name="desc_clear_selection">Clear selection</string>
 
     <string name="desc_remove_song">Remove this song</string>
     <string name="desc_song_handle">Move this song</string>

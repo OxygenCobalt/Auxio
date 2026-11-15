@@ -144,6 +144,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     app:menu="@menu/toolbar_detail"
+                    app:navigationContentDescription="@string/desc_back"
                     app:navigationIcon="@drawable/ic_back_24" />
 
                 <org.oxycblt.auxio.ui.AuxioToolbar
@@ -153,6 +154,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     app:menu="@menu/toolbar_selection"
+                    app:navigationContentDescription="@string/desc_clear_selection"
                     app:navigationIcon="@drawable/ic_close_24" />
 
                 <org.oxycblt.auxio.ui.AuxioToolbar
@@ -162,6 +164,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     app:menu="@menu/toolbar_edit"
+                    app:navigationContentDescription="@string/lbl_cancel"
                     app:navigationIcon="@drawable/ic_close_24" />
 
             </org.oxycblt.auxio.ui.MultiToolbar>

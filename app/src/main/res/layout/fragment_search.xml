@@ -23,6 +23,7 @@
                 android:id="@+id/search_normal_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:navigationContentDescription="@string/desc_back"
                 app:navigationIcon="@drawable/ic_back_24">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -46,6 +47,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:menu="@menu/toolbar_selection"
+                app:navigationContentDescription="@string/desc_clear_selection"
                 app:navigationIcon="@drawable/ic_close_24" />
 
         </org.oxycblt.auxio.ui.MultiToolbar>
