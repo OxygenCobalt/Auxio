@@ -228,7 +228,7 @@ constructor(
                 context.contentResolver,
                 Settings.Global.ANIMATOR_DURATION_SCALE,
                 1f,
-            ) != 0f
+            ) == 0f
         ) {
             // Anims not enabled globally, ignore
             waveEnabled = false
