@@ -28,12 +28,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.oxycblt.musikr.cache.CachedFile
+import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.File
+import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.fs.Volume
+import org.oxycblt.musikr.fs.path.VolumeManager
 
 class MutableDBCacheWriteAllTest {
     private val mockReadDao = mockk<CacheReadDao>(relaxed = true)
     private val mockWriteDao = mockk<CacheWriteDao>(relaxed = true)
-    private val dbCache = DBCache.from(mockReadDao)
+    private val dbCache = DBCache.from(mockReadDao, mockk<VolumeManager>(relaxed = true))
     private val cache = MutableDBCache.from(dbCache, mockWriteDao)
 
     @Test
@@ -100,6 +104,7 @@ class MutableDBCacheWriteAllTest {
             val file = mockk<File>(relaxed = true)
             every { file.uri } returns mockk(relaxed = true)
             every { file.modifiedMs } returns n.toLong()
+            every { file.path } returns Path(mockk<Volume.Internal>(), Components.root())
             CachedFile(file = file, audio = null, addedMs = n.toLong())
         }
 }

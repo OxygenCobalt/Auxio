@@ -41,6 +41,15 @@ interface Cache {
      * @return a [CacheResult] representing the result of the operation.
      */
     suspend fun read(file: File): CacheResult
+
+    /**
+     * Read every [CachedFile] in the cache that has usable audio, without consulting the file
+     * system. The returned files may be out of date, so this should only be used to show a
+     * provisional library before a real exploration can complete.
+     *
+     * @return All known cached songs, which may be empty.
+     */
+    suspend fun readAll(): List<CachedFile>
 }
 
 /**
