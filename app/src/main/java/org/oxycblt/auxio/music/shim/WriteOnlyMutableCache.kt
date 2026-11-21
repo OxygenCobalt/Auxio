@@ -31,6 +31,9 @@ class WriteOnlyMutableCache(private val inner: MutableCache) : MutableCache {
         }
     }
 
+    // Write-only means the existing cache must look empty to readers.
+    override suspend fun readAll(): List<CachedFile> = emptyList()
+
     override suspend fun write(cachedFile: CachedFile) {
         inner.write(cachedFile)
     }

@@ -22,11 +22,15 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import org.oxycblt.musikr.covers.Cover
+import org.oxycblt.musikr.covers.CoverResult
 import org.oxycblt.musikr.pipeline.EvaluateStep
 import org.oxycblt.musikr.pipeline.ExploreStep
 import org.oxycblt.musikr.pipeline.Explored
 import org.oxycblt.musikr.pipeline.ExtractStep
 import org.oxycblt.musikr.pipeline.Extracted
+import org.oxycblt.musikr.pipeline.RawPlaylist
+import org.oxycblt.musikr.pipeline.RawSong
 import org.oxycblt.musikr.util.merge
 import org.oxycblt.musikr.util.tryAsyncWith
 
@@ -52,6 +56,17 @@ interface Musikr {
      * @return A handle to the newly created library alongside further cleanup.
      */
     suspend fun run(onProgress: suspend (IndexingProgress) -> Unit = {}): LibraryResult
+
+    /**
+     * Build a provisional library purely from the cache, without touching the file system. This is
+     * fast but may be out of date (deleted or modified files are not noticed), so it should be
+     * followed by a real [run] to correct it.
+     *
+     * @return The provisional library, or null if the cache cannot produce a complete one (empty
+     *   cache, or covers referenced by the cache are missing). The result's
+     *   [LibraryResult.cleanup] must not be called.
+     */
+    suspend fun runFromCache(): LibraryResult?
 
     companion object {
         /**
@@ -142,6 +157,37 @@ private class MusikrImpl(
         val library = evaluateStep.evaluate(trackedExtractedChannel)
         merge(exploredTask, extractedTask, trackedExploredTask, trackedExtractedTask).await()
         LibraryResultImpl(config, library)
+    }
+
+    override suspend fun runFromCache(): LibraryResult? {
+        val cached = config.storage.cache.readAll()
+        if (cached.isEmpty()) {
+            return null
+        }
+        val extracted = Channel<Extracted>(Channel.UNLIMITED)
+        // Albums share covers, and each lookup can be a content resolver round trip, so only
+        // resolve every distinct cover once.
+        val covers = HashMap<String, Cover>()
+        for (file in cached) {
+            val audio = file.audio ?: continue
+            val cover =
+                when (val id = audio.coverId) {
+                    null -> null
+                    else ->
+                        covers[id]
+                            ?: when (val result = config.storage.covers.obtain(id)) {
+                                is CoverResult.Hit -> result.cover.also { covers[id] = it }
+                                // The cover is gone, so a real scan is needed to regenerate it.
+                                is CoverResult.Miss -> return null
+                            }
+                }
+            extracted.send(RawSong(file.file, audio.properties, audio.tags, cover, file.addedMs))
+        }
+        for (playlist in config.storage.storedPlaylists.read()) {
+            extracted.send(RawPlaylist(playlist))
+        }
+        extracted.close()
+        return LibraryResultImpl(config, evaluateStep.evaluate(extracted))
     }
 }
 

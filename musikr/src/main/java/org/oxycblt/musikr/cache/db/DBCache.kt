@@ -27,7 +27,12 @@ import org.oxycblt.musikr.cache.Cache
 import org.oxycblt.musikr.cache.CacheResult
 import org.oxycblt.musikr.cache.CachedFile
 import org.oxycblt.musikr.cache.MutableCache
+import org.oxycblt.musikr.fs.AddedMs
+import org.oxycblt.musikr.fs.Components
 import org.oxycblt.musikr.fs.File
+import org.oxycblt.musikr.fs.Path
+import org.oxycblt.musikr.fs.Volume
+import org.oxycblt.musikr.fs.path.VolumeManager
 import org.oxycblt.musikr.metadata.Properties
 import org.oxycblt.musikr.tag.parse.ParsedTags
 
@@ -36,59 +41,82 @@ import org.oxycblt.musikr.tag.parse.ParsedTags
  *
  * Create an instance with [from].
  */
-class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
+class DBCache
+private constructor(private val readDao: CacheReadDao, private val volumeManager: VolumeManager) :
+    Cache {
     private var mapping: Map<Uri, CachedFileData>? = null
     private val mappingLock = Mutex()
 
-    override suspend fun read(file: File): CacheResult {
-        val currentMapping = mappingLock.withLock {
+    private suspend fun loadMapping() =
+        mappingLock.withLock {
             mapping ?: readDao.selectAllSongs().associateBy { it.uri }.also { mapping = it }
         }
-        val dbSong = currentMapping[file.uri] ?: return CacheResult.Miss(file)
+
+    override suspend fun read(file: File): CacheResult {
+        val dbSong = loadMapping()[file.uri] ?: return CacheResult.Miss(file)
         if (dbSong.modifiedMs != file.modifiedMs) {
             return CacheResult.Stale(file, dbSong.addedMs)
         }
-        val song =
-            CachedFile(
-                file,
-                dbSong.mimeType?.let {
-                    Audio(
-                        Properties(
-                            dbSong.mimeType,
-                            dbSong.durationMs!!,
-                            dbSong.bitrateKbps!!,
-                            dbSong.sampleRateHz!!,
-                        ),
-                        ParsedTags(
-                            musicBrainzId = dbSong.musicBrainzId,
-                            name = dbSong.name,
-                            sortName = dbSong.sortName,
-                            durationMs = dbSong.durationMs,
-                            track = dbSong.track,
-                            disc = dbSong.disc,
-                            subtitle = dbSong.subtitle,
-                            date = dbSong.date,
-                            albumMusicBrainzId = dbSong.albumMusicBrainzId,
-                            albumName = dbSong.albumName,
-                            albumSortName = dbSong.albumSortName,
-                            releaseTypes = dbSong.releaseTypes!!,
-                            artistMusicBrainzIds = dbSong.artistMusicBrainzIds!!,
-                            artistNames = dbSong.artistNames!!,
-                            artistSortNames = dbSong.artistSortNames!!,
-                            albumArtistMusicBrainzIds = dbSong.albumArtistMusicBrainzIds!!,
-                            albumArtistNames = dbSong.albumArtistNames!!,
-                            albumArtistSortNames = dbSong.albumArtistSortNames!!,
-                            genreNames = dbSong.genreNames!!,
-                            replayGainTrackAdjustment = dbSong.replayGainTrackAdjustment,
-                            replayGainAlbumAdjustment = dbSong.replayGainAlbumAdjustment,
-                        ),
-                        coverId = dbSong.coverId,
-                    )
-                },
-                addedMs = dbSong.addedMs,
-            )
-        return CacheResult.Hit(song)
+        return CacheResult.Hit(dbSong.toCachedFile(file))
     }
+
+    override suspend fun readAll(): List<CachedFile> =
+        loadMapping().values.mapNotNull { dbSong ->
+            if (dbSong.mimeType == null) return@mapNotNull null
+            val file = dbSong.toFile(volumeManager) ?: return@mapNotNull null
+            dbSong.toCachedFile(file)
+        }
+
+    private fun CachedFileData.toFile(volumeManager: VolumeManager): File? {
+        val path = decodePath(volumeManager, pathVolume, pathComponents) ?: return null
+        return File(
+            uri = uri,
+            path = path,
+            addedMs =
+                object : AddedMs {
+                    override suspend fun resolve() = addedMs
+                },
+            modifiedMs = modifiedMs,
+            mimeType = fileMimeType,
+            size = size,
+            parent = null,
+        )
+    }
+
+    private fun CachedFileData.toCachedFile(file: File) =
+        CachedFile(
+            file,
+            mimeType?.let {
+                Audio(
+                    Properties(mimeType, durationMs!!, bitrateKbps!!, sampleRateHz!!),
+                    ParsedTags(
+                        musicBrainzId = musicBrainzId,
+                        name = name,
+                        sortName = sortName,
+                        durationMs = durationMs,
+                        track = track,
+                        disc = disc,
+                        subtitle = subtitle,
+                        date = date,
+                        albumMusicBrainzId = albumMusicBrainzId,
+                        albumName = albumName,
+                        albumSortName = albumSortName,
+                        releaseTypes = releaseTypes!!,
+                        artistMusicBrainzIds = artistMusicBrainzIds!!,
+                        artistNames = artistNames!!,
+                        artistSortNames = artistSortNames!!,
+                        albumArtistMusicBrainzIds = albumArtistMusicBrainzIds!!,
+                        albumArtistNames = albumArtistNames!!,
+                        albumArtistSortNames = albumArtistSortNames!!,
+                        genreNames = genreNames!!,
+                        replayGainTrackAdjustment = replayGainTrackAdjustment,
+                        replayGainAlbumAdjustment = replayGainAlbumAdjustment,
+                    ),
+                    coverId = coverId,
+                )
+            },
+            addedMs = addedMs,
+        )
 
     companion object {
         /**
@@ -100,11 +128,14 @@ class DBCache private constructor(private val readDao: CacheReadDao) : Cache {
          * @param context The context to use to create the Room database.
          * @return A new instance of [DBCache].
          */
-        fun from(context: Context) = from(CacheDatabase.from(context))
+        fun from(context: Context) =
+            from(CacheDatabase.from(context), VolumeManager.from(context))
 
-        internal fun from(db: CacheDatabase) = DBCache(db.readDao())
+        internal fun from(db: CacheDatabase, volumeManager: VolumeManager) =
+            DBCache(db.readDao(), volumeManager)
 
-        internal fun from(readDao: CacheReadDao) = DBCache(readDao)
+        internal fun from(readDao: CacheReadDao, volumeManager: VolumeManager) =
+            DBCache(readDao, volumeManager)
     }
 }
 
@@ -117,6 +148,8 @@ class MutableDBCache
 private constructor(private val inner: DBCache, private val writeDao: CacheWriteDao) :
     MutableCache {
     override suspend fun read(file: File) = inner.read(file)
+
+    override suspend fun readAll() = inner.readAll()
 
     override suspend fun write(cachedFile: CachedFile) {
         writeDao.updateSong(cachedFile.toDbData())
@@ -144,7 +177,7 @@ private constructor(private val inner: DBCache, private val writeDao: CacheWrite
          */
         fun from(context: Context): MutableDBCache {
             val db = CacheDatabase.from(context)
-            return MutableDBCache(DBCache.from(db), db.writeDao())
+            return MutableDBCache(DBCache.from(db, VolumeManager.from(context)), db.writeDao())
         }
 
         internal fun from(inner: DBCache, writeDao: CacheWriteDao) = MutableDBCache(inner, writeDao)
@@ -158,6 +191,10 @@ private fun CachedFile.toDbData() =
         uri = file.uri,
         modifiedMs = file.modifiedMs,
         addedMs = addedMs,
+        fileMimeType = file.mimeType,
+        size = file.size,
+        pathVolume = encodeVolume(file.path.volume),
+        pathComponents = file.path.components.unixString,
         mimeType = audio?.properties?.mimeType,
         durationMs = audio?.properties?.durationMs,
         bitrateKbps = audio?.properties?.bitrateKbps,
@@ -184,3 +221,30 @@ private fun CachedFile.toDbData() =
         replayGainAlbumAdjustment = audio?.tags?.replayGainAlbumAdjustment,
         coverId = audio?.coverId,
     )
+
+private const val VOLUME_INTERNAL = "internal"
+private const val VOLUME_EXTERNAL_PREFIX = "external:"
+private const val VOLUME_THIRD_PARTY_PREFIX = "third:"
+
+private fun encodeVolume(volume: Volume) =
+    when (volume) {
+        is Volume.Internal -> VOLUME_INTERNAL
+        is Volume.External -> VOLUME_EXTERNAL_PREFIX + volume.id.orEmpty()
+        is Volume.ThirdParty -> VOLUME_THIRD_PARTY_PREFIX + volume.uri
+    }
+
+/** Inverse of [encodeVolume] + path components. Null if the volume is no longer present. */
+private fun decodePath(volumeManager: VolumeManager, volume: String, components: String): Path? {
+    val resolved =
+        when {
+            volume == VOLUME_INTERNAL -> volumeManager.getInternalVolume()
+            volume.startsWith(VOLUME_EXTERNAL_PREFIX) -> {
+                val id = volume.removePrefix(VOLUME_EXTERNAL_PREFIX).ifEmpty { null }
+                volumeManager.getVolumes().find { it is Volume.External && it.id == id }
+            }
+            volume.startsWith(VOLUME_THIRD_PARTY_PREFIX) ->
+                Volume.ThirdParty(Uri.parse(volume.removePrefix(VOLUME_THIRD_PARTY_PREFIX)))
+            else -> null
+        } ?: return null
+    return Path(resolved, Components.parseUnix(components))
+}
